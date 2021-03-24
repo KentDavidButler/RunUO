@@ -1,0 +1,309 @@
+3
+-bank: 652 820 0 Abbey Banker
+-inn: 610 810 0 Abbey Innkeeper
+-provisioner: 5737 3262 0 Adventure Outfitters
+-tailor: 1981 2838 0 Adventurer's Clothing
+-provisioner: 535 867 0 The Adventurer's Friend
+-provisioner: 2838 868 0 The Adventurer's Friend
+-tailor: 1355 3779 0 Adventurer's Needle
+-provisioner: 2992 638 0 The Adventurer's Supplies
+-inn: 3672 2654 1 The Albatross
+-mage: 5301 88 0 The Alchemist of Wind
+-shipwright: 3632 2640 1 Anchors Aweigh
+-arms: 1637 1693 0 Artistic Armour
+-baker: 1880 2802 0 Baked Delights
+-baker: 3755 2227 0 Baker's Dozen
+-baker: 1364 3732 0 Baker's Dozen
+-bank: 1813 2825 0 Bank of Britannia: Trinsic Branch
+-bank: 3734 2149 0 Bank of Magincia
+-bank: 2503 552 0 Bank of Minoc
+-bank: 3764 1317 0 Bank of Nujel'm
+-bank: 3695 2511 1 Bank of Ocllo
+-bank: 587 2146 0 Bank of Skara Brae
+-bardic guild: 3740 1197 0 Bardic Guild
+-bardic guild: 3665 2531 1 The Bardic Guild
+-inn: 5197 4060 0 The Barely Inn
+-tavern: 2475 397 0 The Barnacle
+-stable: 571 2119 0 Beasts of Burden
+-tanner: 1431 1612 0 The Best Hides of Britain
+-tanner: 3602 2615 1 Better Leather Tannery
+-blacksmith: 3007 3408 0 Blacksmith
+-bowyer: 590 2205 0 Bloody Bowman
+-carpenter: 565 1011 0 Bloody Thumb Woodworks
+-tavern: 1498 1691 0 The Blue Boar
+-inn: 3673 2614 1 The Bountiful Harvest
+-butcher: 582 2186 0 Bountiful Meats
+-baker: 3683 2171 0 The Bread Basket
+-docks: 1470 1765 0 Britain Docks
+-docks: 1437 1761 0 Britain Docks
+-docks: 1484 1755 0 Britain Docks
+-library: 1409 1590 0 Britain Public Library
+-blacksmiths guild: 1348 1778 0 Britain's Blacksmith Guild
+-provisioner: 1469 1668 0 Britain's Premier Provisioners and Fish Shoppe
+-reagents: 3013 3353 0 Britainian Herbs
+-vet: 1509 1571 0 Britannia Animal Care
+-provisioner: 1850 2796 0 Britannia Provisions
+-inn: 2967 3408 0 The Broken Arrow Inn
+-warriors guild: 1939 2739 0 The Brotherhood of Trinsic
+-mage: 2885 651 0 The Bubbling Brew
+-docks: 2752 2155 0 Buccaneer's Den Docks
+-tanner: 2707 2178 0 Buccaneer's Den Leatherworks
+-stable: 1510 1543 0 The Bucking Horse Stables
+-carpenter: 628 2160 0 Builder's Delight
+-inn: 5310 34 0 bunkhouse
+-beekeeper: 2959 707 0 The Busy Bees
+-butcher: 2991 779 0 The Butcher's Knife
+-arms: 1475 3865 0 Call to Arms
+-carpenter: 5691 3209 0 The Carpentry House
+-tavern: 1427 1716 0 The Cat's Lair
+-warriors guild: 2841 907 0 The Champion's of Light
+-butcher: 1449 1723 0 The Cleaver
+-docks: 2256 1181 0 Cove Dock
+-blacksmith: 2637 2090 0 Cutlass Smithing
+-arms: 1359 3763 0 Deadly Intentions
+-healer: 647 1087 0 Deep Forest Healing
+-stable: 5297 4007 0 Delucia Stable
+-tailor: 5234 4025 0 Delucia Tailor
+-tavern: 2972 3425 0 The Dog and Lion Pub
+-bank: 1655 1606 0 East Britain Bank
+-mages guild: 4545 860 0 Encyclopedia Magicka
+-mage: 1843 2711 0 Encyclopedia Magicka
+-reagents: 1498 1659 0 Ethereal Goods
+-inn: 606 2243 0 The Falconer's Inn
+-jeweler: 3661 2183 0 The Family Jewels
+-market: 4481 1085 0 Farmer's Market
+-market: 1392 3824 0 Farmer's Market
+-market: 611 2157 0 Farmer's Market
+-market: 3019 766 0 Farmer's Market
+-provisioner: 2216 1192 0 The Farmer's Market
+-butcher: 4395 1137 0 The Fatted Calf
+-butcher: 1455 4026 0 Finest Cuts
+-bank: 1425 1690 0 The First Bank of Britain
+-bank: 4471 1156 0 First Bank of Moonglow and Tinker's Guild
+-blacksmith: 1395 3705 0 First Defense
+-library: 1494 1715 0 The First Library of Britain
+-stable: 2010 2807 0 First Trinsic Stablery
+-tavern: 3012 3457 0 Fisherman's Brew
+-fishermans guild: 2963 813 0 The Fisherman's Guild
+-fishermans guild: 3685 2256 0 Fisherman's Guild and Supplies
+-market: 3013 781 0 Fisherman's Warf
+-blacksmith: 2471 564 0 The Forgery
+-carpenter: 1435 3820 0 From Tree to Yew
+-shipwright: 3667 2252 0 The Furled Sail
+-tinker: 2899 790 0 The Gadget's Corner
+-tinker: 1404 3805 0 Gadgets and Things
+-tinker: 2461 457 0 Gears and Gadgets
+-jeweler: 1655 1642 0 A Girl's Best Friend
+-miners guild: 2505 432 0 The Golden Pick Axe
+-baker: 1450 1617 0 Good Eats
+-arms: 654 2163 0 Gore Galore
+-tavern: 3730 2218 0 Great Horns Tavern
+-bowyer: 624 1147 0 Great Oak Bowyer
+-shipwright: 634 1038 0 Great Oak Vessels
+-blacksmith: 1418 1547 0 The Hammer and Anvil
+-carpenter: 2917 798 0 The Hammer and Nail
+-arms: 3632 2595 1 Hammer and Steel Smithy
+-healer: 5191 3989 0 a Healer
+-healer: 1472 1611 0 Healer of Britain
+-healer: 2709 2130 0 Healer of Buccaneer's Den
+-healer: 3687 2227 0 Healer of Magincia
+-healer: 3629 2608 1 Healer of Ocllo
+-healer: 623 2218 0 Healer of Skara Brae
+-healer: 2920 856 0 Healer of Vesper
+-healer: 532 958 0 Healer of Yew
+-healer: 2577 599 0 The Healing Hand
+-healer: 2245 1231 0 The Healing Hand
+-healer: 5737 3222 0 The Healing Hand
+-arms: 1443 1650 0 Heavy Metal Armorer
+-reagents: 4416 1133 0 Herbal Splendor
+-blacksmith: 1937 2771 0 Honorable Arms
+-tavern: 1452 3770 0 The Horse's Head
+-mage: 5296 3978 0 Hut of Magics
+-mage: 1590 1654 0 Incantations & Enchantments
+-inn: 2778 966 0 The Ironwood Inn
+-arms: 2865 852 0 The Ironworks
+-jeweler: 3778 1172 0 Jewel of the Isle
+-arms: 1456 3850 0 Jhelom Armory
+-bank: 1317 3773 0 Jhelom Bank and Jeweler
+-docks: 1512 3989 0 Jhelom Docks
+-docks: 1372 3908 0 Jhelom Docks
+-docks: 1504 3693 0 Jhelom Docks
+-docks: 1125 3687 0 Jhelom Docks
+-healer: 1416 3779 0 Jhelom Healer
+-library: 1387 3771 0 Jhelom Library
+-mage: 1425 3980 0 Jhelom Mage
+-tailor: 1455 4006 0 Jhelom's Fine Tailoring
+-baker: 554 991 0 The Jolly Baker
+-inn: 5775 3161 0 The Just Inn
+-tavern: 1935 2796 0 The Keg and Anchor
+-provisioner: 3635 2573 1 Last Chance Provisioners
+-library: 5238 144 0 The Learned Mage
+-bard: 1455 1557 0 Lord British's Conservatory of Music
+-tailor: 1385 1593 0 Lord British's Tailor
+-arms: 1365 1575 0 The Lord's Arms
+-tailor: 1467 1686 0 The Lord's Clothiers
+-baker: 5351 56 0 Mage's Appetite
+-baker: 4392 1068 0 Mage's Bread
+-carpenter: 4416 1085 0 The Mage's Seat
+-provisioner: 5154 97 0 Mage's Things
+-mage: 602 2180 0 Mages' Menagerie
+-mage: 2918 672 0 The Magical Light
+-reagents: 5215 117 0 Magical Supplies
+-reagents: 2992 844 0 The Magician's Friend
+-docks: 3674 2293 0 Magincia Docks
+-miners guild: 3665 2140 0 Magincia Miner's Guild
+-mage: 3704 2222 0 Magincia's Magicka
+-shipwright: 2994 815 0 The Majestic Boat
+-tavern: 2901 908 0 The Marsh Hall
+-miners guild: 2455 487 0 The Matewan
+-merchants guild: 1474 1597 0 The Merchant's Guild
+-merchants guild: 3703 2249 0 The Merchant's Guild
+-arms: 4392 1117 0 The Mighty Axe
+-miners guild: 1417 1578 0 The Miner's Guild
+-bank: 2881 684 0 The Mint of Vesper
+-docks: 4406 1038 0 Moonglow Docks
+-healer: 4388 1082 0 Moonglow Healer
+-reagents: 4412 1111 0 Moonglow Reagent Shop
+-inn: 4484 1064 0 Moonglow Student Hostel
+-mage: 4448 1090 0 Moonglow's Finest Alchemy
+-arms: 586 2170 0 More Than Just Mail
+-inn: 1360 3815 0 The Morning Star Inn
+-mage: 659 2141 0 Mystic Treasures
+-bard: 2424 555 0 The Mystical Lute
+-tavern: 3769 1218 0 Mystical Spirits
+-baker: 5746 3200 0 Nature's Best Baked Goods
+-provisioner: 1441 3796 0 Needful Things
+-warriors guild: 2482 428 0 The New World Order
+-docks: 2940 3410 0 North Docks
+-inn: 1458 1525 0 The North Side Inn
+-baker: 3610 2572 1 Now You're Cookin'
+-blacksmith: 3546 1185 0 Nujel'm Blacksmith
+-fletcher: 3546 1194 0 Nujel'm Bowry
+-butcher: 3555 1171 0 Nujel'm Butcher
+-tanner: 3545 1178 0 Nujel'm Tannery
+-carpenter: 2513 477 0 The Oak Throne
+-shipwright: 1416 1754 0 The Oaken Oar
+-fishermans guild: 1437 3750 0 Ocean's Treasure
+-docks: 3633 2654 1 Ocllo Docks
+-docks: 3654 2664 1 Ocllo Docks
+-library: 3612 2466 1 Ocllo Public Library
+-provisioner: 2456 428 0 The Old Miners' Supplies
+-blacksmith: 630 2194 0 On Guard Armoury
+-miners guild: 2855 734 0 The Ore of Vesper
+-library: 2003 2726 0 Paladin's Library
+-docks: 5827 3256 0 Papua dock
+-tailor: 5754 3273 0 Papua Tailor
+-jeweler: 1447 3981 0 The Pearl of Jhelom
+-jeweler: 1895 2809 0 The Pearl of Trinsic
+-inn: 2715 2098 0 The Peg Leg Inn
+-shipwright: 5805 3270 0 Pier 39
+-thieves guild: 2659 2194 0 Pirate's Den
+-tavern: 2680 2238 0 The Pirate's Plunder
+-provisioner: 2735 2254 0 Pirate's Provisioners
+-bank: 2731 2188 0 A Place Fer Yer Stuff
+-baker: 2975 3358 0 Plenty O' Dough
+-jeweler: 1451 1679 0 Premier Gems
+-provisioner: 1602 1712 0 Profuse Provisions
+-blacksmith: 3554 1202 0 Public Smithing
+-fletcher: 1470 1578 0 Quality Fletching
+-fletcher: 2861 812 0 The Ranger's Tool
+-archers guild: 554 2145 0 Rangers' Guild
+-reagents: 5714 3202 0 The Reagent Shop
+-provisioner: 1852 2831 0 Red's Curious Goods
+-inn: 3732 1306 0 Restful Slumber
+-arms: 5805 3300 0 The Revenge Shoppe
+-tailor: 1547 1659 0 The Right Fit
+-inn: 2033 2801 0 The Rusty Anchor
+-shipwright: 1452 3747 0 Sailor's Keeper
+-tavern: 1620 1586 0 The Salty Dog
+-carpenter: 1430 1597 0 The Saw Horse
+-tailor: 4458 1060 0 Scholar's Cut
+-provisioner: 4417 1064 0 The Scholar's Goods
+-inn: 4401 1165 0 The Scholar's Inn
+-shipwright: 3700 1214 0 Seaborne Ships
+-library: 5243 179 0 Seat of Knowledge
+-arms: 4440 1162 0 Second Defense Armory
+-arms: 1441 3719 0 Second Skin
+-inn: 5165 30 0 Seeker's Inn
+-butcher: 2912 3485 0 Serpent Hold Meats
+-warriors guild: 3031 3350 0 Serpent Warriors
+-arms: 3018 3433 0 Serpent's Arms
+-bank: 2880 3472 0 Serpent's Hold Bank
+-healer: 2997 3428 0 Serpent's Hold Healer
+-stable: 3036 3464 0 Serpent's Hold Stablery
+-mage: 3002 3350 0 Serpent's Spells
+-stable: 2905 3517 0 Serpents Hold Stablery
+-inn: 554 2178 0 The Shattered Skull
+-tailor: 650 2180 0 Shear Pleasure
+-jeweler: 2882 723 0 The Shimmering Jewel
+-arms: 1895 2653 0 Shining Path Armory
+-tavern: 3736 1255 0 The Silver Bow
+-bowyer: 3054 3369 0 Silver Serpent Bows
+-tailor: 2881 3503 0 Silver Serpent Tailors
+-docks: 648 2235 0 Skara Brae Docks
+-docks: 672 2235 0 Skara Brae Docks
+-butcher: 2438 410 0 The Slaughtered Cow
+-shipwright: 2026 2845 0 Sons Of The Sea
+-mage: 1485 1550 0 The Sorcerer's Delight
+-mage: 3628 2541 1 The Sorceror's Guild
+-stable: 1296 1759 0 Sosarian Steeds
+-docks: 3006 3465 0 South Dock
+-butcher: 5700 3279 0 The Southside Butchery
+-stable: 5671 3287 0 Southside Stables
+-tailor: 2961 621 0 The Spinning Wheel
+-tailor: 2840 885 0 The Spinning Wheel
+-stable: 2526 375 0 Stables
+-stable: 1385 1658 0 The Stables
+-inn: 3695 2160 0 The Stag and Lion
+-tailor: 3667 2586 1 A Stitch In Time
+-tailor: 3666 2235 0 Stitchin' Time
+-jeweler: 5662 3150 0 Strange Rocks
+-arms: 1481 1584 0 Strength and Steel
+-tanner: 2524 524 0 The Stretched Hide
+-bowyer: 564 968 0 The Sturdy Bow
+-provisioner: 578 2227 0 Sundry Supplies
+-shipwright: 592 2277 0 Superior Ships
+-provisioner: 3008 3389 0 Supplies
+-provisioner: 5219 4012 0 The Supply Depot
+-provisioner: 2530 551 0 The Survival Shop
+-inn: 1493 1619 0 Sweet Dreams
+-butcher: 3708 2649 1 Sweet Meat
+-tailor: 3774 1265 0 Tailor of the Isle
+-tanner: 517 986 0 The Tanned Hide
+-tanner: 2860 999 0 Tanner's Shop
+-tinker: 3720 2126 0 The Tic-Toc Shop
+-tinker: 2940 3500 0 Tinker of the Isle
+-tinkers guild: 1422 1654 0 Tinker's Guild
+-tinkers guild: 1848 2680 0 Tinker's Guild
+-tinker: 5726 3243 0 Tinker's Paradise
+-inn: 1844 2735 0 The Traveler's Inn
+-mage: 5731 3183 0 Tricks of the Trade
+-butcher: 1991 2887 0 The Trinsic Cut
+-docks: 2072 2856 0 Trinsic Docks
+-tanner: 1991 2867 0 Trinsic Fine Skins
+-healer: 1911 2805 0 Trinsic Healer
+-bank: 1897 2684 0 Trinsic Royal Bank
+-stable: 1822 2739 0 Trinsic Stablery
+-warriors guild: 2019 2748 0 Trinsic Training Hall
+-baker: 2998 760 0 The Twisted Oven
+-tavern: 1547 1768 0 The Unicorn's Horn
+-docks: 3017 827 0 Vesper Docks
+-docks: 3034 827 0 Vesper Docks
+-inn: 2962 885 0 Vesper Youth Hostel
+-carpenter: 2627 2100 0 Violente Woodworks
+-arms: 2533 576 0 Warrior's Battle Gear
+-blacksmith: 1419 3859 0 Warrior's Bounty
+-arms: 2835 805 0 Warrior's Companion
+-arms: 2217 1170 0 The Warrior's Supplies
+-warriors guild: 3058 3400 0 The Warriors' Guild
+-warriors guild: 1341 1733 0 The Warriors' Guild
+-inn: 1585 1591 0 The Wayfarer's Inn
+-mage: 5148 60 0 Wind Alchemy
+-bank: 5346 74 0 Wind Bank
+-healer: 5263 129 0 Wind Healer
+-tailor: 5203 86 0 Windy Clothes
+-inn: 5218 175 0 Windy Inn
+-bank: 5275 3977 0 Ye Olde Eleventh Bank
+-bank: 5669 3131 0 Ye Olde Loan and Savings
+-butcher: 529 1008 0 Yew's Finest Cuts
+-blacksmith: 5225 4000 0 Zoot's Hammer
