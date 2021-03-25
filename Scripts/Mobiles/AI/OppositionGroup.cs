@@ -78,6 +78,9 @@ namespace Server
 				},
 				new Type[]
 				{
+					typeof( Ratman ),
+					typeof( RatmanArcher ),
+					typeof( RatmanMage )
 				}
 			} );
 

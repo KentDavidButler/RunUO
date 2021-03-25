@@ -70,6 +70,7 @@ namespace Server.Engines.Harvest
 
 			res = new HarvestResource[]
 				{
+					//(ctor) HarvestResource( double reqSkill, double minSkill, double maxSkill, object message, Type[] types )
 					new HarvestResource( 00.0, 00.0, 100.0, 1007072, typeof( IronOre ) ),
 					new HarvestResource( 65.0, 25.0, 105.0, 1007073, typeof( DullCopperOre ) ),
 					new HarvestResource( 70.0, 30.0, 110.0, 1007074, typeof( ShadowIronOre ) ),
@@ -83,6 +84,7 @@ namespace Server.Engines.Harvest
 
 			veins = new HarvestVein[]
 				{
+					//(ctor) HarvestVein( double veinChance, double chanceToFallback, HarvestResource primaryResource, HarvestResource fallbackResource )
 					new HarvestVein( 49.6, 0.0, res[0], null   ), // Iron
 					new HarvestVein( 11.2, 0.5, res[1], res[0] ), // Dull Copper
 					new HarvestVein( 09.8, 0.5, res[2], res[0] ), // Shadow Iron

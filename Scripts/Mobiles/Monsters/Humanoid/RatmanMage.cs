@@ -50,6 +50,11 @@ namespace Server.Mobiles
 		public override int Hides{ get{ return 8; } }
 		public override HideType HideType{ get{ return HideType.Regular; } }
 
+		public override OppositionGroup OppositionGroup
+		{
+			get{ return OppositionGroup.SavagesAndOrcs; }
+		}
+
 		public RatmanMage( Serial serial ) : base( serial )
 		{
 		}

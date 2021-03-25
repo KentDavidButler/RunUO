@@ -37,8 +37,7 @@ namespace Server.Mobiles
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.Rich );
-			AddLoot( LootPack.MedScrolls, 1 );
-			AddLoot( LootPack.HighScrolls, 1 );
+			AddLoot( LootPack.MedScrolls, 2 );
 		}
 
 		public override bool ReacquireOnMovement{ get{ return true; } }

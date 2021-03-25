@@ -39,10 +39,7 @@ namespace Server.Misc
 		 * firewalls) or specific IP adddresses you can do so by modifying the file SocketOptions.cs found in this directory.
 		 */
 		
-		ipaddress = ConfigurationManager.AppSettings.Get("ipaddress");
-
-		public static readonly string Address = ipaddress;
-		//public static readonly string Address = "xxx.yyy.zzz.aaa";
+		public static readonly string Address = "40.71.94.13";
 		public static readonly string ServerName = "2TA For the Win" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.MinorRevision;
 
 		public static readonly bool AutoDetect = true;
