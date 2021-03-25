@@ -81,7 +81,14 @@ namespace Server.Items
 		{
 			Mobile from = e.Mobile;
 
-			Spellbook.Find( from, -1, SpellbookType.Regular).DisplayTo( from );
+			if ( book != null )
+			{
+				book.DisplayTo( from );
+			}
+			else
+			{
+			    Spellbook.Find( from, -1, SpellbookType.Regular).DisplayTo( from );
+			}
 		}
 
 		private static void EventSink_CastSpellRequest( CastSpellRequestEventArgs e )
