@@ -4,7 +4,7 @@ namespace Server.Mobiles
 	public class Effusion : BaseCreature
 	{
 		[Constructable]
-		public Slime() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		public Effusion() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a shimmering effusion";
 			Body = 261;
@@ -45,7 +45,7 @@ namespace Server.Mobiles
 		public override Poison HitPoison{ get{ return Poison.Lesser; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat | FoodType.Fish | FoodType.FruitsAndVegies | FoodType.GrainsAndHay | FoodType.Eggs; } }
 
-		public Slime( Serial serial ) : base( serial )
+		public Effusion( Serial serial ) : base( serial )
 		{
 		}
 
