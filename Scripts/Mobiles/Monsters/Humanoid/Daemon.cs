@@ -42,7 +42,7 @@ namespace Server.Mobiles
 
 			int random = Utility.Random( 100 );
 
-			if ( 70 > random )
+			if ( random > 30 )
 				AddLoot( LootPack.HighScrolls, 2 );
 		}
 
