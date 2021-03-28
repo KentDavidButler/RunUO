@@ -8,7 +8,8 @@ namespace Server.Items
 
 		public override int OldStrReq{ get{ return 20; } }
 
-		public override int OldDexBonus{ get{ return -1; } }
+		//public override int OldDexBonus{ get{ return -1; } }
+		public override int OldDexBonus{ get{ return 0; } }
 
 		public override int ArmorBase{ get{ return 22; } }
 

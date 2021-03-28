@@ -39,6 +39,11 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );
 			AddLoot( LootPack.Average, 2 );
 			AddLoot( LootPack.MedScrolls, 2 );
+
+			int random = Utility.Random( 100 );
+
+			if ( 70 > random )
+				AddLoot( LootPack.HighScrolls, 2 );
 		}
 
 		public override bool CanRummageCorpses{ get{ return true; } }
