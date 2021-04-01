@@ -4,13 +4,14 @@ namespace Server.Items
 	{
 		public override Poison Poison{ get{ return Poison.Lethal; } }
 
-//		public override double MinPoisoningSkill{ get{ return 95.0; } }
-//		public override double MaxPoisoningSkill{ get{ return 100.0; } }
 
-//		[Constructable]
-//		public DeadlyPoisonPotion() : base( PotionEffect.PoisonDeadly )
-//		{
-//		}
+		public override double MinPoisoningSkill{ get{ return 200.0; } }
+		public override double MaxPoisoningSkill{ get{ return 220.0; } }
+
+		[Constructable]
+		public LethalPoisonPotion() : base( PotionEffect.PoisonLethal )
+		{
+		}
 
 		public LethalPoisonPotion( Serial serial ) : base( serial )
 		{

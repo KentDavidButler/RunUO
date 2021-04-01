@@ -1,9 +1,16 @@
 namespace Server.Mobiles
+<<<<<<< HEAD
+=======
+
+>>>>>>> cad9de0 (fixed some issues in last commit)
 {
     [CorpseName( "a shiny corpse" )]
 	public class Effusion : BaseCreature
 	{
+<<<<<<< HEAD
 	    public override InhumanSpeech SpeechType{ get{ return InhumanSpeech.Wisp; } }
+=======
+>>>>>>> cad9de0 (fixed some issues in last commit)
 
 		[Constructable]
 		public Effusion() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -40,7 +47,6 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );
 			AddLoot( LootPack.MedScrolls, 2 );
 			AddLoot( LootPack.HighScrolls, 2 );
-			AddLoot( TreasureMapLevel{ get{ return 5; } } );
 		}
 
 		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }

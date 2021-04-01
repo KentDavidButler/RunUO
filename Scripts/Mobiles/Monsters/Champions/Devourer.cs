@@ -38,7 +38,6 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );
 			AddLoot( LootPack.MedScrolls, 2 );
 			AddLoot( LootPack.HighScrolls, 2 );
-			AddLoot( TreasureMapLevel{ get{ return 5; } } );
 		}
 
 		public override bool CanRummageCorpses{ get{ return true; } }

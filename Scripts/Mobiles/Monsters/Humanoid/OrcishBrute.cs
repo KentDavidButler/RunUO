@@ -87,7 +87,7 @@ namespace Server.Mobiles
 			}
 		}
 
-		public OrcishLord( Serial serial ) : base( serial )
+		public OrcishBrute( Serial serial ) : base( serial )
 		{
 		}
 
