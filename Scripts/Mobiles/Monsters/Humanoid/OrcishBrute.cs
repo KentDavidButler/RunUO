@@ -4,53 +4,59 @@ using Server.Items;
 namespace Server.Mobiles
 {
     [CorpseName( "an orcish corpse" )]
-	public class OrcCaptain : BaseCreature
+	public class OrcishBrute : BaseCreature
 	{
 		public override InhumanSpeech SpeechType{ get{ return InhumanSpeech.Orc; } }
 
 		[Constructable]
-		public OrcCaptain() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		public OrcishBrute() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = NameList.RandomName( "orc" );
-			Body = 7;
+			Name = "an orcish brute";
+			Body = 138;
 			BaseSoundID = 0x45A;
 
-			SetStr( 111, 145 );
-			SetDex( 101, 135 );
-			SetInt( 86, 110 );
+			Hue = Utility.RandomSkinHue();
 
-			SetHits( 67, 87 );
+			SetStr( 196, 250 );
+			SetDex( 76, 95 );
+			SetInt( 36, 60 );
 
-			SetDamage( 5, 13 );
+			SetHits( 118, 150 );
 
-			SetSkill( SkillName.MagicResist, 70.1, 85.0 );
-			SetSkill( SkillName.Swords, 70.1, 95.0 );
+			SetDamage( 8, 18 );
+
+			SetSkill( SkillName.MagicResist, 65.1, 80.0 );
+			SetSkill( SkillName.Swords, 60.1, 85.0 );
 			SetSkill( SkillName.Tactics, 85.1, 100.0 );
+			SetSkill( SkillName.Wrestling, 85.1, 95.0 );
 
-			Fame = 2500;
-			Karma = -2500;
+			Fame = 3000;
+			Karma = -3000;
 
-			VirtualArmor = 34;
-
-			// TODO: Skull?
-			switch ( Utility.Random( 7 ) )
+			switch ( Utility.Random( 5 ) )
 			{
-				case 0: PackItem( new Arrow() ); break;
-				case 1: PackItem( new Lockpick() ); break;
-				case 2: PackItem( new Shaft() ); break;
-				case 3: PackItem( new Ribs() ); break;
-				case 4: PackItem( new Bandage() ); break;
-				case 5: PackItem( new BeverageBottle( BeverageType.Wine ) ); break;
-				case 6: PackItem( new Jug( BeverageType.Cider ) ); break;
+				case 0: PackItem( new Lockpick() );  break;
+				case 1: PackItem( new MortarPestle() ); break;
+				case 2: PackItem( new Bottle() ); break;
+				case 3: PackItem( new RawRibs() ); break;
+				case 4: PackItem( new Shovel() ); break;
 			}
+
+			PackItem( new PlateChest() );
+
+			if ( 0.3 > Utility.RandomDouble() )
+				PackItem( Loot.RandomPossibleReagent() );
 		}
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.Meager, 2 );
+			AddLoot( LootPack.Average );
+			AddLoot( LootPack.Potions );
+			// TODO: evil orc helm
 		}
 
 		public override bool CanRummageCorpses{ get{ return true; } }
+		public override int TreasureMapLevel{ get{ return 3; } }
 		public override int Meat{ get{ return 1; } }
 
 		public override OppositionGroup OppositionGroup
@@ -76,12 +82,12 @@ namespace Server.Mobiles
 			{
                 item.Delete();
                 aggressor.Damage(50);
-				aggressor.FixedParticles( 0x36BD, 20, 10, 5044, EffectLayer.Head );
+                aggressor.FixedParticles( 0x36BD, 20, 10, 5044, EffectLayer.Head );
 				aggressor.PlaySound( 0x307 );
 			}
 		}
 
-		public OrcCaptain( Serial serial ) : base( serial )
+		public OrcishLord( Serial serial ) : base( serial )
 		{
 		}
 

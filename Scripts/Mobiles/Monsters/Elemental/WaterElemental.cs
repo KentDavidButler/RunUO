@@ -44,7 +44,10 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 			AddLoot( LootPack.Meager );
 			AddLoot( LootPack.Potions );
-			AddLoot( LootPack.HighScrolls, 1 );
+			if ( random < 20 )
+				AddLoot( LootPack.HighScrolls, 2 );
+			else
+                AddLoot( LootPack.MedScrolls, 2 );
 		}
 
         public override int TreasureMapLevel{ get{ return 2; } }

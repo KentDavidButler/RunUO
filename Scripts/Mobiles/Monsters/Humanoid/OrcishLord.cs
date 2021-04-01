@@ -21,7 +21,7 @@ namespace Server.Mobiles
 
 			SetHits( 95, 123 );
 
-			SetDamage( 4, 14 );
+			SetDamage( 7, 12 );
 
 			SetSkill( SkillName.MagicResist, 70.1, 85.0 );
 			SetSkill( SkillName.Swords, 60.1, 85.0 );

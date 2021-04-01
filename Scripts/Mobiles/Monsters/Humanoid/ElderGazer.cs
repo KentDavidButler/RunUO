@@ -29,6 +29,11 @@ namespace Server.Mobiles
 			Karma = -12500;
 
 			VirtualArmor = 50;
+
+			PackItem( new MandrakeRoot( 4 ) );
+			PackItem( new Nightshade( 4 ) );
+			PackItem( new BlackPearl( 4 ) );
+			PackItem( new BloodMoss( 4 ) );
 		}
 
 		public override int TreasureMapLevel{ get{ return 0; } }
