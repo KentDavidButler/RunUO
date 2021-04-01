@@ -18,7 +18,6 @@ namespace Server.Items
 		Poison,
 		PoisonGreater,
 		PoisonDeadly,
-		PoisonLethal,
 		Refresh,
 		RefreshTotal,
 		HealLesser,
@@ -36,6 +35,7 @@ namespace Server.Items
 		Invisibility,
 		Parasitic,
 		Darkglow,
+		PoisonLethal,
 	}
 
 	public abstract class BasePotion : Item, ICraftable

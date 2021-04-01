@@ -44,6 +44,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 			AddLoot( LootPack.Meager );
 			AddLoot( LootPack.Potions );
+			
+			int random = Utility.Random( 100 );
 			if ( random < 20 )
 				AddLoot( LootPack.HighScrolls, 2 );
 			else

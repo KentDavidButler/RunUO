@@ -30,10 +30,8 @@ namespace Server.Mobiles
 
 			VirtualArmor = 50;
 
-			PackItem( new MandrakeRoot( 4 ) );
-			PackItem( new Nightshade( 4 ) );
-			PackItem( new BlackPearl( 4 ) );
-			PackItem( new BloodMoss( 4 ) );
+			PackReg( 23 );
+			PackReg( 23 );
 		}
 
 		public override int TreasureMapLevel{ get{ return 0; } }

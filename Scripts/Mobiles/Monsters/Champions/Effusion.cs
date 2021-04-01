@@ -1,16 +1,8 @@
 namespace Server.Mobiles
-<<<<<<< HEAD
-=======
-
->>>>>>> cad9de0 (fixed some issues in last commit)
 {
     [CorpseName( "a shiny corpse" )]
 	public class Effusion : BaseCreature
 	{
-<<<<<<< HEAD
-	    public override InhumanSpeech SpeechType{ get{ return InhumanSpeech.Wisp; } }
-=======
->>>>>>> cad9de0 (fixed some issues in last commit)
 
 		[Constructable]
 		public Effusion() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
