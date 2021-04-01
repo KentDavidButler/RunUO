@@ -2,8 +2,9 @@ namespace Server.Items
 {
     public class LethalPoisonPotion : BasePoisonPotion
 	{
-		public override Poison Poison{ get{ return Poison.Lethal; } }
+		public override int LabelNumber{ get{ return 1041312; } } // an unknown yellow potion
 
+		public override Poison Poison{ get{ return Poison.Lethal; } }
 
 		public override double MinPoisoningSkill{ get{ return 200.0; } }
 		public override double MaxPoisoningSkill{ get{ return 220.0; } }
