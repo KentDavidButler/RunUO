@@ -6,8 +6,8 @@ namespace Server.Items
 
 		public override Poison Poison{ get{ return Poison.Lethal; } }
 
-		public override double MinPoisoningSkill{ get{ return 200.0; } }
-		public override double MaxPoisoningSkill{ get{ return 220.0; } }
+		public override double MinPoisoningSkill{ get{ return 98.0; } }
+		public override double MaxPoisoningSkill{ get{ return 100.0; } }
 
 		[Constructable]
 		public LethalPoisonPotion() : base( PotionEffect.PoisonLethal )

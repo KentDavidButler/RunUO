@@ -34,15 +34,16 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.FilthyRich, 10 );
+			AddLoot( LootPack.Champion, 1 );
 			AddLoot( LootPack.Rich );
-			AddLoot( LootPack.MedScrolls, 2 );
-			AddLoot( LootPack.HighScrolls, 2 );
+			AddLoot( LootPack.MedScrolls, 4 );
+			AddLoot( LootPack.HighScrolls, 8 );
+			AddLoot( LootPack.Gems, 8 );
 		}
 
 		public override bool CanRummageCorpses{ get{ return true; } }
 		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override int TreasureMapLevel{ get{ return 3; } }
+		public override int TreasureMapLevel{ get{ return 5; } }
 		public override int Meat{ get{ return 2; } }
 
 		public Devourer( Serial serial ) : base( serial )

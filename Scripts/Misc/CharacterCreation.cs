@@ -247,14 +247,16 @@ namespace Server.Misc
 			if( TestCenter.Enabled )
 				FillBankbox( newChar );
 
-			if ( young )
-			{
-				NewPlayerTicket ticket = new NewPlayerTicket();
-				ticket.Owner = newChar;
-				newChar.BankBox.DropItem( ticket );
-			}
+			//if ( young )
+			//{
+			//	NewPlayerTicket ticket = new NewPlayerTicket();
+			//	ticket.Owner = newChar;
+			//	newChar.BankBox.DropItem( ticket );
+			//}
 
-			CityInfo city = GetStartLocation( args, young );
+            //remove original start city location and spawn all characters in star room with teleporters to cities.
+            //CityInfo city = GetStartLocation( args, young );
+            CityInfo city = new CityInfo( "StarRoom", "A place among the stars", 5152,	1773,	1  );
 
 			newChar.MoveToWorld( city.Location, city.Map );
 

@@ -5,7 +5,7 @@ namespace Server.Mobiles
 	{
 
 		[Constructable]
-		public Effusion() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		public Effusion() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.3, 0.4 )
 		{
 			Name = "a shimmering effusion";
 			Body = 261;
@@ -35,10 +35,13 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.FilthyRich, 10 );
+		    AddLoot( LootPack.Champion, 1 );
+			AddLoot( LootPack.FilthyRich, 1 );
 			AddLoot( LootPack.Rich );
 			AddLoot( LootPack.MedScrolls, 2 );
-			AddLoot( LootPack.HighScrolls, 2 );
+			AddLoot( LootPack.HighScrolls, 8 );
+			AddLoot( LootPack.Gems, 8 );
+			AddLoot( LootPack.UniqueItem, 1);
 		}
 
 		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }

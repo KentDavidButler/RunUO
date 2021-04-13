@@ -45,6 +45,7 @@ namespace Server.Misc
 				//new CityInfo( "Jhelom",		"The Mercenary Inn",	1075078, 1374,	3826,	0  ),
 				//new CityInfo( "Skara Brae",	"The Falconer's Inn",	1075079, 618,	2234,	0  ),
 				new CityInfo( "Vesper",		"The Ironwood Inn",	1075080, 2771,	976,	0  )
+				//new CityInfo( "StarRoom",		"A place among the stars",	1075081, 5152,	1773,	1  )
 			};
 
 		/* Old Haven/Magincia Locations

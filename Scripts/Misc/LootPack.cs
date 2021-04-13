@@ -88,7 +88,6 @@ namespace Server
 				new LootPackItem( typeof( BaseInstrument ), 1 )
 			};
 
-
 		public static readonly LootPackItem[] LowScrollItems = new LootPackItem[]
 			{
 				new LootPackItem( typeof( ClumsyScroll ), 1 )
@@ -117,6 +116,33 @@ namespace Server
 				new LootPackItem( typeof( LesserCurePotion ), 1 ),
 				new LootPackItem( typeof( LesserHealPotion ), 1 ),
 				new LootPackItem( typeof( LesserPoisonPotion ), 1 )
+			};
+
+		public static readonly LootPackItem[] GreaterPotionItems = new LootPackItem[]
+			{
+				new LootPackItem( typeof( GreaterAgilityPotion ), 1 ),
+				new LootPackItem( typeof( GreaterStrengthPotion ), 1 ),
+				new LootPackItem( typeof( TotalRefreshPotion ), 1 ),
+				new LootPackItem( typeof( GreaterCurePotion ), 1 ),
+				new LootPackItem( typeof( GreaterHealPotion ), 1 ),
+				new LootPackItem( typeof( GreaterExplosionPotion ), 1 ),
+				new LootPackItem( typeof( LethalPoisonPotion ), 1 )
+			};
+
+		public static readonly LootPackItem[] UniqueItems = new LootPackItem[]
+			{
+				new LootPackItem( typeof( LargeVase ), 1 ),
+				new LootPackItem( typeof( StatueEast ), 1 ),
+				new LootPackItem( typeof( StatueEast2 ), 1 ),
+				new LootPackItem( typeof( StatuePegasus ), 1 ),
+				new LootPackItem( typeof( StatuePegasus2 ), 1 ),
+				new LootPackItem( typeof( StatueSouth ), 1 ),
+				new LootPackItem( typeof( StoneChair ), 1 ),
+				new LootPackItem( typeof( Vase ), 1 ),
+				new LootPackItem( typeof( BustEast ), 1 ),
+				new LootPackItem( typeof( BustSouth ), 1 ),
+				new LootPackItem( typeof( GlassBottle ), 1 ),
+				new LootPackItem( typeof( DisguiseKit ), 1 )
 			};
 
 		#region Old Magic Items
@@ -447,6 +473,24 @@ namespace Server
 				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 60, 100 ),
 				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 60, 100 ),
 				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 70, 100 )
+			} );
+
+		public static readonly LootPack Champion = new LootPack( new LootPackEntry[]
+			{
+				new LootPackEntry(  true, Gold,			100.00, "5d1000+1000" ),
+				new LootPackEntry( false, Instruments,	  2.00, 1 ),
+				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 40, 100 ),
+				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 50, 100 ),
+				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 60, 100 ),
+				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 70, 100 ),
+				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 80, 100 ),
+				new LootPackEntry( false, UniqueItems,	10.00, 1 ),
+				new LootPackEntry( false, GreaterPotionItems,	100.00, 3 )
+			} );
+
+        public static readonly LootPack UniqueItem = new LootPack( new LootPackEntry[]
+			{
+				new LootPackEntry( false, UniqueItems,	100.00, 1 ),
 			} );
 		#endregion
 

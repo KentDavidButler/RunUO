@@ -105,7 +105,7 @@ namespace Server
 				{
 					typeof( AirElemental ),
 					typeof( AncientWyrm ),		typeof( Balron ),			typeof( BladeSpirits ),
-                    typeof( DreadSpider ),      typeof( Efreet ),
+                    typeof( DreadSpider ),      typeof( Efreet ),           typeof( Devourer ),
 					typeof( Lich ),				typeof( Nightmare ),		typeof( OphidianArchmage ),
 					typeof( OphidianMage ),		typeof( OphidianWarrior ),	typeof( OphidianMatriarch ),
 					typeof( OphidianKnight ),	typeof( PoisonElemental ),
