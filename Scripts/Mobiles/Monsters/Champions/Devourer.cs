@@ -6,28 +6,30 @@ namespace Server.Mobiles
 	public class Devourer : BaseCreature
 	{
 		[Constructable]
-		public Devourer () : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		public Devourer () : base( AIType.AI_Melee, FightMode.Closest, 20, 1, 0.2, 0.4 )
 		{
-			Name = "an devourer lord";
+			Name = "a devourer";
 			Body = 256;
 			BaseSoundID = 427;
 
 			SetStr( 1200, 1500 );
-			SetDex( 66, 75 );
-			SetInt( 46, 70 );
+			SetDex( 177, 255 );
+			SetInt( 151, 250 );
 
-			SetHits( 476, 552 );
+			SetHits( 1300, 1500 );
 
-			SetDamage( 20, 25 );
+			SetDamage( 29, 35 );
 
+			SetSkill( SkillName.Anatomy, 100.0, 150.0 );
 			SetSkill( SkillName.MagicResist, 125.1, 140.0 );
-			SetSkill( SkillName.Tactics, 90.1, 100.0 );
-			SetSkill( SkillName.Wrestling, 90.1, 100.0 );
+			SetSkill( SkillName.Tactics, 100.1, 150.0 );
+			SetSkill( SkillName.Wrestling, 100.1, 150.0 );
+			SetSkill( SkillName.Parry, 75.0, 90.0 );
 
 			Fame = 25000;
 			Karma = -25000;
 
-			VirtualArmor = 50;
+			VirtualArmor = 100;
 
 			PackItem( new Club() );
 		}
@@ -39,6 +41,18 @@ namespace Server.Mobiles
 			AddLoot( LootPack.MedScrolls, 4 );
 			AddLoot( LootPack.HighScrolls, 8 );
 			AddLoot( LootPack.Gems, 8 );
+
+			if ( 0.02 > Utility.RandomDouble() )
+			{
+				switch ( Utility.Random( 5 ) )
+				{
+					case 0:	PackItem( new RangerArms() );	break;
+					case 1:	PackItem( new RangerChest() );	break;
+					case 2:	PackItem( new RangerGloves() );	break;
+					case 3:	PackItem( new RangerLegs() );	break;
+					case 4:	PackItem( new RangerGorget() );	break;
+				}
+			}
 		}
 
 		public override bool CanRummageCorpses{ get{ return true; } }

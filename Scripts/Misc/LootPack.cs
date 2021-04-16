@@ -490,7 +490,7 @@ namespace Server
 
         public static readonly LootPack UniqueItem = new LootPack( new LootPackEntry[]
 			{
-				new LootPackEntry( false, UniqueItems,	100.00, 1 ),
+				new LootPackEntry( false, UniqueItems,	20.00, 1 ),
 			} );
 		#endregion
 

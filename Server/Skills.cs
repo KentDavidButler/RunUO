@@ -289,7 +289,31 @@ namespace Server
 					Mobile m = m_Owner.Owner;
 
 					if ( m != null )
+					{
 						m.OnSkillChange( SkillName, (double)oldBase / 10 );
+
+						if ( String.Equals(SkillName.ToString(), "Herding", StringComparison.OrdinalIgnoreCase))
+						{
+						    if ( m.Skills[SkillName.Herding].Value >= 100)
+                            {
+                                m.FollowersMax = 9;
+                            }
+                            else if ( m.Skills[SkillName.Herding].Value >= 90)
+                            {
+                                m.FollowersMax = 8;
+                            }
+                            else if ( m.Skills[SkillName.Herding].Value >= 60)
+                            {
+                                m.FollowersMax = 7;
+                            }
+                            else if ( m.Skills[SkillName.Herding].Value >= 30)
+                            {
+                                m.FollowersMax = 6;
+                            }
+                            else
+                                m.FollowersMax = 5;
+						}
+					}
 				}
 			}
 		}

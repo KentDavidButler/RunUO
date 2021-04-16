@@ -1,3 +1,5 @@
+using Server.Items;
+
 namespace Server.Mobiles
 {
     [CorpseName( "a shiny corpse" )]
@@ -5,7 +7,7 @@ namespace Server.Mobiles
 	{
 
 		[Constructable]
-		public Effusion() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.3, 0.4 )
+		public Effusion() : base( AIType.AI_Mage, FightMode.Closest, 20, 1, 0.3, 0.4 )
 		{
 			Name = "a shimmering effusion";
 			Body = 261;
@@ -14,14 +16,16 @@ namespace Server.Mobiles
 			Hue = Utility.RandomSlimeHue();
 
             SetStr( 767, 945 );
-			SetDex( 66, 75 );
-			SetInt( 46, 70 );
+			SetDex( 255, 310 );
+			SetInt( 450, 650 );
 
-			SetHits( 750, 1000 );
+			SetHits( 900, 1000 );
+
+			SetDamage( 22, 29 );
 
 			SetSkill( SkillName.Anatomy, 25.1, 50.0 );
 			SetSkill( SkillName.EvalInt, 90.1, 100.0 );
-			SetSkill( SkillName.Magery, 95.5, 100.0 );
+			SetSkill( SkillName.Magery, 100.0, 120.0 );
 			SetSkill( SkillName.Meditation, 25.1, 50.0 );
 			SetSkill( SkillName.MagicResist, 100.5, 150.0 );
 			SetSkill( SkillName.Tactics, 90.1, 100.0 );
@@ -30,7 +34,7 @@ namespace Server.Mobiles
 			Fame = 24000;
 			Karma = -24000;
 
-			VirtualArmor = 90;
+			VirtualArmor = 85;
 		}
 
 		public override void GenerateLoot()

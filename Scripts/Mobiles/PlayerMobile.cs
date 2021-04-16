@@ -1264,6 +1264,7 @@ namespace Server.Mobiles
 		{
 			get{ return m_Learning; }
 			set{ m_Learning = value; }
+
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]

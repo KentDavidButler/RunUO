@@ -31,7 +31,7 @@ namespace Server.Mobiles
 			Karma = -3500;
 
 			VirtualArmor = 34;
-			ControlSlots = 2;
+			ControlSlots = 1;
 
 			PackItem( new MandrakeRoot() );
 			
