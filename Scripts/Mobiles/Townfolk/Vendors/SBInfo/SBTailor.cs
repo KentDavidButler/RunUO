@@ -62,6 +62,8 @@ namespace Server.Mobiles
 				Add( new GenericBuyInfo( "Pile of wool", typeof( Wool ), 62, 20, 0xDF8, 0 ) );
 				Add( new GenericBuyInfo( "Flax bundle", typeof( Flax ), 102, 20, 0x1A9C, 0 ) );
 				Add( new GenericBuyInfo( "Spool of thread", typeof( SpoolOfThread ), 18, 20, 0xFA0, 0 ) );
+
+				Add( new GenericBuyInfo( "Taxidermy Tool Kit", typeof( TaxidermyTool ), 250000, 20, 0x1EBA, 0 ) );
 			}
 		}
 
