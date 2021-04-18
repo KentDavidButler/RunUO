@@ -21,6 +21,7 @@ namespace Server.Mobiles
 			{
 				Add( new GenericBuyInfo( "Blank scroll", typeof( BlankScroll ), 5, 20, 0x0E34, 0 ) );
 				Add( new GenericBuyInfo( "Pen and ink", typeof( ScribesPen ), 8,  20, 0xFBF, 0 ) );
+				Add( new GenericBuyInfo( "Interior Decorator", typeof( InteriorDecorator ), 10000,  20, 0xFC1, 0 ) );
 			}
 		}
 
