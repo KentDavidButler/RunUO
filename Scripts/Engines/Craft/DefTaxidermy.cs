@@ -37,7 +37,7 @@ namespace Server.Engines.Craft
 
 		public override double GetChanceAtMin( CraftItem item )
 		{
-			return 0.5; // 50%
+			return 0.1; // 10%
 		}
 
 		private DefTaxidermy() : base( 1, 1, 1.25 )// base( 1, 1, 3.0 )
@@ -82,41 +82,41 @@ namespace Server.Engines.Craft
 			int index = -1;
 			
 			//Start Common Animals
-			index = AddCraft( typeof( TrophyBearHead ), "Trophy", "Bear Head", 99.0, 100.0, typeof( Cotton ), "Bale Of Cotton", 10, "" );
+			index = AddCraft( typeof( TrophyBearHead ), "Trophy", "Bear Head", 99.0, 102.0, typeof( Cotton ), "Bale Of Cotton", 10, "" );
 			AddRes( index, typeof( Hides ), "Leather Hides", 5, "" );
 			AddRes( index, typeof( Bone ), "Bones", 25, "" );
 			AddRes( index, typeof( Board ), "Boards", 5, "" );
 			
-			index = AddCraft( typeof( TrophyDeerHead ), "Trophy", "Dear Head", 99.0, 100.0, typeof( Cotton ), "Bale Of Cotton", 10, "" );
+			index = AddCraft( typeof( TrophyDeerHead ), "Trophy", "Dear Head", 99.0, 102.0, typeof( Cotton ), "Bale Of Cotton", 10, "" );
 			AddRes( index, typeof( Hides ), "Leather Hides", 5, "" );
 			AddRes( index, typeof( Bone ), "Bones", 25, "" );
 			AddRes( index, typeof( Board ), "Boards", 5, "" );
 
-			index = AddCraft( typeof( TrophyPolarBearHead), "Trophy", "Polar Bear Head", 99.0, 100.0, typeof( Cotton ), "Bale Of Cotton", 10, "" );
+			index = AddCraft( typeof( TrophyPolarBearHead), "Trophy", "Polar Bear Head", 99.0, 102.0, typeof( Cotton ), "Bale Of Cotton", 10, "" );
 			AddRes( index, typeof( Hides ), "Leather Hides", 5, "" );
 			AddRes( index, typeof( Bone ), "Bones", 25, "" );
 			AddRes( index, typeof( Board ), "Boards", 5, "" );
 
-			index = AddCraft( typeof( TrophyGorillaHead), "Trophy", "Gorilla Head", 99.0, 100.0, typeof( Cotton ), "Bale Of Cotton", 10, "" );
+			index = AddCraft( typeof( TrophyGorillaHead), "Trophy", "Gorilla Head", 99.0, 102.0, typeof( Cotton ), "Bale Of Cotton", 10, "" );
 			AddRes( index, typeof( Hides ), "Leather Hides", 5, "" );
 			AddRes( index, typeof( Bone ), "Bones", 25, "" );
 			AddRes( index, typeof( Board ), "Boards", 5, "" );
 			
-			index = AddCraft( typeof( TrophyBigFish ), "Trophy", "Mounted Big Fish", 99.0, 100.0, typeof( Cotton ), "Bale Of Cotton", 10, "" );
+			index = AddCraft( typeof( TrophyBigFish ), "Trophy", "Mounted Big Fish", 99.0, 105.0, typeof( Cotton ), "Bale Of Cotton", 10, "" );
 			AddRes( index, typeof( BigFish ), "A Big Fish", 1, "" );
 			AddRes( index, typeof( Board ), "Boards", 15, "" );
 
-			index = AddCraft( typeof( TrophyTrollHead ), "Trophy", "Troll Head", 99.0, 100.0, typeof( Cotton ), "Bale Of Cotton", 15, "" );;
+			index = AddCraft( typeof( TrophyTrollHead ), "Trophy", "Troll Head", 99.0, 110.0, typeof( Cotton ), "Bale Of Cotton", 15, "" );;
 			AddRes( index, typeof( Hides ), "Leather Hides", 10, "" );
 			AddRes( index, typeof( Bone ), "Bones", 25, "" );
 			AddRes( index, typeof( Board ), "Boards", 5, "" );
 			
-			index = AddCraft( typeof( TrophyOrcHead ), "Trophy", "Orc Head", 99.0, 100.0, typeof( Cotton ), "Bale Of Cotton", 10, "" );
+			index = AddCraft( typeof( TrophyOrcHead ), "Trophy", "Orc Head", 99.0, 110.0, typeof( Cotton ), "Bale Of Cotton", 10, "" );
 			AddRes( index, typeof( Hides ), "Leather Hides", 5, "" );
 			AddRes( index, typeof( Bone ), "Bones", 25, "" );
 			AddRes( index, typeof( Board ), "Boards", 5, "" );
 
-			index = AddCraft( typeof( TrophyDragonHead ), "Trophy", "Dragon Head", 99.0, 100.0, typeof( Cotton ), "Bale Of Cotton", 24, "" );
+			index = AddCraft( typeof( TrophyDragonHead ), "Trophy", "Dragon Head", 99.0, 190.0, typeof( Cotton ), "Bale Of Cotton", 24, "" );
 			AddRes( index, typeof( Hides ), "Leather Hides", 45, "" );
 			AddRes( index, typeof( Bone ), "Bones", 75, "" );
 			AddRes( index, typeof( Board ), "Boards", 5, "" );
