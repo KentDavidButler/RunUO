@@ -197,7 +197,7 @@ namespace Server.Items
 	public class TrophyTrollHead : Item
 	{
 		[Constructable]
-		public TrophyTrollHead() : base( 0x1E65 )
+		public TrophyTrollHead() : base( 0x1E66 )
 		{
 			Weight = 20.0;
 		}
