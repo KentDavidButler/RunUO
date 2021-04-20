@@ -657,6 +657,7 @@ namespace Server
 		private Timer m_LogoutTimer;
 		private Timer m_CombatTimer;
 		private Timer m_ManaTimer, m_HitsTimer, m_StamTimer;
+		private long m_NextSkillTimeTick;
 		private DateTime m_NextSkillTime;
 		private DateTime m_NextActionTime;
 		private DateTime m_NextActionMessage;
@@ -1092,6 +1093,18 @@ namespace Server
 			}
 
 			return false;
+		}
+
+		public long NextSkillTimeTick 
+		{ 
+			get 
+			{
+				return m_NextSkillTimeTick;
+			}
+			set
+			{
+				m_NextSkillTimeTick = value; 
+			}
 		}
 
 		public bool CanBeginAction( object toLock )

@@ -81,7 +81,8 @@ namespace Server
 				{
 					typeof( Ratman ),
 					typeof( RatmanArcher ),
-					typeof( RatmanMage )
+					typeof( RatmanMage ),
+					typeof( RatmanThief)
 				}
 			} );
 

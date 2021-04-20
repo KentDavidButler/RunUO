@@ -114,7 +114,7 @@ namespace Server
 				/* Very Fast */
 				new SpeedInfo( 0.175, 0.350, new Type[]
 				{
-					typeof( EnergyVortex ),     typeof( SilverSerpent )
+					typeof( EnergyVortex ),     typeof( SilverSerpent ),    typeof( RatmanThief )
 				} ),
 				/* Medium */
 				new SpeedInfo( 0.25, 0.5, new Type[]

@@ -16,16 +16,15 @@ namespace Server.Mobiles
 				Body = 0x191;
 				AddItem( new Robe( Utility.RandomNeutralHue() ) );
 				AddItem( new Sandals( Utility.RandomNeutralHue() ) );
+				AddItem( new WizardsHat( Utility.RandomNeutralHue() ) );
 			}
 			else
 			{
 				Body = 0x190;
 				AddItem( new Robe( Utility.RandomNeutralHue() ) );
 				AddItem( new Sandals( Utility.RandomNeutralHue() ) );
+				AddItem( new WizardsHat( Utility.RandomNeutralHue() ) );
 			}
-
-			PackItem( new Robe( Utility.RandomMetalHue() ) ); 
-			PackItem( new WizardsHat( Utility.RandomMetalHue() ) ); 
 
 			SetStr( 81, 105 );
 			SetDex( 191, 215 );

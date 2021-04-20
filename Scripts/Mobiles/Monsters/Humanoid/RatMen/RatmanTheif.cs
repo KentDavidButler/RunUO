@@ -1,46 +1,47 @@
 using Server.Misc;
-using Server.Items;
 
 namespace Server.Mobiles
 {
-    [CorpseName( "a ratman archer corpse" )]
-	public class RatmanArcher : BaseCreature
+    [CorpseName( "a ratman's corpse" )]
+	public class RatmanThief : BaseCreature
 	{
 		public override InhumanSpeech SpeechType{ get{ return InhumanSpeech.Ratman; } }
 
 		[Constructable]
-		public RatmanArcher() : base( AIType.AI_Archer, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		public RatmanThief() : base( AIType.AI_Thief, FightMode.Closest, 15, 1, 0.2, 0.4 )
 		{
-			Name = NameList.RandomName( "ratman" );
-			Body = 0x8E;
+			Name = NameList.RandomName( "ratman" ) + " the thief";
+			Body = 42;
 			BaseSoundID = 437;
 
-			SetStr( 146, 180 );
-			SetDex( 101, 130 );
-			SetInt( 116, 140 );
 
-			SetHits( 88, 108 );
+			SetStr( 96, 120 );
+			SetDex( 81, 100 );
+			SetInt( 36, 60 );
 
-			SetDamage( 4, 10 );
+			SetHits( 58, 72 );
+
+			SetDamage( 4, 5 );
 
 			SetSkill( SkillName.Anatomy, 60.2, 100.0 );
-			SetSkill( SkillName.Archery, 80.1, 90.0 );
-			SetSkill( SkillName.MagicResist, 65.1, 90.0 );
+			SetSkill( SkillName.Fencing, 50.1, 75.0 );
+			SetSkill( SkillName.Hiding, 80.1, 100.0 );
+			SetSkill( SkillName.MagicResist, 35.1, 60.0 );
+			SetSkill( SkillName.Stealing, 100.1, 120.0 );
+			SetSkill( SkillName.Stealth, 100.1, 120.0);
 			SetSkill( SkillName.Tactics, 50.1, 75.0 );
 			SetSkill( SkillName.Wrestling, 50.1, 75.0 );
 
-			Fame = 6500;
-			Karma = -6500;
+			Fame = 1500;
+			Karma = -1500;
 
-			VirtualArmor = 56;
-
-			AddItem( new Bow() );
-			PackItem( new Arrow( Utility.RandomMinMax( 50, 70 ) ) );
+			VirtualArmor = 28;
 		}
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.Rich );
+			AddLoot( LootPack.Meager );
+			// TODO: weapon, misc
 		}
 
 		public override bool CanRummageCorpses{ get{ return true; } }
@@ -52,7 +53,7 @@ namespace Server.Mobiles
 			get{ return OppositionGroup.SavagesAndOrcs; }
 		}
 
-		public RatmanArcher( Serial serial ) : base( serial )
+		public RatmanThief( Serial serial ) : base( serial )
 		{
 		}
 
@@ -66,12 +67,6 @@ namespace Server.Mobiles
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
-
-			if ( Body == 42 )
-			{
-				Body = 0x8E;
-				Hue = 0;
-			}
 		}
 	}
 }

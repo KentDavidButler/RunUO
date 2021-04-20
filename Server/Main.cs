@@ -87,6 +87,29 @@ namespace Server
 			}
 		}
 
+		private const double _LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
+
+		public static long TickCount 
+		{
+			get
+            {
+				return (long)Ticks;
+			}
+		}
+
+		public static double Ticks
+		{
+			get
+			{
+				//if (_UseHRT && _HighRes && !Unix)
+				//{
+				//	return Stopwatch.GetTimestamp() * _HighFrequency;
+				//}
+
+				return DateTime.UtcNow.Ticks * _LowFrequency;
+			}
+		}
+
 		public static bool Service { get { return m_Service; } }
 		public static bool Debug { get { return m_Debug; } }
 		internal static bool HaltOnWarning { get { return m_HaltOnWarning; } }

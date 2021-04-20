@@ -1,20 +1,16 @@
 using System;
 using Server.Items;
 
-//
-// This is a first simple AI
-//
-//
-
 namespace Server.Mobiles
 {
     public class ThiefAI : BaseAI
 	{
+	    private int m_StealCounter;
+
 		public ThiefAI(BaseCreature m) : base (m)
 		{
 		}
 
-		private Item m_toDisarm;
 		public override bool DoActionWander()
 		{
 			m_Mobile.DebugSay( "I have no combatant" );
@@ -29,6 +25,7 @@ namespace Server.Mobiles
 			else
 			{
 				base.DoActionWander();
+				m_StealCounter = 0;
 			}
 
 			return true;
@@ -50,74 +47,29 @@ namespace Server.Mobiles
 			if ( WalkMobileRange( combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight ) )
 			{
 				m_Mobile.Direction = m_Mobile.GetDirectionTo( combatant );
-				if ( m_toDisarm == null )
-					m_toDisarm = combatant.FindItemOnLayer( Layer.OneHanded );
 
-				if ( m_toDisarm == null )
-					m_toDisarm = combatant.FindItemOnLayer( Layer.TwoHanded );
-
-				if ( m_toDisarm != null && m_toDisarm.IsChildOf( m_Mobile.Backpack ) )
+				if ( m_Mobile.NextSkillTime < DateTime.Now )
 				{
-					m_toDisarm = combatant.FindItemOnLayer( Layer.OneHanded );
-					if ( m_toDisarm == null )
-						m_toDisarm = combatant.FindItemOnLayer( Layer.TwoHanded );
-				}
-				if (  !m_Mobile.DisarmReady && m_Mobile.Skills[SkillName.Wrestling].Value >= 80.0 && m_Mobile.Skills[SkillName.ArmsLore].Value >= 80.0 && m_toDisarm != null )
-					EventSink.InvokeDisarmRequest( new DisarmRequestEventArgs( m_Mobile ) );
+					Container opponent_pack = combatant.Backpack;
 
-				if ( m_toDisarm != null && m_toDisarm.IsChildOf( combatant.Backpack ) && m_Mobile.NextSkillTime <= DateTime.Now && m_toDisarm.LootType != LootType.Blessed && m_toDisarm.LootType != LootType.Newbied )
-				{
-					m_Mobile.DebugSay( "Trying to steal from combatant." );
-					m_Mobile.UseSkill( SkillName.Stealing );
-					if ( m_Mobile.Target != null )
-						m_Mobile.Target.Invoke( m_Mobile, m_toDisarm );
-				}
-				else if ( m_toDisarm == null && m_Mobile.NextSkillTime <= DateTime.Now )
-				{
-					Container cpack = combatant.Backpack;
+                    if ( opponent_pack != null && opponent_pack.Items.Count > 0 )
+                    {
+                        m_Mobile.DebugSay( "Trying to steal something from combatant." );
+                        int randomIndex = Utility.Random( opponent_pack.Items.Count );
+                        m_Mobile.UseSkill( SkillName.Stealing );
+                        if ( m_Mobile.Target != null )
+                        {
+                            m_StealCounter += 1;
+                            m_Mobile.Target.Invoke( m_Mobile, opponent_pack.Items[randomIndex] );
+                        }
+                    }
 
-					if ( cpack != null )
-					{
-						Item steala = cpack.FindItemByType( typeof ( Bandage ) );
-						if ( steala != null ) 
-						{
-							m_Mobile.DebugSay( "Trying to steal from combatant." );
-							m_Mobile.UseSkill( SkillName.Stealing );
-							if ( m_Mobile.Target != null )
-								m_Mobile.Target.Invoke( m_Mobile, steala );
-						}
-						Item stealb = cpack.FindItemByType( typeof ( Nightshade ) );
-						if ( stealb != null ) 
-						{
-							m_Mobile.DebugSay( "Trying to steal from combatant." );
-							m_Mobile.UseSkill( SkillName.Stealing );
-							if ( m_Mobile.Target != null )
-								m_Mobile.Target.Invoke( m_Mobile, stealb );
-						}
-						Item stealc = cpack.FindItemByType( typeof ( BlackPearl ) );
-						if ( stealc != null ) 
-						{
-							m_Mobile.DebugSay( "Trying to steal from combatant." );
-							m_Mobile.UseSkill( SkillName.Stealing );
-							if ( m_Mobile.Target != null )
-								m_Mobile.Target.Invoke( m_Mobile, stealc );
-						}
+                    m_Mobile.NextSkillTime = DateTime.Now + TimeSpan.FromSeconds( 10 );
+					m_Mobile.NextSkillTimeTick = Core.TickCount + 10000;
+                    m_Mobile.DebugSay( "Setting the delay 15 seconds." );
+                    if ( m_StealCounter >= 3 )
+                        Action = ActionType.Flee;
 
-						Item steald = cpack.FindItemByType( typeof ( MandrakeRoot ) );
-						if ( steald != null ) 
-						{
-							m_Mobile.DebugSay( "Trying to steal from combatant." );
-							m_Mobile.UseSkill( SkillName.Stealing );
-							if ( m_Mobile.Target != null )
-								m_Mobile.Target.Invoke( m_Mobile, steald );
-						}
-						else if ( steala == null && stealb == null && stealc == null && steald == null )
-						{
-							m_Mobile.DebugSay( "I am going to flee from {0}", combatant.Name );
-
-							Action = ActionType.Flee;
-						}
-					}
 				}
 			}
 			else
@@ -137,11 +89,11 @@ namespace Server.Mobiles
 
 					int diff = combatant.Hits - m_Mobile.Hits;
 
-					flee = Utility.Random( 0, 100 ) > 10 + diff; // (10 + diff)% chance to flee
+					flee = Utility.Random( 0, 100 ) > 20 + diff; // (20 + diff)% chance to flee
 				}
 				else
 				{
-					flee = Utility.Random( 0, 100 ) > 10; // 10% chance to flee
+					flee = Utility.Random( 0, 100 ) > 20; // 20% chance to flee
 				}
 
 				if ( flee )
@@ -174,18 +126,51 @@ namespace Server.Mobiles
 
 		public override bool DoActionFlee()
 		{
-			if ( m_Mobile.Hits > m_Mobile.HitsMax/2 )
+			if ( m_Mobile.Hits > m_Mobile.HitsMax/2 && m_Mobile.NextSkillTime <= DateTime.Now )
 			{
 				m_Mobile.DebugSay( "I am stronger now, so I will continue fighting" );
+				m_StealCounter = 0;
 				Action = ActionType.Combat;
 			}
 			else
 			{
+			    m_Mobile.DebugSay( "I am fleeing from opponent" );
 				m_Mobile.FocusMob = m_Mobile.Combatant;
+				if ( (int) m_Mobile.GetDistanceToSqrt( m_Mobile.Combatant ) > 4 )
+				{
+					m_Mobile.DebugSay( "I am Hiding Now!" );
+				    PerformHide();
+				}
 				base.DoActionFlee();
 			}
 
 			return true;
+		}
+
+		private void HideSelf()
+        {
+            if (Core.TickCount >= m_Mobile.NextSkillTimeTick)
+            {
+				m_Mobile.DebugSay( "I'm Hiding you can't see me." );
+                m_Mobile.Hidden = true;
+
+                //m_Mobile.UseSkill(SkillName.Stealth);
+				Action = ActionType.Guard;
+            }
+        }
+
+        private void PerformHide()
+        {
+            if (!m_Mobile.Alive || m_Mobile.Deleted)
+            {
+                return;
+            }
+
+            if (!m_Mobile.Hidden)
+            {
+				m_Mobile.DebugSay( "Perform Hide" );
+                HideSelf();
+            }
 		}
 	}
 }
