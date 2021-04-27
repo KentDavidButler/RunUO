@@ -43,6 +43,25 @@ namespace Server
 			return -1;
 		}
 
+		private static OppositionGroup m_TestGroup = new OppositionGroup( new Type[][]
+			{
+				new Type[]
+				{
+					typeof( Devourer ),
+					typeof( Effusion ),
+
+				},
+				new Type[]
+				{
+					typeof( TestPlayer ),
+				}
+			} );
+
+		public static OppositionGroup TestGroup
+		{
+			get{ return m_TestGroup; }
+		}
+
 		private static OppositionGroup m_TerathansAndOphidians = new OppositionGroup( new Type[][]
 			{
 				new Type[]

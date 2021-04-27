@@ -19,6 +19,7 @@ namespace Server.Mobiles
 		AI_Healer,
 		AI_Vendor,
 		AI_Mage,
+		AI_MageAggresive,
 		AI_Berserk,
 		AI_Predator,
 		AI_Thief

@@ -477,7 +477,7 @@ namespace Server
 
 		public static readonly LootPack Champion = new LootPack( new LootPackEntry[]
 			{
-				new LootPackEntry(  true, Gold,			100.00, "5d1000+1000" ),
+				new LootPackEntry(  true, Gold,			100.00, Utility.Random(4000, 6000)),
 				new LootPackEntry( false, Instruments,	  2.00, 1 ),
 				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 40, 100 ),
 				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 50, 100 ),
@@ -485,6 +485,25 @@ namespace Server
 				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 70, 100 ),
 				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 80, 100 ),
 				new LootPackEntry( false, UniqueItems,	10.00, 1 ),
+				new LootPackEntry( false, GreaterPotionItems,	100.00, 3 )
+			} );
+
+		public static readonly LootPack MagicItemsRich = new LootPack( new LootPackEntry[]
+			{
+				new LootPackEntry( false, OldMagicItems,	70.00, 1, 1, 40, 100 ),
+				new LootPackEntry( false, OldMagicItems,	70.00, 1, 1, 50, 100 ),
+				new LootPackEntry( false, OldMagicItems,	70.00, 1, 1, 60, 100 ),
+				new LootPackEntry( false, OldMagicItems,	70.00, 1, 1, 70, 100 ),
+				new LootPackEntry( false, OldMagicItems,	70.00, 1, 1, 80, 100 )
+			} );
+
+		public static readonly LootPack MagicItemsChampion = new LootPack( new LootPackEntry[]
+			{
+				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 40, 100 ),
+				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 50, 100 ),
+				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 60, 100 ),
+				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 70, 100 ),
+				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 80, 100 ),
 				new LootPackEntry( false, GreaterPotionItems,	100.00, 3 )
 			} );
 

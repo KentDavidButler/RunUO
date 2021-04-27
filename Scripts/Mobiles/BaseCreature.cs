@@ -1597,6 +1597,9 @@ namespace Server.Mobiles
 				case AIType.AI_Mage:
 					m_AI = new MageAI(this);
 					break;
+				case AIType.AI_MageAggresive:
+					m_AI = new MageAI(this);
+					break;
 				case AIType.AI_Predator:
 					//m_AI = new PredatorAI(this);
 					m_AI = new MeleeAI(this);

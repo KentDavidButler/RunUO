@@ -18,7 +18,7 @@ namespace Server.Mobiles
 
 			SetHits( 1300, 1500 );
 
-			SetDamage( 29, 35 );
+			SetDamage( 10, 15 );
 
 			SetSkill( SkillName.Anatomy, 100.0, 150.0 );
 			SetSkill( SkillName.MagicResist, 125.1, 140.0 );
@@ -74,6 +74,11 @@ namespace Server.Mobiles
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
+		}
+
+		public override OppositionGroup OppositionGroup
+		{
+			get { return OppositionGroup.TestGroup; }
 		}
 	}
 }

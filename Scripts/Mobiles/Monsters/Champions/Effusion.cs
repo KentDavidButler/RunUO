@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	{
 
 		[Constructable]
-		public Effusion() : base( AIType.AI_Mage, FightMode.Closest, 20, 1, 0.3, 0.4 )
+		public Effusion() : base( AIType.AI_MageAggresive, FightMode.Closest, 20, 1, 0.3, 0.4 )
 		{
 			Name = "a shimmering effusion";
 			Body = 261;
@@ -20,14 +20,16 @@ namespace Server.Mobiles
 			SetInt( 450, 650 );
 
 			SetHits( 900, 1000 );
+			SetMana( 1200, 1500 );
 
-			SetDamage( 22, 29 );
+
+			SetDamage( 1, 5 );
 
 			SetSkill( SkillName.Anatomy, 25.1, 50.0 );
-			SetSkill( SkillName.EvalInt, 90.1, 100.0 );
-			SetSkill( SkillName.Magery, 100.0, 120.0 );
-			SetSkill( SkillName.Meditation, 25.1, 50.0 );
-			SetSkill( SkillName.MagicResist, 100.5, 150.0 );
+			SetSkill( SkillName.EvalInt, 150.1, 160.0 );
+			SetSkill( SkillName.Magery, 150.0, 180.0 );
+			SetSkill( SkillName.Meditation, 150.1, 200.0 );
+			SetSkill( SkillName.MagicResist, 130.5, 150.0 );
 			SetSkill( SkillName.Tactics, 90.1, 100.0 );
 			SetSkill( SkillName.Wrestling, 90.1, 100.0 );
 
@@ -39,13 +41,15 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-		    AddLoot( LootPack.Champion, 1 );
+			AddLoot( LootPack.Champion, 1 );
+			AddLoot(LootPack.MagicItemsChampion, 1);
 			AddLoot( LootPack.FilthyRich, 1 );
 			AddLoot( LootPack.Rich );
 			AddLoot( LootPack.MedScrolls, 2 );
 			AddLoot( LootPack.HighScrolls, 8 );
 			AddLoot( LootPack.Gems, 8 );
 			AddLoot( LootPack.UniqueItem, 1);
+			AddLoot(LootPack.UniqueItem, 1);
 		}
 
 		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
@@ -66,6 +70,11 @@ namespace Server.Mobiles
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
+		}
+
+		public override OppositionGroup OppositionGroup
+		{
+			get { return OppositionGroup.TestGroup; }
 		}
 	}
 }
