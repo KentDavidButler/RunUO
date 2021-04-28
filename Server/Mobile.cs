@@ -2916,6 +2916,10 @@ namespace Server
 			return true;
 		}
 
+		public virtual bool IsDeadBondedPet(){
+			return false;
+			}
+
 		/// <summary>
 		/// Overridable. Event invoked when a Mobile <paramref name="m" /> moves over this Mobile.
 		/// </summary>
@@ -2932,7 +2936,7 @@ namespace Server
 		{
 			if( (m_Map.Rules & MapRules.FreeMovement) == 0 )
 			{
-				if( !shoved.Alive || !Alive )
+				if( !shoved.Alive || !Alive || shoved.IsDeadBondedPet() || IsDeadBondedPet())
 					return true;
 				else if( shoved.m_Hidden && shoved.m_AccessLevel > AccessLevel.Player )
 					return true;
@@ -3373,6 +3377,11 @@ namespace Server
 				return;
 			else if( !OnBeforeDeath() )
 				return;
+
+			if (!Alive || IsDeadBondedPet())
+			{
+				return;
+			}
 
 			BankBox box = FindBankNoCreate();
 
@@ -4746,8 +4755,11 @@ namespace Server
 
 		public void Heal( int amount, Mobile from, bool message )
 		{
-			if( !Alive )
+			//Hey Kent! Not sure if this is doing what I think this is doing
+			if (!Alive || IsDeadBondedPet())
+			{
 				return;
+			}
 
 			if( !Region.OnHeal( this, ref amount ) )
 				return;
@@ -6094,9 +6106,16 @@ namespace Server
 
 								if ( m.Blessed || m.YellowHealthbar )
 									ns.Send( new HealthbarYellow( m ) );
+
+								if ( m.IsDeadBondedPet() )
+								{
+									ns.Send( new BondedStatus( 0, m.m_Serial, 1));
+								}
+
 							} else {
 								ns.Send( new MobileIncomingOld( this, m ) );
 							}
+
 						}
 					}
 				}
@@ -6246,7 +6265,9 @@ namespace Server
 			if( target == null )
 				return false;
 
-			if( m_Deleted || target.m_Deleted || !Alive || !allowDead && !target.Alive )
+			if( m_Deleted || target.m_Deleted || !Alive || 
+				IsDeadBondedPet() || !allowDead && !target.Alive ||
+				(!allowDead && (!target.Alive || target.IsDeadBondedPet())))
 			{
 				if( message )
 					SendLocalizedMessage( 1001017 ); // You can not perform beneficial acts on your target.
@@ -6320,12 +6341,34 @@ namespace Server
 			if( target == null )
 				return false;
 
-			if( m_Deleted || !ignoreOurBlessedness && m_Blessed || target.m_Deleted || target.m_Blessed || !Alive || !target.Alive )
+			if( m_Deleted || !ignoreOurBlessedness && m_Blessed || target.m_Deleted ||
+				target.m_Blessed || !Alive || IsDeadBondedPet() || !target.Alive )
 			{
 				if( message )
 					SendLocalizedMessage( 1001018 ); // You can not perform negative acts on your target.
 
 				return false;
+			}
+
+			//hey Kent Check here
+			//original line is (target is Mobile mobile)
+			//all of the targets inside of the if statment use to be mobile
+			if (target is Mobile)
+			{
+				if (target.m_Blessed || !target.Alive || target.IsDeadBondedPet())
+				{
+					if (message)
+					{
+						SendLocalizedMessage(1001018); // You can not perform negative acts on your target.
+					}
+
+					return false;
+				}
+
+				if (!target.CanBeHarmedBy(this, message))
+				{
+					return false;
+				}
 			}
 
 			if( target == this )
@@ -6342,6 +6385,12 @@ namespace Server
 
 			return true;
 		}
+
+		public virtual bool CanBeHarmedBy(Mobile from, bool message)
+		{
+			return true;
+		}
+
 
 		public virtual bool IsHarmfulCriminal( Mobile target )
 		{
@@ -8311,6 +8360,11 @@ namespace Server
 
 										if ( m_Blessed || m_YellowHealthbar )
 											m.m_NetState.Send( new HealthbarYellow( this ) );
+										if (IsDeadBondedPet())
+										{
+											m.m_NetState.Send(new BondedStatus(0, m_Serial, 1));
+										}
+
 									} else {
 										m.m_NetState.Send( new MobileIncomingOld( m, this ) );
 									}
@@ -8326,6 +8380,10 @@ namespace Server
 
 										if ( m.Blessed || m.YellowHealthbar )
 											ourState.Send( new HealthbarYellow( m ) );
+										if (m.IsDeadBondedPet())
+										{
+											ourState.Send(new BondedStatus(0, m.m_Serial, 1));
+										}
 									} else {
 										ourState.Send( new MobileIncomingOld( this, m ) );
 									}
@@ -8352,6 +8410,10 @@ namespace Server
 
 									if ( m_Blessed || m_YellowHealthbar )
 										ns.Send( new HealthbarYellow( this ) );
+									if (IsDeadBondedPet())
+									{
+										ns.Send(new BondedStatus(0, m_Serial, 1));
+									}
 								} else {
 									ns.Send( new MobileIncomingOld( ns.Mobile, this ) );
 								}
@@ -9287,8 +9349,26 @@ namespace Server
 						{
 							if ( state.StygianAbyss ) {
 								state.Send( new MobileIncoming( beholder, m ) );
+								if (m.IsDeadBondedPet())
+								{
+									if (deadPacket == null)
+									{
+										deadPacket = Packet.Acquire(new BondedStatus(0, m.m_Serial, 1));
+									}
+
+									state.Send(deadPacket);
+								}
 							} else {
 								state.Send( new MobileIncomingOld( beholder, m ) );
+								if (m.IsDeadBondedPet())
+								{
+									if (deadPacket == null)
+									{
+										deadPacket = Packet.Acquire(new BondedStatus(0, m.m_Serial, 1));
+									}
+
+									state.Send(deadPacket);
+								}
 							}
 						}
 
