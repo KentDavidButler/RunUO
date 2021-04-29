@@ -228,6 +228,41 @@ namespace Server.Mobiles
 			set { m_SummonEnd = value; }
 		}
 
+#region Bonding
+		public const bool BondingEnabled = true;
+
+		public virtual bool IsBondable{ get{ return ( BondingEnabled && !Summoned ); } }
+		public virtual TimeSpan BondingDelay{ get{ return TimeSpan.FromDays( 7.0 ); } }
+		public virtual TimeSpan BondingAbandonDelay{ get{ return TimeSpan.FromDays( 1.0 ); } }
+
+		public override bool CanRegenHits{ get{ return !m_IsDeadPet && base.CanRegenHits; } }
+		public override bool CanRegenStam{ get{ return !m_IsDeadPet && base.CanRegenStam; } }
+		public override bool CanRegenMana{ get{ return !m_IsDeadPet && base.CanRegenMana; } }
+
+		public override bool IsDeadBondedPet{ get{ return m_IsDeadPet; } }
+
+		private bool m_IsBonded;
+		private bool m_IsDeadPet;
+		private DateTime m_BondingBegin;
+		private DateTime m_OwnerAbandonTime;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Spawner MySpawner
+		{
+			get
+			{
+				if( Spawner is Spawner )
+				{
+					return ( Spawner as Spawner );
+				}
+
+				return null;
+			}
+			set
+			{
+			}
+		}
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile LastOwner
 		{
@@ -239,6 +274,34 @@ namespace Server.Mobiles
 				return m_Owners[m_Owners.Count - 1];
 			}
 		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool IsBonded
+		{
+			get{ return m_IsBonded; }
+			set{ m_IsBonded = value; }
+		}
+
+		public bool IsDeadPet
+		{
+			get{ return m_IsDeadPet; }
+			set{ m_IsDeadPet = value; }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public DateTime BondingBegin
+		{
+			get{ return m_BondingBegin; }
+			set{ m_BondingBegin = value; }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public DateTime OwnerAbandonTime
+		{
+			get{ return m_OwnerAbandonTime; }
+			set{ m_OwnerAbandonTime = value; }
+		}
+		#endregion
 
 		#region Delete Previously Tamed Timer
 		private DeleteTimer		m_DeleteTimer;
@@ -917,7 +980,7 @@ namespace Server.Mobiles
 			int meat = Meat;
 			int hides = Hides;
 
-			if ( feathers == 0 && wool == 0 && meat == 0 && hides == 0 || Summoned || corpse.Animated )
+			if ( ( feathers == 0 && wool == 0 && meat == 0 && hides == 0 ) || Summoned || IsBonded || corpse.Animated )
 			{
 				if ( corpse.Animated )
 					corpse.SendLocalizedMessageTo( from, 500464 ); // Use this on corpses to carve away meat and hide
@@ -1109,6 +1172,12 @@ namespace Server.Mobiles
 			// Version 8
 			writer.Write( m_Owners, true );
 
+			// Version 10
+			writer.Write( (bool) m_IsDeadPet );
+			writer.Write( (bool) m_IsBonded );
+			writer.Write( (DateTime) m_BondingBegin );
+			writer.Write( (DateTime) m_OwnerAbandonTime );
+
 			// Version 11
 			writer.Write( (bool) m_HasGeneratedLoot );
 
@@ -1262,6 +1331,14 @@ namespace Server.Mobiles
 				m_Owners = reader.ReadStrongMobileList();
 			else
 				m_Owners = new List<Mobile>();
+
+			if ( version >= 10 )
+			{
+				m_IsDeadPet = reader.ReadBool();
+				m_IsBonded = reader.ReadBool();
+				m_BondingBegin = reader.ReadDateTime();
+				m_OwnerAbandonTime = reader.ReadDateTime();
+			}
 
 			if ( version >= 11 )
 				m_HasGeneratedLoot = reader.ReadBool();
@@ -1502,6 +1579,29 @@ namespace Server.Mobiles
 							Animate( 3, 5, 1, true, false, 0 );
 						else if ( Body.IsMonster )
 							Animate( 17, 5, 1, true, false, 0 );
+
+						if ( IsBondable && !IsBonded )
+						{
+							Mobile master = m_ControlMaster;
+
+							if ( master != null && master == from )	//So friends can't start the bonding process
+							{
+								if ( m_dMinTameSkill <= 29.1 || master.Skills[SkillName.AnimalTaming].Base >= m_dMinTameSkill || OverrideBondingReqs() || ( master.Skills[SkillName.AnimalTaming].Value >= m_dMinTameSkill) )
+								{
+									if ( BondingBegin == DateTime.MinValue )
+									{
+										BondingBegin = DateTime.UtcNow;
+									}
+									else if ( (BondingBegin + BondingDelay) <= DateTime.UtcNow )
+									{
+										IsBonded = true;
+										BondingBegin = DateTime.MinValue;
+										from.SendLocalizedMessage( 1049666 ); // Your pet has bonded with you!
+									}
+								}
+								
+							}
+						}
 
 						dropped.Delete();
 						return true;
@@ -2469,12 +2569,12 @@ namespace Server.Mobiles
 		public override bool OnMoveOver( Mobile m )
 		{
 			if ( m is BaseCreature && !((BaseCreature)m).Controlled )
-				return !Alive || !m.Alive || Hidden && AccessLevel > AccessLevel.Player;
+				return ( !Alive || !m.Alive || IsDeadBondedPet || m.IsDeadBondedPet ) || ( Hidden && AccessLevel > AccessLevel.Player );
 
 			return base.OnMoveOver( m );
 		}
 
-    	public virtual bool CanDrop { get { return false; } }
+		public virtual bool CanDrop { get { return IsBonded; } }
 
 		public override bool HandlesOnSpeech( Mobile from )
 		{
@@ -3356,13 +3456,19 @@ namespace Server.Mobiles
             else
                 val = name;
 
-            if (Controlled && Commandable)
-            {
-                if (Summoned)
-                    val += " [summoned]"; // (summoned)
-                else
-                    val += " [tame]"; // (tame)
-            }
+            if ( Controlled && Commandable )
+			{
+				int number;
+
+				if ( Summoned )
+					number = 1049646; // (summoned)
+				else if ( IsBonded )
+					number = 1049608; // (bonded)
+				else
+					number = 502006; // (tame)
+
+				PrivateOverheadMessage( MessageType.Regular, 0x3B2, number, from.NetState );
+			}
 
             if (IsInvulnerable)
                 val += " [invulnerable]";
@@ -3379,7 +3485,7 @@ namespace Server.Mobiles
 		{
 			int treasureLevel = TreasureMapLevel;
 
-			if ( !Summoned && !NoKillAwards )
+			if ( !Summoned && !NoKillAwards && !IsBonded )
 			{
 				if ( treasureLevel >= 0 )
 				{
@@ -3555,72 +3661,133 @@ namespace Server.Mobiles
 
 		public override void OnDeath( Container c )
 		{
-			if ( !Summoned && !m_NoKillAwards )
+			if ( IsBonded )
 			{
-				int totalFame = Fame / 100;
-				int totalKarma = -Karma / 100;
+				int sound = this.GetDeathSound();
 
-				if (Map == Map.Felucca)
+				if ( sound >= 0 )
+					Effects.PlaySound( this, this.Map, sound );
+
+				Warmode = false;
+
+				Poison = null;
+				Combatant = null;
+
+				Hits = 0;
+				Stam = 0;
+				Mana = 0;
+
+				IsDeadPet = true;
+				ControlTarget = ControlMaster;
+				ControlOrder = OrderType.Follow;
+
+				ProcessDeltaQueue();
+				SendIncomingPacket();
+				SendIncomingPacket();
+
+				List<AggressorInfo> aggressors = this.Aggressors;
+
+				for ( int i = 0; i < aggressors.Count; ++i )
 				{
-					totalFame += totalFame/10*3;
-					totalKarma += totalKarma/10*3;
+					AggressorInfo info = aggressors[i];
+
+					if ( info.Attacker.Combatant == this )
+						info.Attacker.Combatant = null;
 				}
 
-				List<DamageStore> list = GetLootingRights( this.DamageEntries, this.HitsMax );
-				List<Mobile> titles = new List<Mobile>();
-				List<int> fame = new List<int>();
-				List<int> karma = new List<int>();
+				List<AggressorInfo> aggressed = this.Aggressed;
 
-                   for ( int i = 0; i < list.Count; ++i )
+				for ( int i = 0; i < aggressed.Count; ++i )
 				{
-					DamageStore ds = list[i];
+					AggressorInfo info = aggressed[i];
 
-					if ( !ds.m_HasRight )
-						continue;
+					if ( info.Defender.Combatant == this )
+						info.Defender.Combatant = null;
+				}
 
-					Party party = Engines.PartySystem.Party.Get( ds.m_Mobile );
+				Mobile owner = this.ControlMaster;
 
-					if ( party != null )
+				if ( owner == null || owner.Deleted || owner.Map != this.Map || !owner.InRange( this, 12 ) || !this.CanSee( owner ) || !this.InLOS( owner ) )
+				{
+					if ( this.OwnerAbandonTime == DateTime.MinValue )
+						this.OwnerAbandonTime = DateTime.UtcNow;
+				}
+				else
+				{
+					this.OwnerAbandonTime = DateTime.MinValue;
+				}
+
+				CheckStatTimers();
+			}
+			else
+            { 
+				if ( !Summoned && !m_NoKillAwards )
+				{
+					int totalFame = Fame / 100;
+					int totalKarma = -Karma / 100;
+
+					if (Map == Map.Felucca)
 					{
-						int divedFame = totalFame / party.Members.Count;
-						int divedKarma = totalKarma / party.Members.Count;
+						totalFame += totalFame/10*3;
+						totalKarma += totalKarma/10*3;
+					}
 
-						for ( int j = 0; j < party.Members.Count; ++j )
+					List<DamageStore> list = GetLootingRights( this.DamageEntries, this.HitsMax );
+					List<Mobile> titles = new List<Mobile>();
+					List<int> fame = new List<int>();
+					List<int> karma = new List<int>();
+
+					   for ( int i = 0; i < list.Count; ++i )
+					{
+						DamageStore ds = list[i];
+
+						if ( !ds.m_HasRight )
+							continue;
+
+						Party party = Engines.PartySystem.Party.Get( ds.m_Mobile );
+
+						if ( party != null )
 						{
-							PartyMemberInfo info = party.Members[ j ] as PartyMemberInfo;
+							int divedFame = totalFame / party.Members.Count;
+							int divedKarma = totalKarma / party.Members.Count;
 
-							if ( info != null && info.Mobile != null )
+							for ( int j = 0; j < party.Members.Count; ++j )
 							{
-								int index = titles.IndexOf( info.Mobile );
+								PartyMemberInfo info = party.Members[ j ] as PartyMemberInfo;
 
-								if ( index == -1 )
+								if ( info != null && info.Mobile != null )
 								{
-									titles.Add( info.Mobile );
-									fame.Add( divedFame );
-									karma.Add( divedKarma );
-								}
-								else
-								{
-									fame[ index ] += divedFame;
-									karma[ index ] += divedKarma;
+									int index = titles.IndexOf( info.Mobile );
+
+									if ( index == -1 )
+									{
+										titles.Add( info.Mobile );
+										fame.Add( divedFame );
+										karma.Add( divedKarma );
+									}
+									else
+									{
+										fame[ index ] += divedFame;
+										karma[ index ] += divedKarma;
+									}
 								}
 							}
 						}
+						else
+						{
+							titles.Add( ds.m_Mobile );
+							fame.Add( totalFame );
+							karma.Add( totalKarma );
+						}
+
+						OnKilledBy( ds.m_Mobile );
 					}
-					else
+
+					for ( int i = 0; i < titles.Count; ++i )
 					{
-						titles.Add( ds.m_Mobile );
-						fame.Add( totalFame );
-						karma.Add( totalKarma );
+						Titles.AwardFame( titles[ i ], fame[ i ], true );
+						Titles.AwardKarma( titles[ i ], karma[ i ], true );
 					}
-
-					OnKilledBy( ds.m_Mobile );
-				}
-
-				for ( int i = 0; i < titles.Count; ++i )
-				{
-					Titles.AwardFame( titles[ i ], fame[ i ], true );
-					Titles.AwardKarma( titles[ i ], karma[ i ], true );
 				}
 			}
 
@@ -4228,7 +4395,7 @@ namespace Server.Mobiles
 
 					if ( pet.Controlled && pet.ControlMaster == master )
 					{
-						if ( !onlyBonded )
+						if ( !onlyBonded || pet.IsBonded )
 						{
 							if ( pet.ControlOrder == OrderType.Guard || pet.ControlOrder == OrderType.Follow || pet.ControlOrder == OrderType.Come )
 								move.Add( pet );
@@ -4239,6 +4406,47 @@ namespace Server.Mobiles
 
 			foreach ( Mobile m in move )
 				m.MoveToWorld( loc, map );
+		}
+
+		public virtual void ResurrectPet()
+		{
+			if ( !IsDeadPet )
+				return;
+
+			OnBeforeResurrect();
+
+			Poison = null;
+
+			Warmode = false;
+
+			Hits = 10;
+			Stam = StamMax;
+			Mana = 0;
+
+			ProcessDeltaQueue();
+
+			IsDeadPet = false;
+
+			Effects.SendPacket( Location, Map, new BondedStatus( 0, this.Serial, 0 ) );
+
+			this.SendIncomingPacket();
+			this.SendIncomingPacket();
+
+			OnAfterResurrect();
+
+			Mobile owner = this.ControlMaster;
+
+			if ( owner == null || owner.Deleted || owner.Map != this.Map || !owner.InRange( this, 12 ) || !this.CanSee( owner ) || !this.InLOS( owner ) )
+			{
+				if ( this.OwnerAbandonTime == DateTime.MinValue )
+					this.OwnerAbandonTime = DateTime.UtcNow;
+			}
+			else
+			{
+				this.OwnerAbandonTime = DateTime.MinValue;
+			}
+
+			CheckStatTimers();
 		}
 
 		public override bool CanBeDamaged()
@@ -4370,34 +4578,62 @@ namespace Server.Mobiles
 
 			foreach ( Mobile m in World.Mobiles.Values )
 			{
+				if ( m is BaseMount && ((BaseMount)m).Rider != null )
+				{
+					((BaseCreature)m).OwnerAbandonTime = DateTime.MinValue;
+					return;
+				}
+
 				if ( m is BaseCreature )
 				{
 					BaseCreature c = (BaseCreature)m;
 
-					if ( c.Controlled && c.Commandable )
+					if ( c.IsDeadPet )
 					{
+						Mobile owner = c.ControlMaster;
+
+						if ( !c.IsStabled && ( owner == null || owner.Deleted || owner.Map != c.Map || !owner.InRange( c, 12 ) || !c.CanSee( owner ) || !c.InLOS( owner ) ) )
+						{
+							if ( c.OwnerAbandonTime == DateTime.MinValue ) {
+								c.OwnerAbandonTime = DateTime.UtcNow;
+							} else if ( (c.OwnerAbandonTime + c.BondingAbandonDelay) <= DateTime.UtcNow ) {
+								lock (toRemove)
+									toRemove.Add(c);
+							}
+						}
+						else
+						{
+							c.OwnerAbandonTime = DateTime.MinValue;
+						}
+					}
+					else if ( c.Controlled && c.Commandable )
+					{
+						c.OwnerAbandonTime = DateTime.MinValue;
+
 						if ( c.Map != Map.Internal )
 						{
-							c.Loyalty -= BaseCreature.MaxLoyalty / 10;
+							c.Loyalty -= (BaseCreature.MaxLoyalty / 10);
 
-							if( c.Loyalty < BaseCreature.MaxLoyalty / 10 )
+							if( c.Loyalty < (BaseCreature.MaxLoyalty / 10) )
 							{
 								c.Say( 1043270, c.Name ); // * ~1_NAME~ looks around desperately *
 								c.PlaySound( c.GetIdleSound() );
 							}
 
 							if ( c.Loyalty <= 0 )
-								toRelease.Add( c );
+								lock (toRelease)
+									toRelease.Add( c );
 						}
 					}
 
 					// added lines to check if a wild creature in a house region has to be removed or not
-					if ( !c.Controlled && !c.IsStabled && ( c.Region.IsPartOf( typeof( HouseRegion ) ) && c.CanBeDamaged() || c.RemoveIfUntamed && c.Spawner == null ) )
+					if ( !c.Controlled && !c.IsStabled && ( ( c.Region.IsPartOf( typeof( HouseRegion ) ) && c.CanBeDamaged() ) || ( c.RemoveIfUntamed && c.Spawner == null ) ) )
 					{
 						c.RemoveStep++;
 
 						if ( c.RemoveStep >= 20 )
-							toRemove.Add( c );
+							lock (toRemove)
+								toRemove.Add( c );
 					}
 					else
 					{
@@ -4410,6 +4646,9 @@ namespace Server.Mobiles
 			{
 				c.Say( 1043255, c.Name ); // ~1_NAME~ appears to have decided that is better off without a master!
 				c.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully Happy
+				c.IsBonded = false;
+				c.BondingBegin = DateTime.MinValue;
+				c.OwnerAbandonTime = DateTime.MinValue;
 				c.ControlTarget = null;
 				//c.ControlOrder = OrderType.Release;
 				c.AIObject.DoOrderRelease(); // this will prevent no release of creatures left alone with AI disabled (and consequent bug of Followers)
@@ -4423,4 +4662,5 @@ namespace Server.Mobiles
 			}
 		}
 	}
+	
 }
