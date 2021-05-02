@@ -463,7 +463,7 @@ namespace Server.Mobiles
 									if (!isOwner)
 										break;
 
-									if (!m_Mobile.Summoned && WasNamed(speech) && m_Mobile.CheckControlChance(e.Mobile))
+									if (!m_Mobile.IsDeadPet && !m_Mobile.Summoned && WasNamed(speech) && m_Mobile.CheckControlChance(e.Mobile))
 									{
 										m_Mobile.ControlTarget = null;
 										m_Mobile.ControlOrder = OrderType.Drop;
@@ -500,7 +500,7 @@ namespace Server.Mobiles
 									if (!isOwner)
 										break;
 
-									if (WasNamed(speech) && m_Mobile.CheckControlChance(e.Mobile))
+									if (!m_Mobile.IsDeadPet && WasNamed(speech) && m_Mobile.CheckControlChance(e.Mobile))
 									{
 										m_Mobile.ControlTarget = null;
 										m_Mobile.ControlOrder = OrderType.Guard;
@@ -514,7 +514,7 @@ namespace Server.Mobiles
 									if (!isOwner)
 										break;
 
-									if (WasNamed(speech) && m_Mobile.CheckControlChance(e.Mobile))
+									if (!m_Mobile.IsDeadPet && WasNamed(speech) && m_Mobile.CheckControlChance(e.Mobile))
 										BeginPickTarget(e.Mobile, OrderType.Attack);
 
 									return;
@@ -577,7 +577,7 @@ namespace Server.Mobiles
 									if (!isOwner)
 										break;
 
-									if (WasNamed(speech) && m_Mobile.CheckControlChance(e.Mobile))
+									if (!m_Mobile.IsDeadPet && WasNamed(speech) && m_Mobile.CheckControlChance(e.Mobile))
 									{
 										if (m_Mobile.Summoned)
 											e.Mobile.SendLocalizedMessage(1005487); // You cannot transfer ownership of a summoned creature.
@@ -749,7 +749,7 @@ namespace Server.Mobiles
 					WalkRandomInHome(2, 2, 1);
 			}
 
-			if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive)
+			if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive && !m_Mobile.Combatant.IsDeadBondedPet)
 			{
 				m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
 			}
@@ -761,7 +761,7 @@ namespace Server.Mobiles
 		{
 			Mobile c = m_Mobile.Combatant;
 
-			if (c == null || c.Deleted || c.Map != m_Mobile.Map || !c.Alive)
+			if (c == null || c.Deleted || c.Map != m_Mobile.Map || !c.Alive || c.IsDeadBondedPet)
 				Action = ActionType.Wander;
 			else
 				m_Mobile.Direction = m_Mobile.GetDirectionTo(c);
@@ -986,7 +986,7 @@ namespace Server.Mobiles
 
 			WalkRandomInHome(3, 2, 1);
 
-			if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive)
+			if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive && !m_Mobile.Combatant.IsDeadBondedPet)
 			{
 				m_Mobile.Warmode = true;
 				m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
@@ -1020,7 +1020,7 @@ namespace Server.Mobiles
 
 					if (WalkMobileRange(m_Mobile.ControlMaster, 1, bRun, 0, 1))
 					{
-						if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive)
+						if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive && !m_Mobile.Combatant.IsDeadBondedPet)
 						{
 							m_Mobile.Warmode = true;
 							m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
@@ -1038,7 +1038,7 @@ namespace Server.Mobiles
 
 		public virtual bool DoOrderDrop()
 		{
-			if (!m_Mobile.CanDrop)
+			if (m_Mobile.IsDeadPet || !m_Mobile.CanDrop)
 				return true;
 
 			m_Mobile.DebugSay("I drop my stuff for my master");
@@ -1094,7 +1094,7 @@ namespace Server.Mobiles
 				{
 					m_Mobile.DebugSay("I have lost the one to follow. I stay here");
 
-					if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive)
+					if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive && !m_Mobile.Combatant.IsDeadBondedPet)
 					{
 						m_Mobile.Warmode = true;
 						m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
@@ -1113,7 +1113,7 @@ namespace Server.Mobiles
 
 					if (WalkMobileRange(m_Mobile.ControlTarget, 1, bRun, 0, 1))
 					{
-						if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive)
+						if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive && !m_Mobile.Combatant.IsDeadBondedPet)
 						{
 							m_Mobile.Warmode = true;
 							m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
@@ -1240,6 +1240,9 @@ namespace Server.Mobiles
 
 		public virtual bool DoOrderGuard()
 		{
+			if (m_Mobile.IsDeadPet)
+				return true;
+
 			Mobile controlMaster = m_Mobile.ControlMaster;
 
 			if (controlMaster == null || controlMaster.Deleted)
@@ -1267,7 +1270,7 @@ namespace Server.Mobiles
 					m_Mobile.DebugSay("Crap, my master has been attacked! I will attack one of those bastards!");
 			}
 
-			if (combatant != null && combatant != m_Mobile && combatant != m_Mobile.ControlMaster && !combatant.Deleted && combatant.Alive && m_Mobile.CanSee(combatant) && m_Mobile.CanBeHarmful(combatant, false) && combatant.Map == m_Mobile.Map)
+			if (combatant != null && combatant != m_Mobile && combatant != m_Mobile.ControlMaster && !combatant.Deleted && combatant.Alive && !combatant.IsDeadBondedPet  && m_Mobile.CanSee(combatant) && m_Mobile.CanBeHarmful(combatant, false) && combatant.Map == m_Mobile.Map)
 			{
 				m_Mobile.DebugSay("Guarding from target...");
 
@@ -1295,7 +1298,10 @@ namespace Server.Mobiles
 
 		public virtual bool DoOrderAttack()
 		{
-			if (m_Mobile.ControlTarget == null || m_Mobile.ControlTarget.Deleted || m_Mobile.ControlTarget.Map != m_Mobile.Map || !m_Mobile.ControlTarget.Alive)
+			if (m_Mobile.IsDeadPet)
+				return true;
+
+			if (m_Mobile.ControlTarget == null || m_Mobile.ControlTarget.Deleted || m_Mobile.ControlTarget.Map != m_Mobile.Map || !m_Mobile.ControlTarget.Alive || m_Mobile.ControlTarget.IsDeadBondedPet)
 			{
 				m_Mobile.DebugSay("I think he might be dead. He's not anywhere around here at least. That's cool. I'm glad he's dead.");
 
@@ -1312,7 +1318,7 @@ namespace Server.Mobiles
 						if (!m_Mobile.CanSee(aggr) || aggr.Combatant != m_Mobile)
 							continue;
 
-						if (!aggr.Alive)
+						if (aggr.IsDeadBondedPet || !aggr.Alive)
 							continue;
 
 						double aggrScore = m_Mobile.GetFightModeRanking(aggr, FightMode.Closest, false);
@@ -1365,7 +1371,7 @@ namespace Server.Mobiles
 				m_Mobile.RangeHome = se.HomeRange;
 			}
 
-			if (m_Mobile.DeleteOnRelease)
+			if (m_Mobile.DeleteOnRelease || m_Mobile.IsDeadPet)
 				m_Mobile.Delete();
 
 			m_Mobile.BeginDeleteTimer();
@@ -1538,6 +1544,9 @@ namespace Server.Mobiles
 
 		public virtual bool DoOrderTransfer()
 		{
+			if (m_Mobile.IsDeadPet)
+				return true;
+
 			Mobile from = m_Mobile.ControlMaster;
 			Mobile to = m_Mobile.ControlTarget;
 
@@ -2192,7 +2201,7 @@ namespace Server.Mobiles
 			}
 			else if (m_Mobile.Controlled)
 			{
-				if (m_Mobile.ControlTarget == null || m_Mobile.ControlTarget.Deleted || m_Mobile.ControlTarget.Hidden || !m_Mobile.ControlTarget.Alive || !m_Mobile.InRange(m_Mobile.ControlTarget, m_Mobile.RangePerception * 2))
+				if (m_Mobile.ControlTarget == null || m_Mobile.ControlTarget.Deleted || m_Mobile.ControlTarget.Hidden || !m_Mobile.ControlTarget.Alive || m_Mobile.ControlTarget.IsDeadBondedPet || !m_Mobile.InRange(m_Mobile.ControlTarget, m_Mobile.RangePerception * 2))
 				{
 					if (m_Mobile.ControlTarget != null && m_Mobile.ControlTarget != m_Mobile.ControlMaster)
 						m_Mobile.ControlTarget = null;
@@ -2256,7 +2265,7 @@ namespace Server.Mobiles
 						continue;
 
 					// Dead targets are invalid.
-					if (!m.Alive)
+					if (!m.Alive || m.IsDeadBondedPet)
 						continue;
 
 					// Staff members cannot be targeted.

@@ -366,9 +366,9 @@ namespace Server.Mobiles
 		public virtual Poison PoisonImmune{ get{ return null; } }
 
 		public virtual bool BardImmune{ get{ return false; } }
-		public virtual bool Unprovokable{ get{ return BardImmune; } }
-		public virtual bool Uncalmable{ get{ return BardImmune; } }
-		public virtual bool AreaPeaceImmune { get { return BardImmune; } }
+		public virtual bool Unprovokable{ get{ return BardImmune || m_IsDeadPet; } }
+		public virtual bool Uncalmable{ get{ return BardImmune || m_IsDeadPet; } }
+		public virtual bool AreaPeaceImmune { get { return BardImmune || m_IsDeadPet; } }
 
 		public virtual double DispelDifficulty{ get{ return 0.0; } } // at this skill level we dispel 50% chance
 		public virtual double DispelFocus{ get{ return 20.0; } } // at difficulty - focus we have 0%, at difficulty + focus we have 100%
@@ -687,7 +687,7 @@ namespace Server.Mobiles
 
 		public override ApplyPoisonResult ApplyPoison( Mobile from, Poison poison )
 		{
-			if ( !Alive )
+			if ( !Alive || IsDeadPet ) 
 				return ApplyPoisonResult.Immune;
 
 			ApplyPoisonResult result = base.ApplyPoison( from, poison );
@@ -1545,7 +1545,7 @@ namespace Server.Mobiles
 
 		public virtual bool CheckFeed( Mobile from, Item dropped )
 		{
-			if ( Controlled && ( ControlMaster == from || IsPetFriend( from ) ) )
+			if ( !IsDeadPet && Controlled && ( ControlMaster == from || IsPetFriend( from ) ) )
 			{
 				Item f = dropped;
 
@@ -4187,7 +4187,7 @@ namespace Server.Mobiles
 			{
 				Mobile target = this.Combatant;
 
-				if( target != null && target.Alive && CanBeHarmful( target ) && target.Map == this.Map && target.InRange( this, BreathRange ) && InLOS( target ) && !BardPacified )
+				if( target != null && target.Alive && !target.IsDeadBondedPet && CanBeHarmful( target ) && target.Map == this.Map && !IsDeadBondedPet && target.InRange( this, BreathRange ) && InLOS( target ) && !BardPacified )
 				{
 					if( DateTime.Now - m_NextBreathTime < TimeSpan.FromSeconds( 30 ) && Utility.RandomBool() )
 					{
@@ -4451,7 +4451,7 @@ namespace Server.Mobiles
 
 		public override bool CanBeDamaged()
 		{
-			if ( IsInvulnerable )
+			if ( IsDeadPet || IsInvulnerable )
 				return false;
 
 			return base.CanBeDamaged();

@@ -1253,7 +1253,7 @@ namespace Server.Mobiles
 		#region Stuck Menu
 		private DateTime[] m_StuckMenuUses;
 
-		public bool CanUseStuckMenu()
+		public override bool CanUseStuckMenu()
 		{
 			if (m_StuckMenuUses == null)
 			{

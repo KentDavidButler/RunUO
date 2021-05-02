@@ -4771,23 +4771,6 @@ namespace Server
 		{
 		}
 
-		public void UsedStuckMenu()
-		{
-			if( m_StuckMenuUses == null )
-			{
-				m_StuckMenuUses = new DateTime[2];
-			}
-
-			for( int i = 0; i < m_StuckMenuUses.Length; ++i )
-			{
-				if( DateTime.Now - m_StuckMenuUses[i] > TimeSpan.FromDays( 1.0 ) )
-				{
-					m_StuckMenuUses[i] = DateTime.Now;
-					return;
-				}
-			}
-		}
-
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Squelched
 		{
@@ -6099,6 +6082,9 @@ namespace Server
 							} else {
 								ns.Send( new MobileIncomingOld( this, m ) );
 							}
+
+							if( m.IsDeadBondedPet )
+								ns.Send( new BondedStatus( 0, m.m_Serial, 1 ) );
 						}
 					}
 				}
