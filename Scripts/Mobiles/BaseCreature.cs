@@ -2785,24 +2785,7 @@ namespace Server.Mobiles
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			if( ( !Controlled && !Summoned ) && (FightMode != FightMode.Aggressor) )
-			{
-				if( InRange( m.Location, AcquireOnApproachRange ) && !InRange( oldLocation, AcquireOnApproachRange ) )
-				{
-					if( CanBeHarmful( m ) && IsEnemy( m ))
-					{
-						Combatant = FocusMob = m;
-
-						if( AIObject != null )
-						{
-							AIObject.MoveTo( m, true, 1 );
-						}
-
-						DoHarmful( m );
-					}
-				}
-			}
-			else if( ReacquireOnMovement )
+			if( ReacquireOnMovement )
 			{
 				ForceReacquire();
 			}
