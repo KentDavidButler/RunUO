@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server;
 using Server.Items;
 using Server.Mobiles;
 
@@ -112,7 +113,7 @@ namespace Server.Movement
 			int stepTop = startTop + StepHeight;
 			int checkTop = startZ + PersonHeight;
 
-			bool ignoreDoors = m_AlwaysIgnoreDoors || !m.Alive || m.Body.BodyID == 0x3DB || m.IsDeadBondedPet ;
+			bool ignoreDoors = ( m_AlwaysIgnoreDoors || !m.Alive || m.Body.BodyID == 0x3DB || m.IsDeadBondedPet );
 			bool ignoreSpellFields = m is PlayerMobile && map != Map.Felucca;
 
 			#region Tiles

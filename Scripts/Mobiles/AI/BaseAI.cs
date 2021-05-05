@@ -1361,6 +1361,10 @@ namespace Server.Mobiles
 
 			m_Mobile.PlaySound(m_Mobile.GetAngerSound());
 
+			m_Mobile.BondingBegin = DateTime.MinValue;
+			m_Mobile.OwnerAbandonTime = DateTime.MinValue;
+			m_Mobile.IsBonded = false;
+
 			m_Mobile.SetControlMaster(null);
 			m_Mobile.SummonMaster = null;
 
@@ -1671,7 +1675,10 @@ namespace Server.Mobiles
 		public virtual void WalkRandom(int iChanceToNotMove, int iChanceToDir, int iSteps)
 		{
 			if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves)
+            { 
 				return;
+			}
+				
 
 			for (int i = 0; i < iSteps; i++)
 			{
@@ -1786,7 +1793,7 @@ namespace Server.Mobiles
 		{
 			MoveResult res = DoMoveImpl(d);
 
-			return res == MoveResult.Success || res == MoveResult.SuccessAutoTurn || badStateOk && res == MoveResult.BadState;
+			return (res == MoveResult.Success || res == MoveResult.SuccessAutoTurn || (badStateOk && res == MoveResult.BadState));
 		}
 
 		private static Queue m_Obstacles = new Queue();
@@ -1830,7 +1837,6 @@ namespace Server.Mobiles
 
 				if (canOpenDoors || canDestroyObstacles)
 				{
-					m_Mobile.DebugSay("My movement was blocked, I will try to clear some obstacles.");
 
 					Map map = m_Mobile.Map;
 
@@ -1914,6 +1920,7 @@ namespace Server.Mobiles
 
 						if (!blocked)
 							blocked = !m_Mobile.Move(d);
+
 					}
 				}
 
@@ -2067,7 +2074,7 @@ namespace Server.Mobiles
 				return true;
 			}
 
-			if (m_Path != null && m_Path.Goal == m)
+			if ((m_Path != null) && (m_Path.Goal == m))
 			{
 				if (m_Path.Follow(run, 1))
 				{
@@ -2091,7 +2098,6 @@ namespace Server.Mobiles
 				m_Path = null;
 				return true;
 			}
-
 			return false;
 		}
 

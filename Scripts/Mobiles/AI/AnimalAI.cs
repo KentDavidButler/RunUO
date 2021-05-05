@@ -17,6 +17,7 @@ namespace Server.Mobiles
 
 		public override bool DoActionWander()
 		{
+			
 			// Old:
 #if false
 			if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, true, false, true))

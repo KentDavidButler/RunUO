@@ -4238,6 +4238,14 @@ namespace Server.Network
 			return p;
 		}
 
+		public static void Release( ref ObjectPropertyList p )
+		{
+			if ( p != null )
+				p.Release();
+
+			p = null;
+		}
+
 		public static void Release( ref Packet p )
 		{
 			if ( p != null )

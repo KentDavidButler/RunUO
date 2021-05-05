@@ -5403,6 +5403,7 @@ namespace Server
 			set
 			{
 				m_Player = value;
+				InvalidateProperties();
 
 				if( !m_Player && m_Dex <= 100 && m_CombatTimer != null )
 					m_CombatTimer.Priority = TimerPriority.FiftyMS;
@@ -6084,7 +6085,18 @@ namespace Server
 							}
 
 							if( m.IsDeadBondedPet )
+                            { 
+								Console.WriteLine("SendEverything ns.Send");
 								ns.Send( new BondedStatus( 0, m.m_Serial, 1 ) );
+							}
+
+							if( ObjectPropertyList.Enabled )
+							{
+								ns.Send( m.OPLPacket );
+
+								//foreach ( Item item in m.m_Items )
+								//	ns.Send( item.OPLPacket );
+							}
 						}
 					}
 				}
@@ -8063,6 +8075,8 @@ namespace Server
 		public void FreeCache()
 		{
 			Packet.Release( ref m_RemovePacket );
+			Packet.Release( ref m_PropertyList );
+			Packet.Release( ref m_OPLPacket );
 		}
 
 		private Packet m_RemovePacket;
@@ -8078,6 +8092,154 @@ namespace Server
 				}
 
 				return m_RemovePacket;
+			}
+		}
+
+		private Packet m_OPLPacket;
+		private object oplLock = new object();
+
+		public Packet OPLPacket
+		{
+			get
+			{
+				if (m_OPLPacket == null)
+				{
+					lock (oplLock)
+					{
+						if (m_OPLPacket == null)
+						{
+							m_OPLPacket = new OPLInfo(PropertyList);
+							m_OPLPacket.SetStatic();
+						}
+					}
+				}
+
+				return m_OPLPacket;
+			}
+		}
+
+		public virtual void AddNameProperties( ObjectPropertyList list )
+		{
+			string name = Name;
+
+			if( name == null )
+				name = String.Empty;
+
+			string prefix = "";
+
+			if( ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000 )
+				prefix = m_Female ? "Lady" : "Lord";
+
+			string suffix = "";
+
+			if( PropertyTitle && Title != null && Title.Length > 0 )
+				suffix = Title;
+
+			BaseGuild guild = m_Guild;
+
+			if( guild != null && (m_Player || m_DisplayGuildTitle) )
+			{
+				if( suffix.Length > 0 )
+					suffix = String.Format( "{0} [{1}]", suffix, Utility.FixHtml( guild.Abbreviation ) );
+				else
+					suffix = String.Format( "[{0}]", Utility.FixHtml( guild.Abbreviation ) );
+			}
+
+			suffix = ApplyNameSuffix( suffix );
+
+			list.Add( 1050045, "{0} \t{1}\t {2}", prefix, name, suffix ); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+
+			if( guild != null && (m_DisplayGuildTitle || (m_Player && guild.Type != GuildType.Regular)) )
+			{
+				string type;
+
+				if( guild.Type >= 0 && (int)guild.Type < m_GuildTypes.Length )
+					type = m_GuildTypes[(int)guild.Type];
+				else
+					type = "";
+
+				string title = GuildTitle;
+
+				if( title == null )
+					title = "";
+				else
+					title = title.Trim();
+
+				if( NewGuildDisplay && title.Length > 0 )
+				{
+					list.Add( "{0}, {1}", Utility.FixHtml( title ), Utility.FixHtml( guild.Name ) );
+				}
+				else
+				{
+					if( title.Length > 0 )
+						list.Add( "{0}, {1} Guild{2}", Utility.FixHtml( title ), Utility.FixHtml( guild.Name ), type );
+					else
+						list.Add( Utility.FixHtml( guild.Name ) );
+				}
+			}
+		}
+
+		public virtual bool NewGuildDisplay { get { return false; } }
+
+		public virtual void GetProperties( ObjectPropertyList list )
+		{
+			AddNameProperties( list );
+		}
+
+		public virtual void GetChildProperties( ObjectPropertyList list, Item item )
+		{
+		}
+
+		public virtual void GetChildNameProperties( ObjectPropertyList list, Item item )
+		{
+		}
+
+		private ObjectPropertyList m_PropertyList;
+
+		public ObjectPropertyList PropertyList
+		{
+			get
+			{
+				if( m_PropertyList == null )
+				{
+					m_PropertyList = new ObjectPropertyList( this );
+
+					GetProperties( m_PropertyList );
+
+					m_PropertyList.Terminate();
+					m_PropertyList.SetStatic();
+				}
+
+				return m_PropertyList;
+			}
+		}
+
+		public void ClearProperties()
+		{
+			Packet.Release( ref m_PropertyList );
+			Packet.Release( ref m_OPLPacket );
+		}
+
+		public void InvalidateProperties()
+		{
+			if( !ObjectPropertyList.Enabled )
+				return;
+
+			if( m_Map != null && m_Map != Map.Internal && !World.Loading )
+			{
+				ObjectPropertyList oldList = m_PropertyList;
+				Packet.Release( ref m_PropertyList );
+				ObjectPropertyList newList = PropertyList;
+
+				if( oldList == null || oldList.Hash != newList.Hash )
+				{
+					Packet.Release( ref m_OPLPacket );
+					Delta( MobileDelta.Properties );
+				}
+			}
+			else
+			{
+				ClearProperties();
 			}
 		}
 
@@ -8242,6 +8404,7 @@ namespace Server
 
 				if( map != null )
 				{
+
 					// First, send a remove message to everyone who can no longer see us. (inOldRange && !inNewRange)
 					Packet removeThis = null;
 
@@ -8304,7 +8467,10 @@ namespace Server
 									}
 
 									if( IsDeadBondedPet )
+                                    { 
 										m.m_NetState.Send( new BondedStatus( 0, m_Serial, 1 ) );
+									}
+										
 								}
 
 								if( !inOldRange && CanSee( m ) )
@@ -8322,7 +8488,16 @@ namespace Server
 									}
 
 									if( m.IsDeadBondedPet )
-										ourState.Send( new BondedStatus( 0, m.m_Serial, 1 ) );
+										{
+											ourState.Send( new BondedStatus( 0, m.m_Serial, 1 ) );
+										}
+									if( ObjectPropertyList.Enabled )
+									{
+										ourState.Send( m.OPLPacket );
+
+										//foreach ( Item item in m.m_Items )
+										//	ourState.Send( item.OPLPacket );
+									}
 								}
 							}
 						}
@@ -8351,7 +8526,18 @@ namespace Server
 								}
 
 								if( IsDeadBondedPet )
+                                { 
 									ns.Send( new BondedStatus( 0, m_Serial, 1 ) );
+								}
+
+								if( ObjectPropertyList.Enabled )
+								{
+									ns.Send( OPLPacket );
+
+									//foreach ( Item item in m_Items )
+									//	ns.Send( item.OPLPacket );
+								}
+									
 							}
 						}
 
@@ -8644,6 +8830,17 @@ namespace Server
 								state.Send( new HealthbarYellow( this ) );
 						} else {
 							state.Send( new MobileIncomingOld( state.Mobile, this ) );
+						}
+
+						if( IsDeadBondedPet )
+							state.Send( new BondedStatus( 0, m_Serial, 1 ) );
+
+						if( ObjectPropertyList.Enabled )
+						{
+							state.Send( OPLPacket );
+
+							//foreach ( Item item in m_Items )
+							//	state.Send( item.OPLPacket );
 						}
 					}
 				}
@@ -10053,11 +10250,16 @@ namespace Server
 		public virtual bool CanTarget { get { return true; } }
 		public virtual bool ClickTitle { get { return true; } }
 
+		public virtual bool PropertyTitle { get { return m_OldPropertyTitles ? ClickTitle : true; } }
+
 		private static bool m_DisableHiddenSelfClick = true;
+		private static bool m_OldPropertyTitles;
 
 		public static bool DisableHiddenSelfClick { get { return m_DisableHiddenSelfClick; } set { m_DisableHiddenSelfClick = value; } }
+		public static bool OldPropertyTitles { get { return m_OldPropertyTitles; } set { m_OldPropertyTitles = value; } }
 
 		public virtual bool ShowFameTitle { get { return true; } }//(m_Player || m_Body.IsHuman) && m_Fame >= 10000; } 
+
 
 		/// <summary>
 		/// Overridable. Event invoked when the Mobile is single clicked.

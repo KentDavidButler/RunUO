@@ -6,6 +6,7 @@ namespace Server
 	{
 		public static void Configure()
 		{
+
 			Mobile.VisibleDamageType = VisibleDamageType.None;
 		}
 	}

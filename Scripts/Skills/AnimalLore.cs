@@ -36,30 +36,38 @@ namespace Server.SkillHandlers
 				else if ( targeted is BaseCreature )
 				{
 					BaseCreature c = (BaseCreature)targeted;
-
-					if ( c.Body.IsAnimal || c.Body.IsMonster || c.Body.IsSea )
+					
+					if ( !c.IsDeadPet )
 					{
-						if ( !c.Controlled && from.Skills[SkillName.AnimalLore].Value < 100.0 )
+
+						if ( c.Body.IsAnimal || c.Body.IsMonster || c.Body.IsSea )
 						{
-							from.SendLocalizedMessage( 1049674 ); // At your skill level, you can only lore tamed creatures.
-						}
-						else if ( !c.Controlled && !c.Tamable && from.Skills[SkillName.AnimalLore].Value < 110.0 )
-						{
-							from.SendLocalizedMessage( 1049675 ); // At your skill level, you can only lore tamed or tameable creatures.
-						}
-						else if ( !from.CheckTargetSkill( SkillName.AnimalLore, c, 0.0, 120.0 ) )
-						{
-							from.SendLocalizedMessage( 500334 ); // You can't think of anything you know offhand.
+							if ( !c.Controlled && from.Skills[SkillName.AnimalLore].Value < 100.0 )
+							{
+								from.SendLocalizedMessage( 1049674 ); // At your skill level, you can only lore tamed creatures.
+							}
+							else if ( !c.Controlled && !c.Tamable && from.Skills[SkillName.AnimalLore].Value < 110.0 )
+							{
+								from.SendLocalizedMessage( 1049675 ); // At your skill level, you can only lore tamed or tameable creatures.
+							}
+							else if ( !from.CheckTargetSkill( SkillName.AnimalLore, c, 0.0, 120.0 ) )
+							{
+								from.SendLocalizedMessage( 500334 ); // You can't think of anything you know offhand.
+							}
+							else
+							{
+								from.CloseGump( typeof( AnimalLoreGump ) );
+								from.SendGump( new AnimalLoreGump( c ) );
+							}
 						}
 						else
 						{
-							from.CloseGump( typeof( AnimalLoreGump ) );
-							from.SendGump( new AnimalLoreGump( c ) );
+							from.SendLocalizedMessage( 500329 ); // That's not an animal!
 						}
 					}
 					else
 					{
-						from.SendLocalizedMessage( 500329 ); // That's not an animal!
+						from.SendLocalizedMessage( 500331 ); // The spirits of the dead are not the province of animal lore.
 					}
 				}
 				else

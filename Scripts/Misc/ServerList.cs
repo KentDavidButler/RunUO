@@ -168,7 +168,8 @@ namespace Server.Misc
 		private static IPAddress FindPublicAddress()
 		{
 			try {
-				WebRequest req = HttpWebRequest.Create( "http://www.runuo.com/ip.php" );
+				WebRequest req = HttpWebRequest.Create( "https://api.ipify.org" );
+
 				req.Timeout = 15000;
 
 				WebResponse res = req.GetResponse();

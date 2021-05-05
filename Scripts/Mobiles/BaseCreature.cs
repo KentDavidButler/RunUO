@@ -228,7 +228,7 @@ namespace Server.Mobiles
 			set { m_SummonEnd = value; }
 		}
 
-#region Bonding
+		#region Bonding
 		public const bool BondingEnabled = true;
 
 		public virtual bool IsBondable{ get{ return ( BondingEnabled && !Summoned ); } }
@@ -880,7 +880,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				return this.Body.IsMonster;
+				return this.Body.IsMonster || this.IsBonded;
 			}
 		}
 
@@ -2785,7 +2785,24 @@ namespace Server.Mobiles
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			if( ReacquireOnMovement )
+			if( ( !Controlled && !Summoned ) && (FightMode != FightMode.Aggressor) )
+			{
+				if( InRange( m.Location, AcquireOnApproachRange ) && !InRange( oldLocation, AcquireOnApproachRange ) )
+				{
+					if( CanBeHarmful( m ) && IsEnemy( m ))
+					{
+						Combatant = FocusMob = m;
+
+						if( AIObject != null )
+						{
+							AIObject.MoveTo( m, true, 1 );
+						}
+
+						DoHarmful( m );
+					}
+				}
+			}
+			else if( ReacquireOnMovement )
 			{
 				ForceReacquire();
 			}
@@ -3392,6 +3409,19 @@ namespace Server.Mobiles
                 " (Order)"
         };
 
+		public override void AddNameProperties( ObjectPropertyList list )
+		{
+			base.AddNameProperties( list );
+
+			if ( Controlled && Commandable )
+			{
+				if ( IsBonded )	//Intentional difference (showing ONLY bonded when bonded instead of bonded & tame)
+					list.Add( 1049608 ); // (bonded)
+				else
+					list.Add( 502006 ); // (tame)
+			}
+		}
+
         public override void OnSingleClick(Mobile from)
         {
             if (Deleted)
@@ -3707,20 +3737,22 @@ namespace Server.Mobiles
 
 				Mobile owner = this.ControlMaster;
 
-				if ( owner == null || owner.Deleted || owner.Map != this.Map || !owner.InRange( this, 12 ) || !this.CanSee( owner ) || !this.InLOS( owner ) )
+				if ( owner == null || owner.Deleted || (owner.Map != this.Map) || !owner.InRange( this, 12 ) || !this.CanSee( owner ) )
 				{
+					Console.WriteLine("Enter Pet Set OwnerAbandonTime");
 					if ( this.OwnerAbandonTime == DateTime.MinValue )
 						this.OwnerAbandonTime = DateTime.UtcNow;
 				}
 				else
 				{
+					Console.WriteLine("Enter Pet Set OwnerAbandonTime MinValue");
 					this.OwnerAbandonTime = DateTime.MinValue;
-				}
+				};
 
 				CheckStatTimers();
 			}
 			else
-            { 
+			{
 				if ( !Summoned && !m_NoKillAwards )
 				{
 					int totalFame = Fame / 100;
@@ -3728,8 +3760,8 @@ namespace Server.Mobiles
 
 					if (Map == Map.Felucca)
 					{
-						totalFame += totalFame/10*3;
-						totalKarma += totalKarma/10*3;
+						totalFame += ((totalFame/10)*3);
+						totalKarma += ((totalKarma/10)*3);
 					}
 
 					List<DamageStore> list = GetLootingRights( this.DamageEntries, this.HitsMax );
@@ -3737,7 +3769,7 @@ namespace Server.Mobiles
 					List<int> fame = new List<int>();
 					List<int> karma = new List<int>();
 
-					   for ( int i = 0; i < list.Count; ++i )
+					for ( int i = 0; i < list.Count; ++i )
 					{
 						DamageStore ds = list[i];
 
@@ -3781,6 +3813,9 @@ namespace Server.Mobiles
 						}
 
 						OnKilledBy( ds.m_Mobile );
+
+						PlayerMobile pm = ds.m_Mobile as PlayerMobile;
+
 					}
 
 					for ( int i = 0; i < titles.Count; ++i )
@@ -3789,12 +3824,12 @@ namespace Server.Mobiles
 						Titles.AwardKarma( titles[ i ], karma[ i ], true );
 					}
 				}
+
+				base.OnDeath( c );
+
+				if ( DeleteCorpseOnDeath )
+					c.Delete();
 			}
-
-			base.OnDeath( c );
-
-			if ( DeleteCorpseOnDeath )
-				c.Delete();
 		}
 
 		/* To save on cpu usage, RunUO creatures only reacquire creatures under the following circumstances:
@@ -3811,6 +3846,7 @@ namespace Server.Mobiles
 
 		public virtual TimeSpan ReacquireDelay{ get{ return TimeSpan.FromSeconds( 10.0 ); } }
 		public virtual bool ReacquireOnMovement{ get{ return false; } }
+		public virtual int AcquireOnApproachRange { get { return 10; } }
 
 		public override void OnDelete()
 		{
@@ -4436,7 +4472,8 @@ namespace Server.Mobiles
 
 			Mobile owner = this.ControlMaster;
 
-			if ( owner == null || owner.Deleted || owner.Map != this.Map || !owner.InRange( this, 12 ) || !this.CanSee( owner ) || !this.InLOS( owner ) )
+			//if ( owner == null || owner.Deleted || owner.Map != this.Map || !owner.InRange( this, 12 ) || !this.CanSee( owner ) || !this.InLOS( owner ) )
+			if ( owner == null || owner.Deleted || owner.Map != this.Map || !owner.InRange( this, 12 ) || !this.CanSee( owner ) )
 			{
 				if ( this.OwnerAbandonTime == DateTime.MinValue )
 					this.OwnerAbandonTime = DateTime.UtcNow;
