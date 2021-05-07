@@ -88,6 +88,7 @@ namespace Server.Mobiles
 		private NpcGuild m_NpcGuild;
 		private DateTime m_NpcGuildJoinTime;
 		private TimeSpan m_NpcGuildGameTime;
+		private DateTime m_NextBODTurnInTime;
 		private PlayerFlag m_Flags;
 		private int m_StepsTaken;
 		private int m_Profession;
@@ -201,6 +202,13 @@ namespace Server.Mobiles
 		{
 			get{ return m_NpcGuildJoinTime; }
 			set{ m_NpcGuildJoinTime = value; }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public DateTime NextBODTurnInTime
+		{
+			get{ return m_NextBODTurnInTime; }
+			set{ m_NextBODTurnInTime = value; }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]

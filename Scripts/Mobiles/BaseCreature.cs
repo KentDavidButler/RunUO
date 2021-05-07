@@ -6,6 +6,7 @@ using Server.Multis;
 using Server.Spells;
 using Server.Misc;
 using Server.Items;
+using Server.ContextMenus;
 using Server.Engines.PartySystem;
 using Server.Guilds;
 using Server.SkillHandlers;
@@ -2339,6 +2340,7 @@ namespace Server.Mobiles
 			return iCount;
 		}
 
+
 		#region Teaching
 		public virtual bool CanTeach{ get{ return false; } }
 
@@ -2574,7 +2576,22 @@ namespace Server.Mobiles
 			return base.OnMoveOver( m );
 		}
 
+		public virtual void AddCustomContextEntries( Mobile from, List<ContextMenuEntry> list )
+		{
+		}
+
 		public virtual bool CanDrop { get { return IsBonded; } }
+
+		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
+		{
+			base.GetContextMenuEntries( from, list );
+
+			if ( m_AI != null && Commandable )
+				m_AI.GetContextMenuEntries( from, list );
+
+			AddCustomContextEntries( from, list );
+
+		}
 
 		public override bool HandlesOnSpeech( Mobile from )
 		{
