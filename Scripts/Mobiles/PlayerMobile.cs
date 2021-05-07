@@ -6,6 +6,7 @@ using Server.Items;
 using Server.Gumps;
 using Server.Multis;
 using Server.Engines.Help;
+using Server.ContextMenus;
 using Server.Network;
 using Server.Spells.Fifth;
 using Server.Spells.Seventh;
@@ -1301,8 +1302,8 @@ namespace Server.Mobiles
 		private DateTime m_LastEscortTime;
 		private DateTime m_SessionStart;
 		private DateTime m_LastPetBallTime;
-		//private DateTime m_NextSmithBulkOrder;
-		//private DateTime m_NextTailorBulkOrder;
+		private DateTime m_NextSmithBulkOrder;
+		private DateTime m_NextTailorBulkOrder;
 		private SkillName m_Learning = (SkillName)(-1);
 
 		public SkillName Learning
@@ -1312,43 +1313,43 @@ namespace Server.Mobiles
 
 		}
 
-		//[CommandProperty( AccessLevel.GameMaster )]
-		//public TimeSpan NextSmithBulkOrder
-		//{
-		//	get
-		//	{
-		//		TimeSpan ts = m_NextSmithBulkOrder - DateTime.UtcNow;
-		//
-		//		if ( ts < TimeSpan.Zero )
-		//			ts = TimeSpan.Zero;
-		//
-		//		return ts;
-		//	}
-		//	set
-		//	{
-		//		try{ m_NextSmithBulkOrder = DateTime.UtcNow + value; }
-		//		catch{}
-		//	}
-		//}
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TimeSpan NextSmithBulkOrder
+		{
+			get
+			{
+				TimeSpan ts = m_NextSmithBulkOrder - DateTime.UtcNow;
 
-		//[CommandProperty( AccessLevel.GameMaster )]
-		//public TimeSpan NextTailorBulkOrder
-		//{
-		//	get
-		//	{
-		//		TimeSpan ts = m_NextTailorBulkOrder - DateTime.UtcNow;
-		//
-		//		if ( ts < TimeSpan.Zero )
-		//			ts = TimeSpan.Zero;
-		//
-		//		return ts;
-		//	}
-		//	set
-		//	{
-		//		try{ m_NextTailorBulkOrder = DateTime.UtcNow + value; }
-		//		catch{}
-		//	}
-		//}
+				if ( ts < TimeSpan.Zero )
+					ts = TimeSpan.Zero;
+
+				return ts;
+			}
+			set
+			{
+				try{ m_NextSmithBulkOrder = DateTime.UtcNow + value; }
+				catch{}
+			}
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TimeSpan NextTailorBulkOrder
+		{
+			get
+			{
+				TimeSpan ts = m_NextTailorBulkOrder - DateTime.UtcNow;
+
+				if ( ts < TimeSpan.Zero )
+					ts = TimeSpan.Zero;
+
+				return ts;
+			}
+			set
+			{
+				try{ m_NextTailorBulkOrder = DateTime.UtcNow + value; }
+				catch{}
+			}
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime LastEscortTime
@@ -1370,6 +1371,8 @@ namespace Server.Mobiles
 			m_PermaFlags = new List<Mobile>();
 			m_AntiMacroTable = new Hashtable();
 			m_RecentlyReported = new List<Mobile>();
+
+			m_BOBFilter = new Engines.BulkOrders.BOBFilter();
 
 			m_GameTime = TimeSpan.Zero;
 			m_ShortTermElapse = TimeSpan.FromHours( 8.0 );
@@ -1479,12 +1482,12 @@ namespace Server.Mobiles
 			SetHairMods( -1, -1 );
 		}
 
-		//private Engines.BulkOrders.BOBFilter m_BOBFilter;
+		private Engines.BulkOrders.BOBFilter m_BOBFilter;
 
-		//public Engines.BulkOrders.BOBFilter BOBFilter
-		//{
-		//	get{ return m_BOBFilter; }
-		//}
+		public Engines.BulkOrders.BOBFilter BOBFilter
+		{
+			get{ return m_BOBFilter; }
+		}
 
 		public override void Deserialize( GenericReader reader )
 		{
@@ -1493,6 +1496,32 @@ namespace Server.Mobiles
 
 			switch ( version )
 			{
+				case 30:
+				{
+					NextTailorBulkOrder = reader.ReadTimeSpan();
+					NextSmithBulkOrder = reader.ReadTimeSpan();
+					m_BOBFilter = new Engines.BulkOrders.BOBFilter( reader );
+
+					goto case 29;
+				}
+				case 29:
+				{
+					if (reader.ReadBool())
+					{
+						m_StuckMenuUses = new DateTime[reader.ReadInt()];
+
+						for (int i = 0; i < m_StuckMenuUses.Length; ++i)
+						{
+							m_StuckMenuUses[i] = reader.ReadDateTime();
+						}
+					}
+					else
+					{
+						m_StuckMenuUses = null;
+					}
+
+					goto case 28;
+				}
 				case 28:
 				{
 					m_PeacedUntil = reader.ReadDateTime();
@@ -1540,10 +1569,6 @@ namespace Server.Mobiles
 				case 14:
 				case 13:
 				case 12:
-				//{
-				//	m_BOBFilter = new Engines.BulkOrders.BOBFilter( reader );
-				//	goto case 11;
-				//}
 				case 11:
 				case 10:
 				{
@@ -1571,15 +1596,7 @@ namespace Server.Mobiles
 					goto case 6;
 				}
 				case 6:
-				//{
-				//	NextTailorBulkOrder = reader.ReadTimeSpan();
-				//	goto case 5;
-				//}
 				case 5:
-				//{
-				//	NextSmithBulkOrder = reader.ReadTimeSpan();
-				//	goto case 4;
-				//}
 				case 4:
 				case 3:
 				case 2:
@@ -1610,8 +1627,8 @@ namespace Server.Mobiles
 			if ( m_PermaFlags == null )
 				m_PermaFlags = new List<Mobile>();
 
-			//if ( m_BOBFilter == null )
-			//	m_BOBFilter = new Engines.BulkOrders.BOBFilter();
+			if ( m_BOBFilter == null )
+				m_BOBFilter = new Engines.BulkOrders.BOBFilter();
 
 			if( m_GuildRank == null )
 				m_GuildRank = Guilds.RankDefinition.Member;	//Default to member if going from older version to new version (only time it should be null)
@@ -1656,7 +1673,27 @@ namespace Server.Mobiles
 
 			base.Serialize( writer );
 
-			writer.Write( (int) 28 ); // version
+			writer.Write( (int) 30 ); // version
+
+			writer.Write( NextTailorBulkOrder );
+			writer.Write( NextSmithBulkOrder );
+			m_BOBFilter.Serialize( writer );
+
+			if (m_StuckMenuUses != null)
+			{
+				writer.Write(true);
+
+				writer.Write(m_StuckMenuUses.Length);
+
+				for (int i = 0; i < m_StuckMenuUses.Length; ++i)
+				{
+					writer.Write(m_StuckMenuUses[i]);
+				}
+			}
+			else
+			{
+				writer.Write(false);
+			}
 
 			writer.Write( (DateTime) m_PeacedUntil );
 			writer.Write( (DateTime) m_AnkhNextUse );
@@ -1665,7 +1702,7 @@ namespace Server.Mobiles
 			writer.WriteEncodedInt( m_GuildMessageHue );
 
 			writer.WriteEncodedInt( m_GuildRank.Rank );
-			writer.Write( m_LastOnline );
+			writer.Write( m_LastOnline ); //check into this
 
 			writer.WriteEncodedInt( m_Profession );
 
@@ -1686,10 +1723,6 @@ namespace Server.Mobiles
 			writer.Write( (TimeSpan) m_NpcGuildGameTime );
 
 			writer.Write( m_PermaFlags, true );
-
-			//writer.Write( NextTailorBulkOrder );
-
-			//writer.Write( NextSmithBulkOrder );
 
 			writer.Write( (int) m_Flags );
 

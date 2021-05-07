@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Server;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
@@ -9,7 +10,9 @@ using Server.Regions;
 using Server.Network;
 using Server.Targeting;
 using Server.Accounting;
+using Server.ContextMenus;
 using Server.Gumps;
+using Server.Engines.BulkOrders;
 
 namespace Server.Multis
 {
@@ -2946,4 +2949,73 @@ namespace Server.Multis
 	}
 
 	#endregion
+
+	public class SetSecureLevelEntry : ContextMenuEntry
+	{
+		private Item m_Item;
+		private ISecurable m_Securable;
+
+		public SetSecureLevelEntry( Item item, ISecurable securable ) : base( 6203, 6 )
+		{
+			m_Item = item;
+			m_Securable = securable;
+		}
+
+		public static ISecurable GetSecurable( Mobile from, Item item )
+		{
+			BaseHouse house = BaseHouse.FindHouseAt( item );
+
+			//if ( house == null || !house.IsOwner( from ) || !house.IsAosRules )
+			//	return null;
+
+			ISecurable sec = null;
+
+			if ( item is ISecurable )
+			{
+				bool isOwned = house.Doors.Contains( item );
+
+				//if ( !isOwned )
+				//	isOwned = ( house is HouseFoundation && ((HouseFoundation)house).IsFixture( item ) );
+
+				if ( !isOwned )
+					isOwned = house.IsLockedDown( item );
+
+				if ( isOwned )
+					sec = (ISecurable)item;
+			}
+			else
+			{
+				ArrayList list = house.Secures;
+
+				for ( int i = 0; sec == null && list != null && i < list.Count; ++i )
+				{
+					SecureInfo si = (SecureInfo)list[i];
+
+					if ( si.Item == item )
+						sec = si;
+				}
+			}
+
+			return sec;
+		}
+
+		public static void AddTo( Mobile from, Item item, List<ContextMenuEntry> list )
+		{
+			ISecurable sec = GetSecurable( from, item );
+
+			if ( sec != null )
+				list.Add( new SetSecureLevelEntry( item, sec ) );
+		}
+
+		public override void OnClick()
+		{
+			ISecurable sec = GetSecurable( Owner.From, m_Item );
+
+			if ( sec != null )
+			{
+				Owner.From.CloseGump( typeof ( SetSecureLevelGump ) );
+				Owner.From.SendGump( new SetSecureLevelGump( Owner.From, sec, BaseHouse.FindHouseAt( m_Item ) ) );
+			}
+		}
+	}
 }

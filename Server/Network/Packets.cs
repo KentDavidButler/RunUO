@@ -23,6 +23,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Threading;
 using Server.Accounting;
 using Server.Targeting;
 using Server.Items;
@@ -33,6 +34,7 @@ using Server.Menus.ItemLists;
 using Server.Menus.Questions;
 using Server.Prompts;
 using Server.HuePickers;
+using Server.ContextMenus;
 using Server.Diagnostics;
 
 namespace Server.Network
@@ -894,6 +896,121 @@ namespace Server.Network
 		{
 			m_Stream.Write( (int) m.Serial );
 			m_Stream.Write( (sbyte) 0 );
+		}
+	}
+
+	public enum CMEFlags
+	{
+		None = 0x00,
+		Disabled = 0x01,
+		Arrow = 0x02,
+		Highlighted = 0x04,
+		Colored = 0x20
+	}
+
+	public sealed class DisplayContextMenu : Packet
+	{
+		public DisplayContextMenu( ContextMenu menu ) : base( 0xBF )
+		{
+			ContextMenuEntry[] entries = menu.Entries;
+
+			int length = (byte) entries.Length;
+
+			this.EnsureCapacity( 12 + (length * 8) );
+
+			m_Stream.Write( (short) 0x14 );
+			m_Stream.Write( (short) 0x02 );
+
+			IEntity target = menu.Target as IEntity;
+
+			m_Stream.Write( (int) ( target == null ? Serial.MinusOne : target.Serial ) );
+
+			m_Stream.Write( (byte) length );
+
+			Point3D p;
+
+			if ( target is Mobile )
+				p = target.Location;
+			else if ( target is Item )
+				p = ((Item)target).GetWorldLocation();
+			else
+				p = Point3D.Zero;
+
+			for ( int i = 0; i < length; ++i )
+			{
+				ContextMenuEntry e = entries[i];
+
+				m_Stream.Write( (int) e.Number );
+				m_Stream.Write( (short) i );
+
+				int range = e.Range;
+
+				if ( range == -1 )
+					range = 18;
+
+				CMEFlags flags = (e.Enabled && menu.From.InRange( p, range )) ? CMEFlags.None : CMEFlags.Disabled;
+
+				flags |= e.Flags;
+
+				m_Stream.Write( (short) flags );
+			}
+		}
+	}
+
+	public sealed class DisplayContextMenuOld : Packet
+	{
+		public DisplayContextMenuOld( ContextMenu menu ) : base( 0xBF )
+		{
+			ContextMenuEntry[] entries = menu.Entries;
+
+			int length = (byte) entries.Length;
+
+			this.EnsureCapacity( 12 + (length * 8) );
+
+			m_Stream.Write( (short) 0x14 );
+			m_Stream.Write( (short) 0x01 );
+
+			IEntity target = menu.Target as IEntity;
+
+			m_Stream.Write( (int) ( target == null ? Serial.MinusOne : target.Serial ) );
+
+			m_Stream.Write( (byte) length );
+
+			Point3D p;
+
+			if ( target is Mobile )
+				p = target.Location;
+			else if ( target is Item )
+				p = ((Item)target).GetWorldLocation();
+			else
+				p = Point3D.Zero;
+
+			for ( int i = 0; i < length; ++i )
+			{
+				ContextMenuEntry e = entries[i];
+
+				m_Stream.Write( (short) i );
+				m_Stream.Write( (ushort) ( e.Number - 3000000 ) );
+
+				int range = e.Range;
+
+				if ( range == -1 )
+					range = 18;
+
+				CMEFlags flags = (e.Enabled && menu.From.InRange( p, range )) ? CMEFlags.None : CMEFlags.Disabled;
+
+				int color = e.Color & 0xFFFF;
+
+				if ( color != 0xFFFF )
+					flags |= CMEFlags.Colored;
+
+				flags |= e.Flags;
+
+				m_Stream.Write( (short) flags );
+
+				if ( (flags & CMEFlags.Colored) != 0 )
+					m_Stream.Write( (short) color );
+			}
 		}
 	}
 
@@ -4239,6 +4356,30 @@ namespace Server.Network
 		}
 
 		public static void Release( ref ObjectPropertyList p )
+		{
+			if ( p != null )
+				p.Release();
+
+			p = null;
+		}
+
+		public static void Release( ref RemoveItem p )
+		{
+			if ( p != null )
+				p.Release();
+
+			p = null;
+		}
+
+		public static void Release( ref RemoveMobile p )
+		{
+			if ( p != null )
+				p.Release();
+
+			p = null;
+		}
+
+		public static void Release( ref OPLInfo p )
 		{
 			if ( p != null )
 				p.Release();

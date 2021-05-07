@@ -19,9 +19,11 @@
  ***************************************************************************/
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Server.Network;
 using Server.Items;
+using Server.ContextMenus;
 
 namespace Server
 {
@@ -605,6 +607,7 @@ namespace Server
 		private Packet m_WorldPacketHS;
 		private Packet m_RemovePacket;
 
+		private Packet m_OPLPacket;
 		private ObjectPropertyList m_PropertyList;
 		#endregion
 
@@ -977,6 +980,22 @@ namespace Server
 			return m_Layer != Layer.Invalid && m.FindItemOnLayer( m_Layer ) == null;
 		}
 
+		public virtual void GetChildContextMenuEntries( Mobile from, List<ContextMenuEntry> list, Item item )
+		{
+			if ( m_Parent is Item )
+				((Item)m_Parent).GetChildContextMenuEntries( from, list, item );
+			else if ( m_Parent is Mobile )
+				((Mobile)m_Parent).GetChildContextMenuEntries( from, list, item );
+		}
+
+		public virtual void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
+		{
+			if ( m_Parent is Item )
+				((Item)m_Parent).GetChildContextMenuEntries( from, list, this );
+			else if ( m_Parent is Mobile )
+				((Mobile)m_Parent).GetChildContextMenuEntries( from, list, this );
+		}
+
 		public virtual bool VerifyMove( Mobile from )
 		{
 			return Movable;
@@ -1215,6 +1234,9 @@ namespace Server
 				if ( m_LootType != value )
 				{
 					m_LootType = value;
+
+					if ( DisplayLootType )
+						InvalidateProperties();
 				}
 			}
 		}
@@ -1507,6 +1529,35 @@ namespace Server
 			}
 		}
 
+		public void ClearProperties()
+		{
+			Packet.Release( ref m_PropertyList );
+			Packet.Release( ref m_OPLPacket );
+		}
+
+		public void InvalidateProperties()
+		{
+			if ( !ObjectPropertyList.Enabled )
+				return;
+
+			if ( m_Map != null && m_Map != Map.Internal && !World.Loading )
+			{
+				ObjectPropertyList oldList = m_PropertyList;
+				m_PropertyList = null;
+				ObjectPropertyList newList = PropertyList;
+
+				if ( oldList == null || oldList.Hash != newList.Hash )
+				{
+					Packet.Release( ref m_OPLPacket );
+					Delta( ItemDelta.Properties );
+				}
+			}
+			else
+			{
+				ClearProperties();
+			}
+		}
+
 		public Packet WorldPacket
 		{
 			get
@@ -1715,6 +1766,9 @@ namespace Server
 					Delta( ItemDelta.Update );
 
 					this.OnMapChange();
+
+					if ( old == null || old == Map.Internal )
+						InvalidateProperties();
 				}
 			}
 		}
@@ -2027,13 +2081,13 @@ namespace Server
 		public bool IsLockedDown
 		{
 			get{ return GetTempFlag( m_LockedDownFlag ); }
-			set{ SetTempFlag( m_LockedDownFlag, value ); }
+			set{ SetTempFlag( m_LockedDownFlag, value );InvalidateProperties(); }
 		}
 
 		public bool IsSecure
 		{
 			get{ return GetTempFlag( m_SecureFlag ); }
-			set{ SetTempFlag( m_SecureFlag, value ); }
+			set{ SetTempFlag( m_SecureFlag, value ); InvalidateProperties(); }
 		}
 
 		public bool GetTempFlag( int flag )
@@ -2588,6 +2642,8 @@ namespace Server
 					int newPileWeight = this.PileWeight;
 
 					UpdateTotal( this, TotalType.Weight, newPileWeight - oldPileWeight );
+
+					InvalidateProperties();
 				}
 			}
 		}
@@ -3334,7 +3390,8 @@ namespace Server
 
 					UpdateTotal( this, TotalType.Weight, newPileWeight - oldPileWeight );
 
-                    Delta( ItemDelta.Update );
+                    InvalidateProperties();
+					Delta( ItemDelta.Update );
 				}
 			}
 		}
@@ -3366,6 +3423,8 @@ namespace Server
 
 					if ( info.m_Name == null )
 						VerifyCompactInfo();
+
+					InvalidateProperties();
 				}
 			}
 		}
@@ -3458,6 +3517,9 @@ namespace Server
 					OnAmountChange( oldValue );
 
 					Delta( ItemDelta.Update );
+
+					if ( oldValue > 1 || value > 1 )
+						InvalidateProperties();
 
 					if ( !Stackable && m_Amount > 1 )
 						Console.WriteLine( "Warning: 0x{0:X}: Amount changed for non-stackable item '{2}'. ({1})", m_Serial.Value, m_Amount, GetType().Name );

@@ -22,8 +22,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Server;
 using Server.Accounting;
 using Server.Commands;
+using Server.ContextMenus;
 using Server.Guilds;
 using Server.Gumps;
 using Server.HuePickers;
@@ -4790,6 +4792,8 @@ namespace Server
 
 			switch( version )
 			{
+				case 33:
+				case 32:
 				case 31:
 					{
 						m_LastStrGain = reader.ReadDeltaTime();
@@ -5212,7 +5216,7 @@ namespace Server
 
 		public virtual void Serialize( GenericWriter writer )
 		{
-			writer.Write( (int)31 ); // version
+			writer.Write( (int)33 ); // version
 
 			writer.WriteDeltaTime( m_LastStrGain );
 			writer.WriteDeltaTime( m_LastIntGain );
@@ -5446,6 +5450,22 @@ namespace Server
 		public virtual bool CanPaperdollBeOpenedBy( Mobile from )
 		{
 			return Body.IsHuman || Body.IsGhost || IsBodyMod;
+		}
+
+		public virtual void GetChildContextMenuEntries( Mobile from, List<ContextMenuEntry> list, Item item )
+		{
+		}
+
+		public virtual void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
+		{
+			if( m_Deleted )
+				return;
+
+			if( CanPaperdollBeOpenedBy( from ) )
+				list.Add( new PaperdollEntry( this ) );
+
+			if( from == this && Backpack != null && CanSee( Backpack ) && CheckAlive( false ) )
+				list.Add( new OpenBackpackEntry( this ) );
 		}
 
 		public void Internalize()
