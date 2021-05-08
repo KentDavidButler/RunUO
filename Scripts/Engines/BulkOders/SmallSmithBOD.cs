@@ -74,9 +74,14 @@ namespace Server.Engines.BulkOrders
 			bool useMaterials;
 
 			if ( useMaterials = Utility.RandomBool() )
+            {
 				entries = SmallBulkEntry.BlacksmithArmor;
+			}	
 			else
+            {
 				entries = SmallBulkEntry.BlacksmithWeapons;
+			}
+				
 
 			if ( entries.Length > 0 )
 			{

@@ -41,6 +41,7 @@ namespace Server.Mobiles
 
 			if ( pm != null && pm.NextTailorBulkOrder == TimeSpan.Zero && (fromContextMenu || 0.2 > Utility.RandomDouble()) )
 			{
+				Console.WriteLine("Put bulk order in backpack!");
 				double theirSkill = pm.Skills[SkillName.Tailoring].Base;
 
 				if ( theirSkill >= 70.1 )

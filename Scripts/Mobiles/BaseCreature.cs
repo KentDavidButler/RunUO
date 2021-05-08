@@ -2340,6 +2340,32 @@ namespace Server.Mobiles
 			return iCount;
 		}
 
+		private class TameEntry : ContextMenuEntry
+		{
+			private BaseCreature m_Mobile;
+
+			public TameEntry( Mobile from, BaseCreature creature ) : base( 6130, 6 )
+			{
+				m_Mobile = creature;
+
+				Enabled = Enabled;
+			}
+
+			public override void OnClick()
+			{
+				if ( !Owner.From.CheckAlive() )
+					return;
+
+				Owner.From.TargetLocked = true;
+				SkillHandlers.AnimalTaming.DisableMessage = true;
+
+				if ( Owner.From.UseSkill( SkillName.AnimalTaming ) )
+					Owner.From.Target.Invoke( Owner.From, m_Mobile );
+
+				SkillHandlers.AnimalTaming.DisableMessage = false;
+				Owner.From.TargetLocked = false;
+			}
+		}
 
 		#region Teaching
 		public virtual bool CanTeach{ get{ return false; } }
@@ -2589,8 +2615,32 @@ namespace Server.Mobiles
 			if ( m_AI != null && Commandable )
 				m_AI.GetContextMenuEntries( from, list );
 
+			if ( m_bTamable && !m_bControlled && from.Alive )
+				list.Add( new TameEntry( from, this ) );
+
 			AddCustomContextEntries( from, list );
 
+			if ( CanTeach && from.Alive )
+			{
+				Skills ourSkills = this.Skills;
+				Skills theirSkills = from.Skills;
+
+				for ( int i = 0; i < ourSkills.Length && i < theirSkills.Length; ++i )
+				{
+					Skill skill = ourSkills[i];
+					Skill theirSkill = theirSkills[i];
+
+					if ( skill != null && theirSkill != null && skill.Base >= 60.0 && CheckTeach( skill.SkillName, from ) )
+					{
+						int toTeach = skill.BaseFixedPoint / 3;
+
+						if ( toTeach > 420 )
+							toTeach = 420;
+
+						list.Add( new TeachEntry( (SkillName)i, this, from, ( toTeach > theirSkill.BaseFixedPoint ) ) );
+					}
+				}
+			}
 		}
 
 		public override bool HandlesOnSpeech( Mobile from )

@@ -641,6 +641,7 @@ namespace Server
 		private ISpell m_Spell;
 		private Target m_Target;
 		private Prompt m_Prompt;
+		private ContextMenu m_ContextMenu;
 		private List<AggressorInfo> m_Aggressors, m_Aggressed;
 		private Mobile m_Combatant;
 		private List<Mobile> m_Stabled;
@@ -2200,6 +2201,20 @@ namespace Server
 			m_Target = null;
 		}
 
+		private bool m_TargetLocked;
+
+		public bool TargetLocked
+		{
+			get
+			{
+				return m_TargetLocked;
+			}
+			set
+			{
+				m_TargetLocked = value;
+			}
+		}
+
 		private class SimpleTarget : Target
 		{
 			private TargetCallback m_Callback;
@@ -2314,6 +2329,32 @@ namespace Server
 		/// </summary>
 		protected virtual void OnTargetChange()
 		{
+		}
+
+		public ContextMenu ContextMenu
+		{
+			get
+			{
+				return m_ContextMenu;
+			}
+			set
+			{
+				m_ContextMenu = value;
+
+				if ( m_ContextMenu != null && m_NetState != null )
+				{
+					// Old packet is preferred until assistants catch up
+					//if ( m_NetState.NewHaven && m_ContextMenu.RequiresNewPacket )
+					//	Send( new DisplayContextMenu( m_ContextMenu ) );
+					//else
+					Send( new DisplayContextMenuOld( m_ContextMenu ) );
+				}
+			}
+		}
+
+		public virtual bool CheckContextMenuDisplay( IEntity target )
+		{
+			return true;
 		}
 
 		#region Prompts
@@ -2517,7 +2558,6 @@ namespace Server
 			}
 		}
 		#endregion
-
 		private bool InternalOnMove( Direction d )
 		{
 			if( !OnMove( d ) )

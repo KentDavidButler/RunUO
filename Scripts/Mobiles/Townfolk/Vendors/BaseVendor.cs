@@ -83,6 +83,7 @@ namespace Server.Mobiles
 
 			public override void OnClick()
 			{
+				Console.WriteLine("in the ONCLICK of BASEVENDOR");
 				if ( m_Vendor.SupportsBulkOrders( m_From ) )
 				{
 					TimeSpan ts = m_Vendor.GetNextBulkOrder( m_From );
@@ -93,6 +94,7 @@ namespace Server.Mobiles
 
 					if ( totalHours == 0 )
 					{
+						Console.WriteLine("Totalhours == 0 :: Get that bulk order now!!");
 						m_From.SendLocalizedMessage( 1049038 ); // You can get an order now.
 
 						Item bulkOrder = m_Vendor.CreateBulkOrder( m_From, true );
@@ -104,6 +106,7 @@ namespace Server.Mobiles
 					}
 					else
 					{
+						Console.WriteLine("Do not get the bulk order now, wait!!");
 						int oldSpeechHue = m_Vendor.SpeechHue;
 						m_Vendor.SpeechHue = 0x3B2;
 
