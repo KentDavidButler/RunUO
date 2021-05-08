@@ -1,11 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Server;
 using Server.Items;
+using Server.Mobiles;
 using Server.Gumps;
 using Server.Prompts;
 using Server.Targeting;
+using Server.Misc;
 using Server.Multis;
+using Server.ContextMenus;
 
 namespace Server.Mobiles
 {
@@ -122,6 +126,78 @@ namespace Server.Mobiles
 
             return targ.GetType().IsDefined(typeof(PlayerVendorTargetAttribute), false);
         }
+
+        public override void GetChildContextMenuEntries( Mobile from, List<ContextMenuEntry> list, Item item )
+		{
+			base.GetChildContextMenuEntries( from, list, item );
+
+			PlayerVendor pv = RootParent as PlayerVendor;
+
+			if ( pv == null || pv.IsOwner( from ) )
+				return;
+
+			VendorItem vi = pv.GetVendorItem( item );
+
+			if ( vi != null )
+				list.Add( new BuyEntry( item ) );
+		}
+
+		private class BuyEntry : ContextMenuEntry
+		{
+			private Item m_Item;
+
+			public BuyEntry( Item item ) : base( 6103 )
+			{
+				m_Item = item;
+			}
+
+			public override bool NonLocalUse{ get{ return true; } }
+
+			public override void OnClick()
+			{
+				if ( m_Item.Deleted )
+					return;
+
+				PlayerVendor.TryToBuy( m_Item, Owner.From );
+			}
+		}
+
+		public override void GetChildNameProperties( ObjectPropertyList list, Item item )
+		{
+			base.GetChildNameProperties( list, item );
+
+			PlayerVendor pv = RootParent as PlayerVendor;
+
+			if ( pv == null )
+				return;
+
+			VendorItem vi = pv.GetVendorItem( item );
+
+			if ( vi == null )
+				return;
+
+			if ( !vi.IsForSale )
+				list.Add( 1043307 ); // Price: Not for sale.
+			else if ( vi.IsForFree )
+				list.Add( 1043306 ); // Price: FREE!
+			else
+				list.Add( 1043304, vi.FormattedPrice ); // Price: ~1_COST~
+		}
+
+		public override void GetChildProperties( ObjectPropertyList list, Item item )
+		{
+			base.GetChildProperties( list, item );
+
+			PlayerVendor pv = RootParent as PlayerVendor;
+
+			if ( pv == null )
+				return;
+
+			VendorItem vi = pv.GetVendorItem( item );
+
+			if ( vi != null && vi.Description != null && vi.Description.Length > 0 )
+				list.Add( 1043305, vi.Description ); // <br>Seller's Description:<br>"~1_DESC~"
+		}
 
         public override void OnSingleClickContained(Mobile from, Item item)
         {
