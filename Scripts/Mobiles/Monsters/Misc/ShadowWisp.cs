@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	public class ShadowWisp : BaseCreature
 	{
 		[Constructable]
-		public ShadowWisp() : base( AIType.AI_Mage, FightMode.Aggressor, 10, 1, 0.3, 0.6 )
+		public ShadowWisp() : base( AIType.AI_Mage, FightMode.Weakest, 10, 1, 0.3, 0.6 )
 		{
 			Name = "a shadow wisp";
 			Body = 165;
