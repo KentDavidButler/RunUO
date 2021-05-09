@@ -1,4 +1,5 @@
 using System;
+using Server;
 using Server.Mobiles;
 
 namespace Server
@@ -119,6 +120,7 @@ namespace Server
 				new Type[]
 				{
 					typeof( LichLord ),
+					typeof( AncientLich ),
 					typeof( Shade ),
 					typeof( Spectre ),
 					typeof( Wraith ),
@@ -129,7 +131,9 @@ namespace Server
 					typeof( Skeleton ),
 					typeof( Zombie ),
 					typeof( RottingCorpse ),
-					typeof( Lich )
+					typeof( Lich ),
+					typeof( ShadowWisp ),
+					typeof( DarkWisp )
 				}
 			} );
 

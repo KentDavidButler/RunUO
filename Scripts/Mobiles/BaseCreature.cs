@@ -414,6 +414,9 @@ namespace Server.Mobiles
 		public virtual int BreathAngerSound{ get{ return GetAngerSound(); } }
 		public virtual int BreathAngerAnimation{ get{ return 12; } }
 
+		// Is immune to breath damages
+		public virtual bool BreathImmune{ get{ return false; } }
+
 		public virtual void BreathStart( Mobile target )
 		{
 			BreathStallMovement();
@@ -469,6 +472,9 @@ namespace Server.Mobiles
 		public virtual void BreathDamage_Callback( object state )
 		{
 			Mobile target = (Mobile)state;
+
+			if ( target is BaseCreature && ((BaseCreature)target).BreathImmune )
+				return;
 
 			if ( CanBeHarmful( target ) )
 			{
@@ -971,6 +977,30 @@ namespace Server.Mobiles
 		}
 
 		public virtual void CheckReflect( Mobile caster, ref bool reflect )
+		{
+		}
+
+		public virtual void AlterDamageScalarFrom( Mobile caster, ref double scalar )
+		{
+		}
+
+		public virtual void AlterDamageScalarTo( Mobile target, ref double scalar )
+		{
+		}
+
+		public virtual void AlterSpellDamageFrom( Mobile from, ref int damage )
+		{
+		}
+
+		public virtual void AlterSpellDamageTo( Mobile to, ref int damage )
+		{
+		}
+
+		public virtual void AlterMeleeDamageFrom( Mobile from, ref int damage )
+		{
+		}
+
+		public virtual void AlterMeleeDamageTo( Mobile to, ref int damage )
 		{
 		}
 
