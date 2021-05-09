@@ -184,6 +184,7 @@ namespace Server.Items
 
 			if ( !m_Healer.Alive )
 			{
+				
 				healerNumber = 500962; // You were unable to finish your work before you died.
 				patientNumber = -1;
 				playSound = false;
@@ -200,8 +201,7 @@ namespace Server.Items
 				double anatomy = m_Healer.Skills[secondarySkill].Value;
 				double chance = (healing - 68.0) / 50.0 - m_Slips * 0.02;
 
-				if (( (checkSkills = (healing >= 80.0 && anatomy >= 80.0)) && chance > Utility.RandomDouble() )
-				      || ( petPatient.ControlMaster == m_Healer) )
+				if ( (checkSkills = (healing >= 80.0 && anatomy >= 80.0)) && chance > Utility.RandomDouble() )
 				{
 					if ( m_Patient.Map == null || !m_Patient.Map.CanFit( m_Patient.Location, 16, false, false ) )
 					{
@@ -273,9 +273,14 @@ namespace Server.Items
 				else
 				{
 					if ( petPatient != null && petPatient.IsDeadPet )
+                    {
 						healerNumber = 503256; // You fail to resurrect the creature.
+                    }
 					else
+                    {
 						healerNumber = 500966; // You are unable to resurrect your patient.
+                    }
+
 
 					patientNumber = -1;
 				}
