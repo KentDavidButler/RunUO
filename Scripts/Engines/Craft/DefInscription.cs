@@ -278,6 +278,31 @@ namespace Server.Engines.Craft
 			AddRes( index, typeof( RecallScroll ), 1044445, 1, 1044253 );
 			AddRes( index, typeof( GateTravelScroll ), 1044446, 1, 1044253 );
 
+			// Books
+					//item making     craftcatagory  craftname  skillmin skillmax  resources
+			index = AddCraft( typeof( LargOpenBook ), 1044294, "Large Book", 63.1, 88.1, typeof( BlankScroll ), 1044377, 30, 1044378 );
+			index = AddCraft( typeof( BookOpenSmall ), 1044294, "Open Small Book", 63.1, 88.1, typeof( BlankScroll ), 1044377, 10, 1044378 );
+			index = AddCraft( typeof( BookOpenMedium ), 1044294, "Open Medium Book", 63.1, 88.1, typeof( BlankScroll ), 1044377, 10, 1044378 );
+
+			index = AddCraft( typeof( BookOpenUpsideDown ), 1044294, "Open Upsidedown Book", 63.1, 88.1, typeof( BlankScroll ), 1044377, 30, 1044378 );
+			index = AddCraft( typeof( BooksOpenUpsideDown ), 1044294, "Open Upsidedown Books", 63.1, 88.1, typeof( BlankScroll ), 1044377, 50, 1044378 );
+			index = AddCraft( typeof( BooksOpenLargeStacked ), 1044294, "Open Upsidedown Books", 63.1, 88.1, typeof( BlankScroll ), 1044377, 50, 1044378 );
+
+			index = AddCraft( typeof( BooksStacked ), 1044294, "Stack of Books", 63.1, 88.1, typeof( BlankScroll ), 1044377, 100, 1044378 );
+			index = AddCraft( typeof( DamagedBooks ), 1044294, "Pile of Books", 63.1, 88.1, typeof( BlankScroll ), 1044377, 100, 1044378 );
+
+			// Books With Stand
+			index = AddCraft( typeof( bookstand1 ), 1044294, "Book on Stand", 63.1, 88.1, typeof( BlankScroll ), 1044377, 20, 1044378 );
+			AddSkill( index, SkillName.Carpentry, 45.0, 50.0 );
+			AddRes( index, typeof( Log ), 1044041, 25, 1044351 );
+			index = AddCraft( typeof( bookstand2 ), 1044294, "Open Book on Stand", 63.1, 88.1, typeof( BlankScroll ), 1044377, 20, 1044378 );
+			AddSkill( index, SkillName.Carpentry, 45.0, 50.0 );
+			AddRes( index, typeof( Log ), 1044041, 25, 1044351 );
+			index = AddCraft( typeof( bookstand3 ), 1044294, "A Book Stand", 63.1, 88.1, typeof( BlankScroll ), 1044377, 20, 1044378 );
+			AddSkill( index, SkillName.Carpentry, 45.0, 50.0 );
+			AddRes( index, typeof( Log ), 1044041, 25, 1044351 );
+
+
 			MarkOption = true;
 		}
 	}
