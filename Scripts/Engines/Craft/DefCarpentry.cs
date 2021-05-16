@@ -105,6 +105,8 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( WritingTable ),				1044291, 1022890,	63.1,  88.1,	typeof( Log ), 1044041, 17, 1044351 );
 			AddCraft( typeof( YewWoodTable ),				1044291, 1044307,	63.1,  88.1,	typeof( Log ), 1044041, 23, 1044351 );
 			AddCraft( typeof( LargeTable ),					1044291, 1044308,	84.2, 109.2,	typeof( Log ), 1044041, 27, 1044351 );
+			AddCraft( typeof( Counter ),					1044291, 1022877,	94.2, 109.2,	typeof( Log ), 1044041, 30, 1044351 );
+			AddCraft( typeof( SmallDisplayCase ),			1044291, "Small Display Case",90.2, 109.2,typeof( Log ), 1044041, 50, 1044351 );
 
 			// Containers
 			AddCraft( typeof( WoodenBox ),					1044292, 1023709,	21.0,  46.0,	typeof( Log ), 1044041, 10, 1044351 );
@@ -112,9 +114,13 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( MediumCrate ),				1044292, 1044310,	31.0,  56.0,	typeof( Log ), 1044041, 15, 1044351 );
 			AddCraft( typeof( LargeCrate ),					1044292, 1044311,	47.3,  72.3,	typeof( Log ), 1044041, 18, 1044351 );
 			AddCraft( typeof( WoodenChest ),				1044292, 1023650,	73.6,  98.6,	typeof( Log ), 1044041, 20, 1044351 );
-			AddCraft( typeof( EmptyBookcase ),				1044292, 1022718,	31.5,  56.5,	typeof( Log ), 1044041, 25, 1044351 );
+			AddCraft( typeof( EmptyBookcase ),				1044292, 1022716,	31.5,  56.5,	typeof( Log ), 1044041, 25, 1044351 );
 			AddCraft( typeof( FancyArmoire ),				1044292, 1044312,	84.2, 109.2,	typeof( Log ), 1044041, 35, 1044351 );
 			AddCraft( typeof( Armoire ),					1044292, 1022643,	84.2, 109.2,	typeof( Log ), 1044041, 35, 1044351 );
+
+			index = AddCraft( typeof( LibraryBookcase ),	1044292, 1022711,	95.4, 109.4,	typeof( Log ), 1044041, 25, 1044351 );
+			AddSkill( index, SkillName.Inscribe, 90.0, 110.0 );
+			AddRes( index, typeof( BlankScroll ), 1044377, 100, 1044378 );
 
 			index = AddCraft( typeof( Keg ), 1044292, 1023711, 57.8, 82.8, typeof( BarrelStaves ), 1044288, 3, 1044253 );
 			AddRes( index, typeof( BarrelHoops ), 1044289, 1, 1044253 );
@@ -177,6 +183,10 @@ namespace Server.Engines.Craft
 			index = AddCraft( typeof( AbbatoirDeed ), 1044290, 1044329, 100.0, 125.0, typeof( Log ), 1044041, 100, 1044351 );
 			AddSkill( index, SkillName.Magery, 50.0, 55.0 );
 			AddRes( index, typeof( IronIngot ), 1044036, 40, 1044037 );
+			AddCraft( typeof( LargeDisplayCaseEastDeed ), 1044290, "Large Display Case East", 94.7, 119.8, typeof( Log ), 1044041, 100, 1044351 );
+			AddCraft( typeof( LargeDisplayCaseSouthDeed ), 1044290, "Large Display Case South", 94.7, 119.8, typeof( Log ), 1044041, 100, 1044351 );
+			AddCraft( typeof( ExtraLargeDisplayCaseEastDeed ), 1044290, "Extra Large Display Case East", 98.7, 119.8, typeof( Log ), 1044041, 150, 1044351 );
+			AddCraft( typeof( ExtraLargeDisplayCaseSouthDeed ), 1044290, "Extra Large Display Case South", 98.7, 119.8, typeof( Log ), 1044041, 150, 1044351 );
 
 			// Blacksmithy - This changed to Anvils and Forges (1111809) for SA
 			index = AddCraft( typeof( SmallForgeDeed ), 1044296, 1044330, 73.6, 98.6, typeof( Log ), 1044041, 5, 1044351 );

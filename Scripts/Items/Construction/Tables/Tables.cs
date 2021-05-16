@@ -154,4 +154,68 @@ namespace Server.Items
 				Weight = 1.0;
 		}
 	}
+
+	[Furniture]
+	[Flipable(0x0B3F,0x0B40)]
+	public class Counter : Item
+	{
+		[Constructable]
+		public Counter() : base(0x0B40)
+		{
+			Weight = 1.0;
+		}
+
+		public Counter(Serial serial) : base(serial)
+		{
+		}
+
+		public override void Serialize(GenericWriter writer)
+		{
+			base.Serialize(writer);
+
+			writer.Write((int) 0);
+		}
+
+		public override void Deserialize(GenericReader reader)
+		{
+			base.Deserialize(reader);
+
+			int version = reader.ReadInt();
+
+			if ( Weight == 4.0 )
+				Weight = 1.0;
+		}
+	}
+
+	[Furniture]
+	[Flipable(0x0B09,0x0B0A)]
+	public class SmallDisplayCase : Item
+	{
+		[Constructable]
+		public SmallDisplayCase() : base(0x0B09)
+		{
+			Weight = 1.0;
+		}
+
+		public SmallDisplayCase(Serial serial) : base(serial)
+		{
+		}
+
+		public override void Serialize(GenericWriter writer)
+		{
+			base.Serialize(writer);
+
+			writer.Write((int) 0);
+		}
+
+		public override void Deserialize(GenericReader reader)
+		{
+			base.Deserialize(reader);
+
+			int version = reader.ReadInt();
+
+			if ( Weight == 4.0 )
+				Weight = 1.0;
+		}
+	}
 }
