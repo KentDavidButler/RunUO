@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Server.Items;
+using System;
+using Server.Engines.Harvest;
 
 
 namespace Server.Mobiles
@@ -49,11 +51,15 @@ namespace Server.Mobiles
 		}
     }
 
-	    public class FieldMiner : BaseVendor
+
+
+	public class FieldMiner : BaseVendor
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 		public override bool PlayerRangeSensitive { get { return false; } }
+		public DateTime m_digDelay = DateTime.Now;
+		HarvestDefinition oreAndStone = new HarvestDefinition();
 
 		[Constructable]
 		public FieldMiner() : base( "the miner" )
@@ -72,6 +78,7 @@ namespace Server.Mobiles
 			AddItem( new FancyShirt( Utility.RandomMetalHue() ) );
 			AddItem( new Pickaxe() );
 			AddItem( new ThighBoots( Utility.RandomMetalHue() ) );
+			PackItem( new Shovel() );
 
 			int hairHue = GetHairHue();
 
@@ -120,7 +127,44 @@ namespace Server.Mobiles
         public override void OnThink()
         {
             base.OnThink();
-			//if surface under miner is cave floor? the mine
+
+			bool hasOre = false;
+			Item ore = null;
+			
+			if (DateTime.Now > m_digDelay)
+            {
+				m_digDelay = DateTime.Now + TimeSpan.FromSeconds(Utility.Random(26));
+				this.Animate((int)WeaponAnimation.Wrestle, 11, 1, true, false, 1);
+				Effects.PlaySound( this, this.Map, 0x125 );
+				this.Freeze(TimeSpan.FromSeconds(2));
+
+				// 5 percent chance of digging up ore
+				int chance = Utility.Random(101);
+				if(chance > 99)
+				{
+					PackItem(new GoldOre());
+					hasOre = true;
+					ore = Backpack.FindItemByType(typeof(GoldOre));
+				}
+				else if (chance > 98)
+				{
+					PackItem(new ShadowIronOre());
+					hasOre = true;
+					ore = Backpack.FindItemByType(typeof(ShadowIronOre));
+				}
+				else if (chance > 95)
+				{
+					PackItem(new IronOre());
+					hasOre = true;
+					ore = Backpack.FindItemByType(typeof(IronOre));
+				}
+
+				// drop ore at feet
+				if(hasOre)
+				{
+					ore.MoveToWorld(this.Location);
+				}
+			}
         }
     }
 }
