@@ -139,20 +139,20 @@ namespace Server.Mobiles
 				this.Freeze(TimeSpan.FromSeconds(2));
 
 				// 5 percent chance of digging up ore
-				int chance = Utility.Random(101);
-				if(chance > 99)
+				int chance = Utility.Random(1001);
+				if(chance > 995)
 				{
 					PackItem(new GoldOre());
 					hasOre = true;
 					ore = Backpack.FindItemByType(typeof(GoldOre));
 				}
-				else if (chance > 98)
+				else if (chance > 990)
 				{
 					PackItem(new ShadowIronOre());
 					hasOre = true;
 					ore = Backpack.FindItemByType(typeof(ShadowIronOre));
 				}
-				else if (chance > 95)
+				else if (chance > 980)
 				{
 					PackItem(new IronOre());
 					hasOre = true;
