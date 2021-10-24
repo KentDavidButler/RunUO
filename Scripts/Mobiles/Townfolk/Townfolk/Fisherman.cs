@@ -108,6 +108,7 @@ namespace Server.Mobiles
 				m_fishDelay = DateTime.Now + TimeSpan.FromSeconds(Utility.Random(36));
 
 				this.DoFishing();
+				this.Freeze(2);
 			}
         }
 
