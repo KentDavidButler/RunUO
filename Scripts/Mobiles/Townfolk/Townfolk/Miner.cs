@@ -128,45 +128,11 @@ namespace Server.Mobiles
         {
             base.OnThink();
 
-			this.DoMining();
-
-			//bool hasOre = false;
-			//Item ore = null;
-			
-			//if (DateTime.Now > m_digDelay)
-            //{
-			//	m_digDelay = DateTime.Now + TimeSpan.FromSeconds(Utility.Random(26));
-			//	this.Animate((int)WeaponAnimation.Wrestle, 11, 1, true, false, 1);
-			//	Effects.PlaySound( this, this.Map, 0x125 );
-			//	this.Freeze(TimeSpan.FromSeconds(2));
-			//
-			//	// 5 percent chance of digging up ore
-			//	int chance = Utility.Random(1001);
-			//	if(chance > 995)
-			//	{
-			//		PackItem(new GoldOre());
-			//		hasOre = true;
-			//		ore = Backpack.FindItemByType(typeof(GoldOre));
-			//	}
-			//	else if (chance > 990)
-			//	{
-			//		PackItem(new ShadowIronOre());
-			//		hasOre = true;
-			//		ore = Backpack.FindItemByType(typeof(ShadowIronOre));
-			//	}
-			//	else if (chance > 980)
-			//	{
-			//		PackItem(new IronOre());
-			//		hasOre = true;
-			//		ore = Backpack.FindItemByType(typeof(IronOre));
-			//	}
-			//
-			//	// drop ore at feet
-			//	if(hasOre)
-			//	{
-			//		ore.MoveToWorld(this.Location);
-			//	}
-			//}
+			if (DateTime.Now > m_digDelay)
+            {
+				m_digDelay = DateTime.Now + TimeSpan.FromSeconds(Utility.Random(36));
+				this.DoMining();	
+			}
         }
     }
 }

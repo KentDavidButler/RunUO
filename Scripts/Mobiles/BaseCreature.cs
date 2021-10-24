@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Server.Regions;
 using Server.Network;
@@ -4295,7 +4296,7 @@ namespace Server.Mobiles
             Map map = Map;
             Point3D loc = Location;
             int x = 0, y = 0;
-            GetMiningOffset(Direction, ref x, ref y);
+            GetHarvestOffset(Direction, ref x, ref y);
             loc.X += x;
             loc.Y += y;
             int tileId = map.Tiles.GetLandTile(loc.X, loc.Y).ID & 0x3FFF;
@@ -4364,20 +4365,119 @@ namespace Server.Mobiles
             }
         }
 
-		private void GetMiningOffset(Direction d, ref int x, ref int y)
+		public void DoFishing()
         {
-            switch (d & Direction.Mask)
+            if (Map == null || Map == Map.Internal)
+                return;
+			
+            // We may not fish while we are fighting
+            if (Combatant != null)
+                return;
+
+            HarvestSystem system = Fishing.System;
+            HarvestDefinition def = Fishing.System.Definition;
+			// Tiles that we can fish from, #100 is a tile used between land and sea
+			// all other tiles are water tiles
+			int[] validTiles = {100, 168, 169, 170, 171, 310, 311 };
+
+            // Our target is the land tile under us
+            Map map = Map;
+            Point3D loc = Location;
+            int x = 0, y = 0;
+            GetHarvestOffset(Direction, ref x, ref y, 6);
+            loc.X += x;
+            loc.Y += y;
+            int tileId = map.Tiles.GetLandTile(loc.X, loc.Y).ID;
+
+
+            if (!validTiles.Contains(tileId))
+               return;
+
+            HarvestBank bank = def.GetBank(map, loc.X, loc.Y);
+
+            if (bank == null || bank.Current < def.ConsumedPerHarvest)
+                return;
+
+            HarvestVein vein = bank.Vein;
+
+            if (vein == null)
+                return;
+
+            HarvestResource primary = vein.PrimaryResource;
+            HarvestResource fallback = def.Resources[0];
+
+            HarvestResource resource = system.MutateResource(this, null, def, map, loc, vein, primary, fallback);
+
+            double skillBase = Skills[def.Skill].Base;
+
+            Type type = null;
+
+            if (skillBase >= resource.ReqSkill && CheckSkill(def.Skill, resource.MinSkill, resource.MaxSkill))
             {
-                case Direction.North: --y; break;
-                case Direction.South: ++y; break;
-                case Direction.West: --x; break;
-                case Direction.East: ++x; break;
-                case Direction.Right: ++x; --y; break;
-                case Direction.Left: --x; ++y; break;
-                case Direction.Down: ++x; ++y; break;
-                case Direction.Up: --x; --y; break;
+                type = system.GetResourceType(this, null, def, map, loc, resource);
+
+                if (type != null)
+                    type = system.MutateType(type, this, null, def, map, loc, resource);
+
+                if (type != null)
+                {
+                    Item item = system.Construct(type, this, null);
+
+                    if (item == null)
+                    {
+                        type = null;
+                    }
+                    else
+                    {
+                        if (item.Stackable)
+                        {
+                            int amount = def.ConsumedPerHarvest;
+                            int feluccaAmount = def.ConsumedPerFeluccaHarvest;
+
+                            bool inFelucca = (map == Map.Felucca);
+
+                            if (inFelucca)
+                                item.Amount = feluccaAmount;
+                            else
+                                item.Amount = amount;
+                        }
+
+                        bank.Consume(item.Amount, this);
+
+						Console.WriteLine(this.Location);
+                        item.MoveToWorld(this.Location, map);
+
+                        system.DoHarvestingEffect(this, null, def, map, loc);
+                        system.DoHarvestingSound(this, null, def, null);
+
+                    }
+                }
             }
         }
+
+		private void GetHarvestOffset(Direction d,
+										ref int x, 
+										ref int y, 
+										int maxDistance = 0)
+        {
+			int distance = 1;
+
+			// if provided the optional parameter maxDistance, then use that to determine the max range
+			if (maxDistance < 1) { distance = Utility.Random(2, maxDistance); }
+
+            switch (d & Direction.Mask)
+            {
+                case Direction.North: y = y - distance; break;
+                case Direction.South: y = y + distance; break;
+                case Direction.West: x = x - distance; break;
+                case Direction.East: x = x + distance; break;
+                case Direction.Right: x = x + distance; y = y - distance; break;
+                case Direction.Left: x = x - distance; y = y + distance; break;
+                case Direction.Down: x = x + distance; y = y + distance; break;
+                case Direction.Up: x = x + distance; y = y + distance; break;
+            }
+        }
+
 
 		public virtual void OnThink()
 		{

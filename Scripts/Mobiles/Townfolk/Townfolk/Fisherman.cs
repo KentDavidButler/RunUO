@@ -103,24 +103,11 @@ namespace Server.Mobiles
         {
             base.OnThink();
 
-			Item fishpole = null;
-			if (DateTime.Now > this.m_fishDelay)
-            {
-				foreach (Item element in this.Items)
-                { 
-					if (element.ToString().Contains("FishingPole")){
-						Console.WriteLine("found the fishpole");
-						fishpole = element;
-                    }
-				}
-				Console.WriteLine("I Should be finishing");
-				m_fishDelay = DateTime.Now + TimeSpan.FromSeconds(Utility.Random(31));
-				if(fishpole != null)
-                {
-					Console.WriteLine("lets start fishing!");
-					Server.Engines.Harvest.Fishing.System.BeginHarvesting(this, fishpole);
-                }
+			if (DateTime.Now > this.m_fishDelay) 
+			{ 
+				m_fishDelay = DateTime.Now + TimeSpan.FromSeconds(Utility.Random(36));
 
+				this.DoFishing();
 			}
         }
 
