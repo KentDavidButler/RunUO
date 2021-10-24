@@ -4444,7 +4444,6 @@ namespace Server.Mobiles
 
                         bank.Consume(item.Amount, this);
 
-						Console.WriteLine(this.Location);
                         item.MoveToWorld(this.Location, map);
 
                         system.DoHarvestingEffect(this, null, def, map, loc);
