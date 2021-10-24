@@ -252,6 +252,20 @@ namespace Server.Engines.Harvest
 			catch{ return null; }
 		}
 
+		public virtual Item Construct(Type type, Mobile from, Item tool)
+        {
+            try
+            {
+                return Activator.CreateInstance(type) as Item;
+            }
+            catch (Exception e)
+            {
+                //Diagnostics.ExceptionLogging.LogException(e);
+				Console.WriteLine(e);
+                return null;
+            }
+        }
+
 		public virtual HarvestVein MutateVein( Mobile from, Item tool, HarvestDefinition def, HarvestBank bank, object toHarvest, HarvestVein vein )
 		{
 			return vein;

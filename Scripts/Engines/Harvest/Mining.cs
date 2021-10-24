@@ -20,13 +20,15 @@ namespace Server.Engines.Harvest
 			}
 		}
 
+		public HarvestDefinition OreAndStone { get; set;}
+
 		private Mining()
 		{
 			HarvestResource[] res;
 			HarvestVein[] veins;
 
 			#region Mining for ore and stone
-			HarvestDefinition oreAndStone = new HarvestDefinition();
+			HarvestDefinition oreAndStone = OreAndStone = new HarvestDefinition();
 
 			// Resource banks are every 8x8 tiles
 			oreAndStone.BankWidth = 8;

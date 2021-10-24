@@ -10,6 +10,7 @@ using Server.ContextMenus;
 using Server.Engines.PartySystem;
 using Server.Guilds;
 using Server.SkillHandlers;
+using Server.Engines.Harvest;
 
 namespace Server.Mobiles
 {
@@ -4277,6 +4278,106 @@ namespace Server.Mobiles
 		{
 		}
 		#endregion
+
+		public void DoMining()
+        {
+            if (Map == null || Map == Map.Internal)
+                return;
+
+            // We may not mine while we are fighting
+            if (Combatant != null)
+                return;
+
+            HarvestSystem system = Mining.System;
+            HarvestDefinition def = Mining.System.OreAndStone;
+
+            // Our target is the land tile under us
+            Map map = Map;
+            Point3D loc = Location;
+            int x = 0, y = 0;
+            GetMiningOffset(Direction, ref x, ref y);
+            loc.X += x;
+            loc.Y += y;
+            int tileId = map.Tiles.GetLandTile(loc.X, loc.Y).ID & 0x3FFF;
+
+            if (!def.Validate(tileId))
+                return;
+
+            HarvestBank bank = def.GetBank(map, loc.X, loc.Y);
+
+            if (bank == null || bank.Current < def.ConsumedPerHarvest)
+                return;
+
+            HarvestVein vein = bank.Vein;
+
+            if (vein == null)
+                return;
+
+            HarvestResource primary = vein.PrimaryResource;
+            HarvestResource fallback = def.Resources[0];
+
+            HarvestResource resource = system.MutateResource(this, null, def, map, loc, vein, primary, fallback);
+
+            double skillBase = Skills[def.Skill].Base;
+
+            Type type = null;
+
+            if (skillBase >= resource.ReqSkill && CheckSkill(def.Skill, resource.MinSkill, resource.MaxSkill))
+            {
+                type = system.GetResourceType(this, null, def, map, loc, resource);
+
+                if (type != null)
+                    type = system.MutateType(type, this, null, def, map, loc, resource);
+
+                if (type != null)
+                {
+                    Item item = system.Construct(type, this, null);
+
+                    if (item == null)
+                    {
+                        type = null;
+                    }
+                    else
+                    {
+                        if (item.Stackable)
+                        {
+                            int amount = def.ConsumedPerHarvest;
+                            int feluccaAmount = def.ConsumedPerFeluccaHarvest;
+
+                            bool inFelucca = (map == Map.Felucca);
+
+                            if (inFelucca)
+                                item.Amount = feluccaAmount;
+                            else
+                                item.Amount = amount;
+                        }
+
+                        bank.Consume(item.Amount, this);
+
+                        item.MoveToWorld(loc, map);
+
+                        system.DoHarvestingEffect(this, null, def, map, loc);
+                        system.DoHarvestingSound(this, null, def, null);
+
+                    }
+                }
+            }
+        }
+
+		private void GetMiningOffset(Direction d, ref int x, ref int y)
+        {
+            switch (d & Direction.Mask)
+            {
+                case Direction.North: --y; break;
+                case Direction.South: ++y; break;
+                case Direction.West: --x; break;
+                case Direction.East: ++x; break;
+                case Direction.Right: ++x; --y; break;
+                case Direction.Left: --x; ++y; break;
+                case Direction.Down: ++x; ++y; break;
+                case Direction.Up: --x; --y; break;
+            }
+        }
 
 		public virtual void OnThink()
 		{
