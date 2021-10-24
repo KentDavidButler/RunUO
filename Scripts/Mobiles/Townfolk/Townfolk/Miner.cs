@@ -57,7 +57,6 @@ namespace Server.Mobiles
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
-		public override bool PlayerRangeSensitive { get { return false; } }
 		public DateTime m_digDelay = DateTime.Now;
 		HarvestDefinition oreAndStone = new HarvestDefinition();
 
