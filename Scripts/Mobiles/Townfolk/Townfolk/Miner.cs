@@ -132,7 +132,7 @@ namespace Server.Mobiles
             {
 				m_digDelay = DateTime.Now + TimeSpan.FromSeconds(Utility.Random(36));
 				this.DoMining();	
-				this.Freeze(2);
+				this.Freeze(TimeSpan.FromSeconds(2));
 			}
         }
     }
