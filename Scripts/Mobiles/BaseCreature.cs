@@ -4454,6 +4454,106 @@ namespace Server.Mobiles
             }
         }
 
+		public void DoLumberjacking()
+        {
+            if (Map == null || Map == Map.Internal)
+                return;
+			
+            // We may not lumberjack while we are fighting
+            if (Combatant != null)
+                return;
+
+            HarvestSystem system = Lumberjacking.System;
+            HarvestDefinition def = Lumberjacking.System.Definition;
+
+            // Our target is the land tile under us
+            Map map = Map;
+            Point3D loc = this.Location;
+            int x = 0, y = 0;
+            GetHarvestOffset(Direction, ref x, ref y, 3);
+            loc.X += x;
+            loc.Y += y;
+            int tileId = map.Tiles.GetLandTile(loc.X, loc.Y).ID;
+
+			StaticTile[] statics = this.Map.Tiles.GetStaticTiles(loc.X, loc.Y);
+            bool foundTree = false;
+
+			for (int i = 0; i < statics.Length; i++)
+			{
+				StaticTile st = statics[i];
+				string name = TileData.ItemTable[st.ID].Name;
+
+				if (name.Contains("tree"))
+				{
+					foundTree = true;
+				}
+			}
+
+			// did not find a tree break out of stuffs
+			if(!foundTree) { return; }
+			
+            HarvestBank bank = def.GetBank(map, loc.X, loc.Y);
+
+            if (bank == null || bank.Current < def.ConsumedPerHarvest)
+                return;
+
+            HarvestVein vein = bank.Vein;
+
+            if (vein == null)
+                return;
+
+            HarvestResource primary = vein.PrimaryResource;
+            HarvestResource fallback = def.Resources[0];
+
+            HarvestResource resource = system.MutateResource(this, null, def, map, loc, vein, primary, fallback);
+
+            double skillBase = Skills[def.Skill].Base;
+
+            Type type = null;
+
+            if (skillBase >= resource.ReqSkill && CheckSkill(def.Skill, resource.MinSkill, resource.MaxSkill))
+            {
+                type = system.GetResourceType(this, null, def, map, loc, resource);
+
+                if (type != null)
+                    type = system.MutateType(type, this, null, def, map, loc, resource);
+
+                if (type != null)
+                {
+                    Item item = system.Construct(type, this, null);
+
+                    if (item == null)
+                    {
+                        type = null;
+                    }
+                    else
+                    {
+                        if (item.Stackable)
+                        {
+                            int amount = def.ConsumedPerHarvest;
+                            int feluccaAmount = def.ConsumedPerFeluccaHarvest;
+
+                            bool inFelucca = (map == Map.Felucca);
+
+                            if (inFelucca)
+                                item.Amount = feluccaAmount;
+                            else
+                                item.Amount = amount;
+                        }
+
+                        bank.Consume(item.Amount, this);
+
+                        item.MoveToWorld(this.Location, map);
+
+                        system.DoHarvestingEffect(this, null, def, map, loc);
+						this.Animate( Utility.RandomList( def.EffectActions ), 5, 4, true, true, 0 );
+                        system.DoHarvestingSound(this, null, def, null);
+
+                    }
+                }
+            }
+        }
+
 		private void GetHarvestOffset(Direction d,
 										ref int x, 
 										ref int y, 
