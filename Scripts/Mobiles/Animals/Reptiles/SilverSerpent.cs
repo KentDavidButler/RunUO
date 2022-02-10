@@ -32,7 +32,8 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.Average );
+			AddLoot( LootPack.OldRich );
+			AddLoot( LootPack.OldRich );
 			AddLoot( LootPack.Gems, 2 );
 		}
 
