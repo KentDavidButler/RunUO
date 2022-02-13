@@ -4702,6 +4702,29 @@ namespace Server.Mobiles
 			return false;
 		}
 
+		public void NPCRandomSpeech( String job = null)
+        {
+			// Generic statment, anyone can say
+			// Gender specific Statement
+			// Job specific Statement
+
+			this.Say("Beautiful Day");
+
+			if ( this.Female)
+			{
+				this.Say("I'm a lady");
+			}
+			else
+			{
+				this.Say("I'm a man");
+			}
+
+			if (job != null)
+            {
+				this.Say("I'm a " + job);
+            }
+        }
+
 		public void Pacify( Mobile master, DateTime endtime )
 		{
 			BardPacified = true;
