@@ -55,7 +55,6 @@ namespace Server.Mobiles
 
 	public class FieldMiner : BaseVendor
 	{
-		public override HumanSpeech SpeechType { get { return InhumanSpeech.Orc; } }
 
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
