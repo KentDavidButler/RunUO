@@ -4708,21 +4708,8 @@ namespace Server.Mobiles
 			// Gender specific Statement
 			// Job specific Statement
 
-			this.Say("Beautiful Day");
-
-			if ( this.Female)
-			{
-				this.Say("I'm a lady");
-			}
-			else
-			{
-				this.Say("I'm a man");
-			}
-
-			if (job != null)
-            {
-				this.Say("I'm a " + job);
-            }
+			int[] myNum = {10, 20, 30, 40};
+			this.Say(Speech.getSpeech( myNum ));
         }
 
 		public void Pacify( Mobile master, DateTime endtime )

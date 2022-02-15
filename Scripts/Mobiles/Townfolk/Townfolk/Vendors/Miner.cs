@@ -135,7 +135,7 @@ namespace Server.Mobiles
 				this.Freeze(TimeSpan.FromSeconds(2));
 			}
 
-			NPCRandomSpeech(job: "Miner");
+			NPCRandomSpeech();
 		}
 	}
 }
