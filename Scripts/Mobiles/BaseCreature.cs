@@ -4702,14 +4702,37 @@ namespace Server.Mobiles
 			return false;
 		}
 
-		public void NPCRandomSpeech( String job = null)
+		public String NPCRandomSpeech( bool isFemale, bool isVendor,
+			bool isFunny, bool isAggresive, List<int> optionalStatments = null)
         {
-			// Generic statment, anyone can say
-			// Gender specific Statement
-			// Job specific Statement
+			if (optionalStatments == null)
+            {
+				optionalStatments = new List<int> { };
+            }
+			//if (isFemale)
+            //{
+            //    optionalStatments.Add(6);
+            //}
+            //else
+            //{
+            //    optionalStatments.Add(5);
+            //}
+			if (isFunny)
+			{
+				optionalStatments.Add(1);
+			}
 
-			int[] myNum = {10, 20, 30, 40};
-			this.Say(Speech.getSpeech( myNum ));
+			if (isAggresive)
+			{
+				optionalStatments.Add(2);
+			}
+
+            if (isVendor)
+            {
+                optionalStatments.Add(10);
+            }
+
+			return (Speech.getSpeech( optionalStatments ));
         }
 
 		public void Pacify( Mobile master, DateTime endtime )
