@@ -6,50 +6,62 @@ using Server.Engines.Harvest;
 
 namespace Server.Mobiles
 {
-    public class Miner : BaseVendor
+	public class Miner : BaseVendor
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos { get { return m_SBInfos; } }
 
 		[Constructable]
-		public Miner() : base( "the miner" )
+		public Miner() : base("the miner")
 		{
-			SetSkill( SkillName.Mining, 65.0, 88.0 );
+			SetSkill(SkillName.Mining, 65.0, 88.0);
 		}
 
 		public override void InitSBInfo()
 		{
-			m_SBInfos.Add( new SBMiner() );
+			m_SBInfos.Add(new SBMiner());
 		}
 
 		public override void InitOutfit()
 		{
 			base.InitOutfit();
 
-			AddItem( new FancyShirt( 0x3E4 ) );
-			AddItem( new LongPants( 0x192 ) );
-			AddItem( new Pickaxe() );
-			AddItem( new ThighBoots( 0x283 ) );
+			AddItem(new FancyShirt(0x3E4));
+			AddItem(new LongPants(0x192));
+			AddItem(new Pickaxe());
+			AddItem(new ThighBoots(0x283));
 		}
 
-		public Miner( Serial serial ) : base( serial )
+		public Miner(Serial serial) : base(serial)
 		{
 		}
 
-		public override void Serialize( GenericWriter writer )
+		public override void Serialize(GenericWriter writer)
 		{
-			base.Serialize( writer );
+			base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+			writer.Write((int)0); // version
 		}
 
-		public override void Deserialize( GenericReader reader )
+		public override void Deserialize(GenericReader reader)
 		{
-			base.Deserialize( reader );
+			base.Deserialize(reader);
 
 			int version = reader.ReadInt();
 		}
-    }
+
+		public override void OnThink()
+		{
+			base.OnThink();
+
+			if (Utility.Random(60) > 55)
+			{
+				// 20 is for Miner, vendor, funny , aggresive 
+				List<int> OptionalSpeechText = new List<int> { 20 };
+				this.Say(this.NPCRandomSpeech(this.Female, true, false, false, OptionalSpeechText));
+			}
+		}
+	}
 
 
 
@@ -135,9 +147,13 @@ namespace Server.Mobiles
 				this.Freeze(TimeSpan.FromSeconds(2));
 			}
 
+			if (Utility.Random(60) > 55)
+            {
+				// 20 is for Miner, vendor ture, funny true, aggresive true
+				List<int> OptionalSpeechText = new List<int> { 20 };
+				this.Say(this.NPCRandomSpeech(this.Female, true, true, true, OptionalSpeechText));
+			}
 
-			//if (InRange(m, 1)  && (!m.Hidden)) || m.AccessLevel == AccessLevel.Player))
-				Say(502268); // Quickly, I beg thee! Unlock my chains! If thou dost look at me close thou canst see them.
 		}
 	}
 }

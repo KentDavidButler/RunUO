@@ -4702,6 +4702,39 @@ namespace Server.Mobiles
 			return false;
 		}
 
+		public String NPCRandomSpeech( bool isFemale, bool isVendor,
+			bool isFunny, bool isAggresive, List<int> optionalStatments = null)
+        {
+			if (optionalStatments == null)
+            {
+				optionalStatments = new List<int> { };
+            }
+			//if (isFemale)
+            //{
+            //    optionalStatments.Add(6);
+            //}
+            //else
+            //{
+            //    optionalStatments.Add(5);
+            //}
+			if (isFunny)
+			{
+				optionalStatments.Add(1);
+			}
+
+			if (isAggresive)
+			{
+				optionalStatments.Add(2);
+			}
+
+            if (isVendor)
+            {
+                optionalStatments.Add(10);
+            }
+
+			return (Speech.getSpeech( optionalStatments ));
+        }
+
 		public void Pacify( Mobile master, DateTime endtime )
 		{
 			BardPacified = true;
