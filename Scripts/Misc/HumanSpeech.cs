@@ -90,7 +90,7 @@ namespace Server.Misc
                 {5, "Have you noticed that all ettins are male?"},
                 {6, "If a centaur and a mermaid mate, would they create a seahorse?"},
                 {7, "Did you pick out your clothes in the dark? Or perhaps from a trash can?"},
-                {8, "Lalalala… Lalalala… I am a loner…"},
+                {8, "Lalalalaï¿½ Lalalalaï¿½ I am a lonerï¿½"},
                 {9, "Fooooo!"},
                 {10, "EEK! Did you touch me?" },
                 {11, "I AM GOING TO ENJOY AN EGG" },
@@ -159,6 +159,7 @@ namespace Server.Misc
                 {16, "All prices here are reasonable" },
                 {17, "Please browse my wares." },
                 {18, "Sale here." }
+                {19, "What a heroic looking individual! I'll tell all my customers about you!"}
             };
 
         // 20
@@ -190,12 +191,76 @@ namespace Server.Misc
             };
 
         //50
-        private static Dictionary<int, string> innAndBarkeepStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> barkeepStatments = new Dictionary<int, string>()
             {
                 {1, "Drink for the thirsty, food for the hungry."},
                 {2, "Let's sate that appetite, hmm?"},
-                {3, "Depends. Are you thirsty, hungry, both?"},
-                {4, "Let's sate that appetite, hmm?"},
+                {3, "What do we have you say? It depends! Are you thirsty, hungry, both?"},
+                {4, "Warm beer ain't as bad as people say."},
+                {5, "The food ain't great, but it fills a hole."},
+                {6, "You can choose any beer you'd like, as long it's the house ale."},
+                {7, "We make the ale in the back, in a tub. It's how it gets it's taste."},
+                {8, "Don't ask what that tangy flavor is."},
+                {9, "Today's special is pottage with bread."},
+                {10, "Pottage is the special for any day ending in 'Y'"},
+                {11, "Contrary to popular belief, a little mold is good for you."},
+                {12, "Ale, we have ale and nothing else."},
+                {13, "Ohhh, look at fancy pants over here wanting a wine!"},
+                {14, "Would you like a little cheese with that wine?"},
+                {15, "Stop running! This is a bar not a barn!"},
+                {16, "Careful the locals get rowdy, once they get a few in them."},
+                {17, "I don't judge the alcoholics, I provide a safe space for them."},
+                {18, "Have another round! Let the horse drive you home!"},
+                {19, "You puke, you're out."},
+                {20, "You get sick in here, you'll be cleaning it up!"},
+                {21, "Welcome to the Britannia's most ok bar"},
+                {22, "If you wanted good food, go down the street!"},
+                {23, "Best prices for a warm meal"},
+                {24, "Best prices for a half eating meal"},
+                {25, "You can have sloppy seconds if you're short on coin"},
+                {26, "Don't listen to the locals, we ain't serving cat!"},
+                {27, "If you find a cat hair in your food, your meal is free"},
+                {28, "Lizard men is a delicacy around here"},
+                {29, "Have you ever tried Lizard man tail?"},
+                {30, "Be warned, I've seen trolls turn down our food."},
+            };
+
+        //51
+        private static Dictionary<int, string> innStatments = new Dictionary<int, string>()
+            {
+                {1, "Looks like you could use a rest."},
+                {2, "No funny business in these rooms!"},
+                {3, "No vacancy."},
+                {4, "No vacancy, try the next place"},
+                {5, "Go away, we're full"},
+                {6, "Would you like a room? Cause we ain't got any available."},
+                {7, "We got a free room, if you'd like to stay."},
+                {8, "This place beats sleeping on the street, but not by much."},
+                {9, "How do you like sleeping with rats?"},
+                {10, "You can share a room if you're short on coin."},
+                {11, "No horses inside of the rooms!"},
+                {12, "For extra we can provide a warm bath."},
+                {13, "For extra we can provide a warm bath, and for a little less you let me watch"},
+                {14, "Sorry, it's not a bed and breakfast."},
+                {15, "The continental breakfast will run you extra"},
+                {16, "Don't mind the light coming from the hole in the wall."},
+                {17, "If the rooms are too pricy, you can sleep with the horses"},
+                {18, "The rooms look empty, but I assure you they are reserved"},
+                {19, "It's quite in the Inn during the middle of the day"},
+                {20, "We are not responsible for missing items"},
+                {21, "Be sure to lock your belongings up while you are out"},
+                {22, "I'll charge you extra if the guards come looking for you"},
+                {23, "This is an Inn! You can't do that here"},
+                {24, "This is an Inn! Not a fighting ring!"},
+                {25, "Please leave your mounts outside"},
+                {26, "You look shady, I don't know if I'll be renting a room to you"},
+                {27, "It's normal to have ghosts visit you at night."},
+                {28, "Sheets are always changed, every fifth day."},
+                {29, "Waking up with red dots is perfectly normal!"},
+                {30, "Feeling rested?"},
+                {31, "Have a good night's sleep?"},
+                {30, "Did you hear a bump in the night?"},
+                {31, "Careful the bed bugs bite."},
             };
 
         //60
@@ -204,6 +269,32 @@ namespace Server.Misc
                 {1, "The finest weapons and armor."},
                 {2, "Hmm... Blades, helmets. Pretty much anything to suit your needs."},
                 {3, "Looking to protect yourself, or deal some damage?"},
+                {4, "Blades so sharp you would think it's magical"},
+                {5, "Our weapons come with plus one attack power!"},
+                {6, "You need to beat something other than your meat? Check out our mace selection!"},
+                {7, "Beat it! With a mace, a hammer, or a quarterstaff!"},
+                {8, "Fine selection of weapons at the ready."},
+                {9, "If I don't have a weapon you are looking for, I'll make it!"},
+                {10, "You don't need magic when you got an axe!"},
+                {11, "You looking for two handed weapons or one handed?"},
+                {12, "you looking to cut, beat, or stab? We've got it all!"},
+                {13, "I made each one of these weapons with my bear hands!"},
+                {14, "I got several ways to protect yourself"},
+                {15, "What kind of protection you looking for?"},
+                {16, "Suiting up like a fortress? I've got the plate armor for you!"},
+                {17, "Looking for flexibility, try padded armor."},
+                {18, "Even wizards need armor around these parts."},
+                {19, "You won't live beyond these walls without protection"},
+                {20, "It's dangerous to go alone! Buy a weapon here."},
+                {21, "People underestimate the protection of a shield"},
+                {22, "With that shield, you look like a super hero!"},
+                {23, "With that hammer, you look like a super hero!"},
+                {24, "With my armor, people will be calling you Armor Man!"},
+                {25, "Watch out for the forge, it's hot."},
+                {26, "If you can't take the heat, stay out of the forge!"},
+                {27, "Nothing like a good hammering to keep you in shape"},
+                {28, "Ting, ting, ting goes the forge!"},
+                {29, "You bring the ingots, I can make what you want."},
             };
 
         //70

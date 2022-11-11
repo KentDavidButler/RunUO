@@ -39,5 +39,17 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt(); 
 		} 
+
+		public override void OnThink()
+		{
+			base.OnThink();
+
+			if (Utility.Random(60) > 55)
+			{
+				// 51 is for Innkeep, vendor, funny , aggresive 
+				List<int> OptionalSpeechText = new List<int> { 51 };
+				this.Say(this.NPCRandomSpeech(this.Female, true, false, false, OptionalSpeechText));
+			}
+		}
 	} 
 }
