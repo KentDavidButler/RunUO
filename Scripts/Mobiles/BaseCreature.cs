@@ -4709,10 +4709,10 @@ namespace Server.Mobiles
             {
 				optionalStatments = new List<int> { };
             }
-			//if (isFemale)
-            //{
-            //    optionalStatments.Add(6);
-            //}
+			if (isFemale)
+            {
+               optionalStatments.Add(6);
+            }
             //else
             //{
             //    optionalStatments.Add(5);
