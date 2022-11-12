@@ -74,9 +74,9 @@ namespace Server.Misc
                 {50, "I heard somewhere giant snakes and spiders fight" },
                 {51, "I heard the ratmen and orcs are at war" },
                 {52, "I never knew Lord British's first name is Cantabrigian." },
-                {53, "Rare Unqiue items are said to appear in dugneons around the land" },
+                {53, "Rare unique items are said to appear in dungeons around the land" },
                 {54, "Legend states that a rare beast appears in the depths of Wrong" },
-                {55, "Is Lord Black Thron a bad guy?" },
+                {55, "Is Lord Black Thorn a bad guy?" },
                 {56, "Do you live in a castle?"},
 
             };
@@ -90,7 +90,7 @@ namespace Server.Misc
                 {5, "Have you noticed that all ettins are male?"},
                 {6, "If a centaur and a mermaid mate, would they create a seahorse?"},
                 {7, "Did you pick out your clothes in the dark? Or perhaps from a trash can?"},
-                {8, "Lalalala� Lalalala� I am a loner�"},
+                {8, "Lalalala! Lalalala! I am a loner."},
                 {9, "Fooooo!"},
                 {10, "EEK! Did you touch me?" },
                 {11, "I AM GOING TO ENJOY AN EGG" },
@@ -136,13 +136,23 @@ namespace Server.Misc
                 {3, "Keep your mind on your work." },
                 {4, "Your mind is in the gutter" },
                 {5, "When a man is wrong and won't admit is, he always gets angry." }
+                {6, "I don't feel safe walking around at night."},
+                {7, "You'll never guess how many cats I own."},
+                {8, "Once you've had your third kid, the rest just slip on out." },
+                {9, "I'm in a constant state of stress" },
+                {10, "I try to buy stuff with buttons!" },
+                {11, "Why can't our cloths come with pockets?"},
+                {12, "How does women's armor protect them?"},
+                {13, "One day I'll get paid my fair share" },
+                {14, "Could you stop staring!" },
+                {15, "I'm not emotional! I'm angry!" }
             };
 
         // 10
         private static Dictionary<int, string> vendorStatments = new Dictionary<int, string>()
             {
                 {1, "Take a look."},
-                {2, "Diggin' in des mines"},
+                {2, "Take a look at these goods!"},
                 {3, "Oh, a bit of this and a bit of that." },
                 {4, "Trinkets, odds and ends, that sort of thing." },
                 {5, "Some may call this junk. Me, I call them treasures."},
@@ -160,6 +170,16 @@ namespace Server.Misc
                 {17, "Please browse my wares." },
                 {18, "Sale here." }
                 {19, "What a heroic looking individual! I'll tell all my customers about you!"}
+                {20, "Nothing wrong with taking a look."},
+                {21, "Something catch your eye?"},
+                {22, "What are you looking to sell?" },
+                {23, "I'd buy that for a coin!" },
+                {24, "I'e got the best prices around!" },
+                {25, "You got the coin, I've got the goods" },
+                {26, "Your coin goes farther here." },
+                {27, "Did you see our add posted at the bank?" },
+                {28, "Don't forget to ask about today's sales" }
+                {29, "I'm not cut out to be a salesman."}
             };
 
         // 20
