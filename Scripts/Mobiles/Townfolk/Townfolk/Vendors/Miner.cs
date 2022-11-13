@@ -58,7 +58,7 @@ namespace Server.Mobiles
 			{
 				// 20 is for Miner, vendor, funny , aggresive 
 				List<int> OptionalSpeechText = new List<int> { 20 };
-				this.Say(this.NPCRandomSpeech(this.Female, true, false, false, OptionalSpeechText));
+				this.Say(this.NPCRandomSpeech(this.Female, true, false, false, optionalStatements: OptionalSpeechText));
 			}
 		}
 	}
@@ -149,9 +149,9 @@ namespace Server.Mobiles
 
 			if (Utility.Random(60) > 55)
             {
-				// 20 is for Miner, vendor ture, funny true, aggresive true
+				// 20 is for Miner, vendor true, funny true, aggresive true
 				List<int> OptionalSpeechText = new List<int> { 20 };
-				this.Say(this.NPCRandomSpeech(this.Female, true, true, true, OptionalSpeechText));
+				this.Say(this.NPCRandomSpeech(this.Female, true, true, true, optionalStatements: OptionalSpeechText));
 			}
 
 		}

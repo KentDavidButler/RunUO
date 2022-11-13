@@ -4703,36 +4703,39 @@ namespace Server.Mobiles
 		}
 
 		public String NPCRandomSpeech( bool isFemale, bool isVendor,
-			bool isFunny, bool isAggresive, List<int> optionalStatments = null)
+			bool isFunny, bool isAggressive, List<int> optionalStatements = null)
         {
-			if (optionalStatments == null)
+			if (optionalStatements == null )
             {
-				optionalStatments = new List<int> { };
+				optionalStatements = new List<int> { };
             }
-			if (isFemale)
-            {
-               optionalStatments.Add(6);
-            }
-            //else
-            //{
-            //    optionalStatments.Add(5);
-            //}
+
 			if (isFunny)
 			{
-				optionalStatments.Add(1);
+				optionalStatements.Add(1);
 			}
 
-			if (isAggresive)
+			if (isAggressive)
 			{
-				optionalStatments.Add(2);
+				optionalStatements.Add(2);
 			}
 
+			//else
+            //{
+            //    optionalStatements.Add(5);
+            //}
+
+			if (isFemale)
+            {
+               optionalStatements.Add(6);
+            }
+            
             if (isVendor)
             {
-                optionalStatments.Add(10);
+                optionalStatements.Add(10);
             }
 
-			return (Speech.getSpeech( optionalStatments ));
+			return (Speech.getSpeech( optionalStatements ));
         }
 
 		public void Pacify( Mobile master, DateTime endtime )

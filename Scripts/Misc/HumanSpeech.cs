@@ -20,7 +20,7 @@ namespace Server.Misc
     public class Speech
     {
         // 0
-        private static Dictionary<int, string>  genericStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string>  genericStatements = new Dictionary<int, string>()
             {
                 {1, "The weather is lovely today"},
                 {2, "The weather is hot today"},
@@ -81,7 +81,7 @@ namespace Server.Misc
 
             };
         //1
-        private static Dictionary<int, string> humorousStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> humorousStatements = new Dictionary<int, string>()
             {
                 {1, "Do harpies have babies or eggs?"},
                 {2, "When centaurs mate, is there a chance that a horse is born?"},
@@ -100,7 +100,7 @@ namespace Server.Misc
 
             };
         //2
-        private static Dictionary<int, string> aggresiveStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> aggressiveStatements = new Dictionary<int, string>()
             {
                 {1, "I should bash your face in!"},
                 {2, "I hope monsters come and eat you!"},
@@ -123,13 +123,13 @@ namespace Server.Misc
 
             };
         //5
-        private static Dictionary<int, string> maleStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> maleStatements = new Dictionary<int, string>()
             {
                 {1, "I'm a cool guy, I have a girlfriend!"},
                 {2, "I'm a Man"}
             };
         //6
-        private static Dictionary<int, string> femaleStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> femaleStatements = new Dictionary<int, string>()
             {
                 {1, "Why do men like bathing suits so much?"},
                 {2, "It's a woman thing, you wouldn't understand"},
@@ -149,7 +149,7 @@ namespace Server.Misc
             };
 
         // 10
-        private static Dictionary<int, string> vendorStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> vendorStatements = new Dictionary<int, string>()
             {
                 {1, "Take a look."},
                 {2, "Take a look at these goods!"},
@@ -179,11 +179,11 @@ namespace Server.Misc
                 {26, "Your coin goes farther here." },
                 {27, "Did you see our add posted at the bank?" },
                 {28, "Don't forget to ask about today's sales" },
-                {29, "I'm not cut out to be a salesman."}
+                {29, "I'm not cut out to be a salesman."},
             };
 
         // 20
-        private static Dictionary<int, string> minerStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> minerStatements = new Dictionary<int, string>()
             {
                 {1, "I'm a miner"},
                 {2, "Diggin' in des mines"},
@@ -193,7 +193,7 @@ namespace Server.Misc
             };
 
         // 30
-        private static Dictionary<int, string> drunkStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> drunkStatements = new Dictionary<int, string>()
             {
                 {1, "My favorite drinking buddy. Let's get some mead."},
                 {2, "Interest ya'n a pint?"},
@@ -201,7 +201,7 @@ namespace Server.Misc
             };
 
         // 40
-        private static Dictionary<int, string> magicVendorStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> magicVendorStatements = new Dictionary<int, string>()
             {
                 {1, "Got a pretty full stock of potions and alchemy reagents."},
                 {2, "Ah, so you're an alchemist, then?"},
@@ -211,7 +211,7 @@ namespace Server.Misc
             };
 
         //50
-        private static Dictionary<int, string> barkeepStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> barkeepStatements = new Dictionary<int, string>()
             {
                 {1, "Drink for the thirsty, food for the hungry."},
                 {2, "Let's sate that appetite, hmm?"},
@@ -246,7 +246,7 @@ namespace Server.Misc
             };
 
         //51
-        private static Dictionary<int, string> innStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> innStatements = new Dictionary<int, string>()
             {
                 {1, "Looks like you could use a rest."},
                 {2, "No funny business in these rooms!"},
@@ -284,7 +284,7 @@ namespace Server.Misc
             };
 
         //60
-        private static Dictionary<int, string> smithStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> smithStatements = new Dictionary<int, string>()
             {
                 {1, "The finest weapons and armor."},
                 {2, "Hmm... Blades, helmets. Pretty much anything to suit your needs."},
@@ -318,7 +318,7 @@ namespace Server.Misc
             };
 
         //70
-        private static Dictionary<int, string> healerStatments = new Dictionary<int, string>()
+        private static Dictionary<int, string> healerStatements = new Dictionary<int, string>()
             {
                 {1, "Blessings upon your family"},
                 {2, "Good fortune"},
@@ -331,58 +331,57 @@ namespace Server.Misc
                 {9, "Light's blessing to you" }
             };
 
-        public static string getSpeech(List<int> Statments )
+        public static string getSpeech(List<int> Statements )
         {
             var rand = new Random();
 
-            Statments.Add(0);
+            Statements.Add(0);
 
-            //int index = rand.Next(Statments.Count);
-            int index = Utility.Random(Statments.Count);
+            int index = Utility.Random(Statements.Count);
 
             switch (index)
             {
                 default:
-                    return genericStatments.ElementAt(Utility.Random(0, genericStatments.Count)).Value;
+                    return genericStatements.ElementAt(Utility.Random(0, genericStatements.Count)).Value;
                     break;
                 case 0:
-                    return genericStatments.ElementAt(Utility.Random(0, genericStatments.Count)).Value;
+                    return genericStatements.ElementAt(Utility.Random(0, genericStatements.Count)).Value;
                     break;
                 case 1:
-                    return humorousStatments.ElementAt(Utility.Random(0, humorousStatments.Count)).Value;
+                    return humorousStatements.ElementAt(Utility.Random(0, humorousStatements.Count)).Value;
                     break;
                 case 2:
-                    return aggresiveStatments.ElementAt(Utility.Random(0, aggresiveStatments.Count)).Value;
+                    return aggressiveStatements.ElementAt(Utility.Random(0, aggressiveStatements.Count)).Value;
                     break;
                 case 5:
-                    return maleStatments.ElementAt(Utility.Random(0, maleStatments.Count)).Value;
+                    return maleStatements.ElementAt(Utility.Random(0, maleStatements.Count)).Value;
                     break;
                 case 6:
-                    return femaleStatments.ElementAt(Utility.Random(0, femaleStatments.Count)).Value;
+                    return femaleStatements.ElementAt(Utility.Random(0, femaleStatements.Count)).Value;
                     break;
                 case 10:
-                    return vendorStatments.ElementAt(Utility.Random(0, vendorStatments.Count)).Value;
+                    return vendorStatements.ElementAt(Utility.Random(0, vendorStatements.Count)).Value;
                     break;
                 case 20:
-                    return minerStatments.ElementAt(Utility.Random(0, minerStatments.Count)).Value;
+                    return minerStatements.ElementAt(Utility.Random(0, minerStatements.Count)).Value;
                     break;
                 case 30:
-                    return drunkStatments.ElementAt(Utility.Random(0, drunkStatments.Count)).Value;
+                    return drunkStatements.ElementAt(Utility.Random(0, drunkStatements.Count)).Value;
                     break;
                 case 40:
-                    return magicVendorStatments.ElementAt(Utility.Random(0, magicVendorStatments.Count)).Value;
+                    return magicVendorStatements.ElementAt(Utility.Random(0, magicVendorStatements.Count)).Value;
                     break;
                 case 50:
-                    return barkeepStatments.ElementAt(Utility.Random(0, barkeepStatments.Count)).Value;
+                    return barkeepStatements.ElementAt(Utility.Random(0, barkeepStatements.Count)).Value;
                     break;
                 case 51:
-                    return innStatments.ElementAt(Utility.Random(0, innStatments.Count)).Value;
+                    return innStatements.ElementAt(Utility.Random(0, innStatements.Count)).Value;
                     break;
                 case 60:
-                    return smithStatments.ElementAt(Utility.Random(0, smithStatments.Count)).Value;
+                    return smithStatements.ElementAt(Utility.Random(0, smithStatements.Count)).Value;
                     break;
                 case 70:
-                    return healerStatments.ElementAt(Utility.Random(0, healerStatments.Count)).Value;
+                    return healerStatements.ElementAt(Utility.Random(0, healerStatements.Count)).Value;
                     break;
             }
 

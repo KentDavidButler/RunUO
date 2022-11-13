@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Server.Items;
+using System;
 
 namespace Server.Mobiles
 {
@@ -60,7 +61,7 @@ namespace Server.Mobiles
 			{
 				// 40 is for Magic, vendor, funny , aggresive 
 				List<int> OptionalSpeechText = new List<int> { 40 };
-				this.Say(this.NPCRandomSpeech(this.Female, true, false, false, OptionalSpeechText));
+				this.Say(this.NPCRandomSpeech(this.Female, true, false, false, optionalStatements: OptionalSpeechText));
 			}
 		}
 	}

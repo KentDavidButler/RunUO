@@ -1,3 +1,5 @@
+using System;
+using System.Globalization;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
@@ -48,7 +50,7 @@ namespace Server.Mobiles
 			{
 				// 51 is for Innkeep, vendor, funny , aggresive 
 				List<int> OptionalSpeechText = new List<int> { 51 };
-				this.Say(this.NPCRandomSpeech(this.Female, true, false, false, OptionalSpeechText));
+				this.Say(this.NPCRandomSpeech(this.Female, true, false, false, optionalStatements: OptionalSpeechText));
 			}
 		}
 	} 
