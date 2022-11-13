@@ -135,7 +135,7 @@ namespace Server.Misc
                 {2, "It's a woman thing, you wouldn't understand"},
                 {3, "Keep your mind on your work." },
                 {4, "Your mind is in the gutter" },
-                {5, "When a man is wrong and won't admit is, he always gets angry." }
+                {5, "When a man is wrong and won't admit is, he always gets angry." },
                 {6, "I don't feel safe walking around at night."},
                 {7, "You'll never guess how many cats I own."},
                 {8, "Once you've had your third kid, the rest just slip on out." },
@@ -168,8 +168,8 @@ namespace Server.Misc
                 {15, "Good prices here!" },
                 {16, "All prices here are reasonable" },
                 {17, "Please browse my wares." },
-                {18, "Sale here." }
-                {19, "What a heroic looking individual! I'll tell all my customers about you!"}
+                {18, "Sale here." },
+                {19, "What a heroic looking individual! I'll tell all my customers about you!"},
                 {20, "Nothing wrong with taking a look."},
                 {21, "Something catch your eye?"},
                 {22, "What are you looking to sell?" },
@@ -178,7 +178,7 @@ namespace Server.Misc
                 {25, "You got the coin, I've got the goods" },
                 {26, "Your coin goes farther here." },
                 {27, "Did you see our add posted at the bank?" },
-                {28, "Don't forget to ask about today's sales" }
+                {28, "Don't forget to ask about today's sales" },
                 {29, "I'm not cut out to be a salesman."}
             };
 
