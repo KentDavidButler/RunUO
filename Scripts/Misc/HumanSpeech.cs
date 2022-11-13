@@ -1,6 +1,10 @@
+using Internal;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Server.Misc;
+
 
 namespace Server.Misc
 {
@@ -126,7 +130,7 @@ namespace Server.Misc
         private static Dictionary<int, string> maleStatements = new Dictionary<int, string>()
             {
                 {1, "I'm a cool guy, I have a girlfriend!"},
-                {2, "I'm a Man"}
+                {2, "I'm a Man"},
             };
         //6
         private static Dictionary<int, string> femaleStatements = new Dictionary<int, string>()
@@ -145,7 +149,7 @@ namespace Server.Misc
                 {12, "How does women's armor protect them?"},
                 {13, "One day I'll get paid my fair share" },
                 {14, "Could you stop staring!" },
-                {15, "I'm not emotional! I'm angry!" }
+                {15, "I'm not emotional! I'm angry!" },
             };
 
         // 10
@@ -197,7 +201,7 @@ namespace Server.Misc
             {
                 {1, "My favorite drinking buddy. Let's get some mead."},
                 {2, "Interest ya'n a pint?"},
-                {3, "I don't feel anything anymore" }
+                {3, "I don't feel anything anymore" },
             };
 
         // 40
@@ -279,8 +283,8 @@ namespace Server.Misc
                 {29, "Waking up with red dots is perfectly normal!"},
                 {30, "Feeling rested?"},
                 {31, "Have a good night's sleep?"},
-                {30, "Did you hear a bump in the night?"},
-                {31, "Careful the bed bugs bite."},
+                {32, "Did you hear a bump in the night?"},
+                {33, "Careful the bed bugs bite."},
             };
 
         //60
@@ -328,61 +332,87 @@ namespace Server.Misc
                 {6, "May your days be long, and your hardships few."},
                 {7, "Blessing upon your family." },
                 {8, "How can I help?" },
-                {9, "Light's blessing to you" }
+                {9, "Light's blessing to you" },
             };
 
-        public static string getSpeech(List<int> Statements )
+        public static string getSpeech(List<int> statements )
         {
             var rand = new Random();
 
-            Statements.Add(0);
+            statements.Add(0);
+            int index = Utility.Random(statements.Count);
 
-            int index = Utility.Random(Statements.Count);
-
+            int key;
             switch (index)
             {
                 default:
-                    return genericStatements.ElementAt(Utility.Random(0, genericStatements.Count)).Value;
-                    break;
+                    key = Utility.Random(1, genericStatements.Count);
+                    return genericStatements[key];
+
                 case 0:
-                    return genericStatements.ElementAt(Utility.Random(0, genericStatements.Count)).Value;
-                    break;
+                    //return genericStatements.ElementAt(Utility.Random(0, genericStatements.Count)).Value;
+                    key = Utility.Random(1, genericStatements.Count);
+                    return genericStatements[key];
+
                 case 1:
-                    return humorousStatements.ElementAt(Utility.Random(0, humorousStatements.Count)).Value;
-                    break;
+                    //return humorousStatements.ElementAt(Utility.Random(0, humorousStatements.Count)).Value;
+                    key = Utility.Random(1, humorousStatements.Count);
+                    return humorousStatements[key];
+
                 case 2:
-                    return aggressiveStatements.ElementAt(Utility.Random(0, aggressiveStatements.Count)).Value;
-                    break;
+                //return aggressiveStatements.ElementAt(Utility.Random(0, aggressiveStatements.Count)).Value;
+                key = Utility.Random(1, aggressiveStatements.Count);
+                    return aggressiveStatements[key];
+
                 case 5:
-                    return maleStatements.ElementAt(Utility.Random(0, maleStatements.Count)).Value;
-                    break;
+                    //return maleStatements.ElementAt(Utility.Random(0, maleStatements.Count)).Value;
+                    key = Utility.Random(1, maleStatements.Count);
+                    return maleStatements[key];
+
                 case 6:
-                    return femaleStatements.ElementAt(Utility.Random(0, femaleStatements.Count)).Value;
-                    break;
+                    //return femaleStatements.ElementAt(Utility.Random(0, femaleStatements.Count)).Value;
+                    key = Utility.Random(1, genericStatements.Count);
+                    return genericStatements[key];
+
                 case 10:
-                    return vendorStatements.ElementAt(Utility.Random(0, vendorStatements.Count)).Value;
-                    break;
+                    //return vendorStatements.ElementAt(Utility.Random(0, vendorStatements.Count)).Value;
+                    key = Utility.Random(1, vendorStatements.Count);
+                    return vendorStatements[key];
+
                 case 20:
-                    return minerStatements.ElementAt(Utility.Random(0, minerStatements.Count)).Value;
-                    break;
+                    //return minerStatements.ElementAt(Utility.Random(0, minerStatements.Count)).Value;
+                    key = Utility.Random(1, minerStatements.Count);
+                    return minerStatements[key];
+
                 case 30:
-                    return drunkStatements.ElementAt(Utility.Random(0, drunkStatements.Count)).Value;
-                    break;
+                    //return drunkStatements.ElementAt(Utility.Random(0, drunkStatements.Count)).Value;
+                    key = Utility.Random(1, drunkStatements.Count);
+                    return drunkStatements[key];
+
                 case 40:
-                    return magicVendorStatements.ElementAt(Utility.Random(0, magicVendorStatements.Count)).Value;
-                    break;
+                    //return magicVendorStatements.ElementAt(Utility.Random(0, magicVendorStatements.Count)).Value;
+                    key = Utility.Random(1, magicVendorStatements.Count);
+                    return magicVendorStatements[key];
+
                 case 50:
-                    return barkeepStatements.ElementAt(Utility.Random(0, barkeepStatements.Count)).Value;
-                    break;
+                    //return barkeepStatements.ElementAt(Utility.Random(0, barkeepStatements.Count)).Value;
+                    key = Utility.Random(1, barkeepStatements.Count);
+                    return barkeepStatements[key];
+
                 case 51:
-                    return innStatements.ElementAt(Utility.Random(0, innStatements.Count)).Value;
-                    break;
+                // return innStatements.ElementAt(Utility.Random(0, innStatements.Count)).Value;
+                key = Utility.Random(1, innStatements.Count);
+                    return innStatements[key];
+
                 case 60:
-                    return smithStatements.ElementAt(Utility.Random(0, smithStatements.Count)).Value;
-                    break;
+                    //return smithStatements.ElementAt(Utility.Random(0, smithStatements.Count)).Value;
+                    key = Utility.Random(1, smithStatements.Count);
+                    return smithStatements[key];
+
                 case 70:
-                    return healerStatements.ElementAt(Utility.Random(0, healerStatements.Count)).Value;
-                    break;
+                    //return healerStatements.ElementAt(Utility.Random(0, healerStatements.Count)).Value;
+                    key = Utility.Random(1, healerStatements.Count);
+                    return healerStatements[key];
             }
 
         }
