@@ -340,10 +340,10 @@ namespace Server.Misc
             var rand = new Random();
 
             statements.Add(0);
-            int index = Utility.Random(statements.Count);
 
             int key;
-            switch (index)
+            // pick random item from the list
+            switch (statements[Utility.Random(statements.Count)])
             {
                 default:
                     key = Utility.Random(1, genericStatements.Count);
