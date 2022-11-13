@@ -126,11 +126,53 @@ namespace Server.Misc
                 {18, "I'll put it on your tombstone." },
 
             };
+        //3
+        private static Dictionary<int, string> loreStatements = new Dictionary<int, string>()
+            {
+                {1, "Legend says that an undead beast appears in the depths around Compassion."},
+                {2, "As there are virtues there are also anti-virtues."},
+                {3, "The anti-virtues spawn unforetold evils that plague our land."},
+                {4, "Each anti-virtue houses an unstoppable beast."},
+                {5, "Heros have named the beast, Devourer, since it devours all life it sees."},
+                {6, "Few have returned from facing an anti-virtue beast, and none have slain one."},
+                {7, "As there is the virtue of Justice, there is the anti-virtue Wrong"},
+                {8, "The counter balance to Honesty, is Deceit."},
+                {9, "With Compassion, comes Despise."},
+                {10, "As one Sacrifice's for another, other Covetous." },
+                {11, "The virtue of Honor, indicates there is an anti-virtue Shame." },
+                {12, "There is the Spirituality, and then there is Hylotheism that denies the spirit."},
+                {13, "Pride is the sin of Humility" },
+                {14, "The wrongful never care about right or wrong, only in acting in self interest." },
+                {15, "The deceitful soul is a seasoned swindler." },
+                {16, "When one has been scarred to the soul, they'll follow the path of the Despised." },
+                {17, "The dastarly soul will never reveal their true nature." },
+                {18, "The covetous soul will sacrifice other for personal gain." },
+                {19, "The Hylotheistic soul does not believe in, nor care about the spirit."},
+                {20, "Destroying the totems of anti-virtues will be peace to the land." },
+                {21, "Ancient books talk about the totems to eliminate the evil from the land" },
+                {22, "An ancient dragon is said to carry a totem."},
+                {23, "An ancient wisp is said to carry a totem." },
+                {24, "An ancient undead best is said to carry a totem." },
+                {25, "Beware of the king of the undead. It's size is nothing to be trifled with" },
+                {26, "The ancient wisp dwarves the size of all other wisps." },
+                {27, "No one has returned from facing the ancient wyrm." },
+                {28, "Some evils have yet to be discovered!" },
+                {29, "It is unknown what occurs when all the totems come together."},
+
+            };
         //5
         private static Dictionary<int, string> maleStatements = new Dictionary<int, string>()
             {
-                {1, "I'm a cool guy, I have a girlfriend!"},
-                {2, "I'm a Man"},
+                {1, "You look strong, how much can you bench?"},
+                {2, "You check out the jousting match the other day?"},
+                {3, "Aww yeah, who's the man?! I am!"},
+                {4, "Watch out ladies, here I come."},
+                {5, "I could beat you in a fight."},
+                {6, "My wife is the bread winner in our house."},
+                {7, "I can't get my wench off my back!"},
+                {8, "Why do her problems always become my problem?"},
+                {9, "The plague is the only way out of my marriage."},
+                {10, "I'm forced to become a smith, but all I want to do is cook." },
             };
         //6
         private static Dictionary<int, string> femaleStatements = new Dictionary<int, string>()
@@ -189,11 +231,47 @@ namespace Server.Misc
         // 20
         private static Dictionary<int, string> minerStatements = new Dictionary<int, string>()
             {
-                {1, "I'm a miner"},
-                {2, "Diggin' in des mines"},
+                {1, "I'm not allowed to drink, I'm a miner"},
+                {2, "Diggin' in des mines is all I got"},
                 {3, "I'm here to mine. So unless you want to dig, get out."},
                 {4, "Good ore brings strength to our people."},
                 {5, "The mines are hard, but rewards those who rise to the challenge."},
+                {6, "Rock on!"},
+                {7, "Rock and Stone!"},
+                {8, "Where's the damn mine cart?"},
+                {9, "Where's the mule?"},
+                {10, "There's no way I can carry all of this"},
+                {11, "I don't mind being covered in dirt."},
+                {12, "What do you think they'll make from this ore?"},
+                {13, "Sometimes I'll pocket a jem or two."},
+                {14, "Mining is an honest living."},
+                {15, "God dammit there's a pebble in my boot!"},
+                {16, "The smith takes all the credit, but we do the hard work."},
+                {17, "Smiths never have to worry about rock slides and cave ins!"},
+                {18, "I laugh when I hear a smith complaining about swinging a hammer."},
+                {19, "Smiths don't even smelt their own ore! Lazy buggers"},
+                {20, "Nothin like digging a hole!"},
+                {21, "I keep digging, I'm going to hit The Lost Lands!"},
+                {22, "You gotta watch out for the bugs! Terathans are no joke."},
+                {23, "You see a bug! Smash it!"},
+                {24, "Spider people? You mean terathans!? They're only good for killin."},
+                {25, "I hate spiders, and I hate people. I especially hate terathans!"},
+                {26, "Nothing smells better than fresh cut dirt"},
+                {27, "Is there anything better than mining?"},
+                {28, "Which do you prefer, shovel or pickaxe"},
+                {29, "Why would anyone pick a shovel over a pickaxe?"},
+                {30, "Why would anyone use a pickaxe over a shovel?"},
+                {31, "All the greatest miners use pickaxes!"},
+                {32, "Are you team shovel, or team pickaxe?"},
+                {33, "Who uses a pack llama?!"},
+                {34, "Pack horses over pack llamas."},
+                {35, "We aren't dwarves! It just happens that miners are short people"},
+                {36, "Being small gets you ahead in this business"},
+                {37, "Some of the best ore can be found in dangerous places."},
+                {38, "If you looking for rare ore, venture far from town."},
+                {39, "Valorite is the rarest ore around."},
+                {40, "I've been mining all my life and I've never seen Valorite."},
+                {41, "Valorite is only a legend! It's not real."},
             };
 
         // 30
@@ -340,6 +418,7 @@ namespace Server.Misc
             var rand = new Random();
 
             statements.Add(0);
+            statements.Add(3);
 
             int key;
             // pick random item from the list
@@ -350,67 +429,58 @@ namespace Server.Misc
                     return genericStatements[key];
 
                 case 0:
-                    //return genericStatements.ElementAt(Utility.Random(0, genericStatements.Count)).Value;
                     key = Utility.Random(1, genericStatements.Count);
                     return genericStatements[key];
 
                 case 1:
-                    //return humorousStatements.ElementAt(Utility.Random(0, humorousStatements.Count)).Value;
                     key = Utility.Random(1, humorousStatements.Count);
                     return humorousStatements[key];
 
                 case 2:
-                //return aggressiveStatements.ElementAt(Utility.Random(0, aggressiveStatements.Count)).Value;
-                key = Utility.Random(1, aggressiveStatements.Count);
+                    key = Utility.Random(1, aggressiveStatements.Count);
                     return aggressiveStatements[key];
 
+                case 3:
+                    key = Utility.Random(1, loreStatements.Count);
+                    return loreStatements[key];
+
                 case 5:
-                    //return maleStatements.ElementAt(Utility.Random(0, maleStatements.Count)).Value;
                     key = Utility.Random(1, maleStatements.Count);
                     return maleStatements[key];
 
                 case 6:
-                    //return femaleStatements.ElementAt(Utility.Random(0, femaleStatements.Count)).Value;
                     key = Utility.Random(1, genericStatements.Count);
                     return genericStatements[key];
 
                 case 10:
-                    //return vendorStatements.ElementAt(Utility.Random(0, vendorStatements.Count)).Value;
                     key = Utility.Random(1, vendorStatements.Count);
                     return vendorStatements[key];
 
                 case 20:
-                    //return minerStatements.ElementAt(Utility.Random(0, minerStatements.Count)).Value;
                     key = Utility.Random(1, minerStatements.Count);
                     return minerStatements[key];
 
                 case 30:
-                    //return drunkStatements.ElementAt(Utility.Random(0, drunkStatements.Count)).Value;
                     key = Utility.Random(1, drunkStatements.Count);
                     return drunkStatements[key];
 
                 case 40:
-                    //return magicVendorStatements.ElementAt(Utility.Random(0, magicVendorStatements.Count)).Value;
                     key = Utility.Random(1, magicVendorStatements.Count);
                     return magicVendorStatements[key];
 
                 case 50:
-                    //return barkeepStatements.ElementAt(Utility.Random(0, barkeepStatements.Count)).Value;
                     key = Utility.Random(1, barkeepStatements.Count);
                     return barkeepStatements[key];
 
                 case 51:
-                // return innStatements.ElementAt(Utility.Random(0, innStatements.Count)).Value;
                 key = Utility.Random(1, innStatements.Count);
                     return innStatements[key];
 
                 case 60:
-                    //return smithStatements.ElementAt(Utility.Random(0, smithStatements.Count)).Value;
                     key = Utility.Random(1, smithStatements.Count);
                     return smithStatements[key];
 
                 case 70:
-                    //return healerStatements.ElementAt(Utility.Random(0, healerStatements.Count)).Value;
                     key = Utility.Random(1, healerStatements.Count);
                     return healerStatements[key];
             }
