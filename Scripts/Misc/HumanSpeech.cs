@@ -373,7 +373,10 @@ namespace Server.Misc
                     return magicVendorStatments.ElementAt(Utility.Random(0, magicVendorStatments.Count)).Value;
                     break;
                 case 50:
-                    return innAndBarkeepStatments.ElementAt(Utility.Random(0, innAndBarkeepStatments.Count)).Value;
+                    return barkeepStatments.ElementAt(Utility.Random(0, barkeepStatments.Count)).Value;
+                    break;
+                case 51:
+                    return innStatments.ElementAt(Utility.Random(0, innStatments.Count)).Value;
                     break;
                 case 60:
                     return smithStatments.ElementAt(Utility.Random(0, smithStatments.Count)).Value;
