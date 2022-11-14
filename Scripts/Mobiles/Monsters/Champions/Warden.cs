@@ -63,7 +63,7 @@ namespace Server.Mobiles
 		public override void AlterMeleeDamageFrom(Mobile from, ref int damage)
 		{
 			if (damage != null){
-				damage *= .9;
+				damage = damage - (damage/10);
 			}
 		}
 
