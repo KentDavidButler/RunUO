@@ -54,7 +54,14 @@ namespace Server.Mobiles
 
 		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
 		public override int TreasureMapLevel{ get{ return 5; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat | FoodType.Fish | FoodType.FruitsAndVegies | FoodType.GrainsAndHay | FoodType.Eggs; } }
+
+		//reduced damage to Spells
+		public override void AlterSpellDamageFrom(Mobile from, ref int damage)
+		{
+			if (damage != null){
+				damage /= 2;
+			}
+		}
 
 		public Effusion( Serial serial ) : base( serial )
 		{

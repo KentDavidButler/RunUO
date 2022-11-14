@@ -50,6 +50,7 @@ namespace Server
 				{
 					typeof( Devourer ),
 					typeof( Effusion ),
+					typeof( Warden ),
 
 				},
 				new Type[]

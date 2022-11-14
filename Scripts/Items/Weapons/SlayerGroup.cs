@@ -75,7 +75,7 @@ namespace Server.Items
 				};
 
 			undead.Opposition = new SlayerGroup[]{ humanoid };
-			undead.Super = new SlayerEntry( SlayerName.Silver, typeof( BoneKnight ), typeof( BoneMagi ), typeof( Ghoul ), typeof( Lich ), typeof( LichLord ), typeof( Mummy ), typeof( RottingCorpse ), typeof( Shade ), typeof( SkeletalKnight ), typeof( SkeletalMage ), typeof( Skeleton ), typeof( Spectre ), typeof( Wraith ), typeof( Zombie ) );
+			undead.Super = new SlayerEntry( SlayerName.Silver, typeof( BoneKnight ), typeof( BoneMagi ), typeof( Ghoul ), typeof( Lich ), typeof( LichLord ), typeof( Mummy ), typeof( RottingCorpse ), typeof( Shade ), typeof( SkeletalKnight ), typeof( SkeletalMage ), typeof( Skeleton ), typeof( Spectre ), typeof( Wraith ), typeof( Zombie ), typeof( Devourer ) );
 			undead.Entries = new SlayerEntry[0];
 
 			fey.Opposition = new SlayerGroup[]{ abyss };

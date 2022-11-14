@@ -477,7 +477,6 @@ namespace Server
 
 		public static readonly LootPack Champion = new LootPack( new LootPackEntry[]
 			{
-				new LootPackEntry(  true, Gold,			100.00, Utility.Random(4000, 6000)),
 				new LootPackEntry( false, Instruments,	  2.00, 1 ),
 				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 40, 100 ),
 				new LootPackEntry( false, OldMagicItems,	100.00, 1, 1, 50, 100 ),

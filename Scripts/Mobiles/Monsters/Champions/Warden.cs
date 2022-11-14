@@ -1,27 +1,27 @@
+using System;
 using Server.Items;
-
 namespace Server.Mobiles
 {
-    [CorpseName( "an devourer corpse" )]
-	public class Devourer : BaseCreature
+    [CorpseName( "the warden's corpse" )]
+	public class Warden : BaseCreature
 	{
 		[Constructable]
-		public Devourer () : base( AIType.AI_Melee, FightMode.Closest, 20, 1, 0.2, 0.4 )
+		public Warden () : base( AIType.AI_Berserk, FightMode.Strongest , 20, 1, 0.1, 0.2 )
 		{
-			Name = "a devourer";
-			Body = 256;
+			Name = "the Warden";
+			Body = 281;
 			BaseSoundID = 427;
 
-			SetStr( 1200, 1500 );
+			SetStr( 1096, 1185 );
 			SetDex( 177, 255 );
 			SetInt( 151, 250 );
 
-			SetHits( 1300, 1500 );
+			SetHits( 1750, 2000 );
 
 			SetDamage( 10, 15 );
 
 			SetSkill( SkillName.Anatomy, 100.0, 150.0 );
-			SetSkill( SkillName.MagicResist, 125.1, 140.0 );
+			SetSkill( SkillName.MagicResist, 80.1, 95.0 );
 			SetSkill( SkillName.Tactics, 100.1, 150.0 );
 			SetSkill( SkillName.Wrestling, 100.1, 150.0 );
 			SetSkill( SkillName.Parry, 75.0, 90.0 );
@@ -29,18 +29,15 @@ namespace Server.Mobiles
 			Fame = 25000;
 			Karma = -25000;
 
-			VirtualArmor = 90;
-
-			PackItem( new Club() );
+			VirtualArmor = 110;
 		}
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.Champion, 1 );
-			AddLoot( LootPack.Rich );
-			AddLoot( LootPack.HighScrolls, 8 );
+			AddLoot( LootPack.Champion );
+			AddLoot( LootPack.AosSuperBoss );
+			AddLoot( LootPack.MedScrolls, 10 );
 			AddLoot( LootPack.Gems, 8 );
-			AddLoot( LootPack.SeSuperBoss);
 
 			if ( 0.02 > Utility.RandomDouble() )
 			{
@@ -55,12 +52,22 @@ namespace Server.Mobiles
 			}
 		}
 
+		public override bool Unprovokable{ get{ return true; } }
+		public override bool AreaPeaceImmune{ get{ return true; } }
 		public override bool CanRummageCorpses{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
 		public override int TreasureMapLevel{ get{ return 5; } }
 		public override int Meat{ get{ return 2; } }
+		public override bool AutoDispel{ get{ return true; } }
 
-		public Devourer( Serial serial ) : base( serial )
+		// physical damage reduced by 10 percent
+		public override void AlterMeleeDamageFrom(Mobile from, ref int damage)
+		{
+			if (damage != null){
+				damage *= .9;
+			}
+		}
+
+		public Warden( Serial serial ) : base( serial )
 		{
 		}
 

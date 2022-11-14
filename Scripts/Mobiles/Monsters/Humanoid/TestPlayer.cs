@@ -21,7 +21,7 @@ namespace Server.Mobiles
 			SetDex( 99, 100 );
 			SetInt( 25, 26 );
 
-			SetDamage( 20, 25 );
+			SetDamage( 15, 19 );
 
 			SetSkill( SkillName.Anatomy, 100.0 );
 			SetSkill( SkillName.Macing, 100.0 );
@@ -35,12 +35,16 @@ namespace Server.Mobiles
 			Fame = 5000;
 			Karma = -5000;
 
-			VirtualArmor = 40;
+			VirtualArmor = 52;
 
 			AddItem( new ThighBoots( Utility.RandomRedHue() ) ); 
 			AddItem( new Surcoat( Utility.RandomRedHue() ) );    
 			AddItem( new WarAxe());
 			AddItem( new HeaterShield());
+			AddItem( new PlateArms() );
+			AddItem( new PlateChest() );
+			AddItem( new PlateLegs() );
+			AddItem( new PlateGorget() );
 
 			Utility.AssignRandomHair( this );
 		}
@@ -51,7 +55,6 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
 
 		public TestPlayer( Serial serial ) : base( serial ) 
 		{ 
