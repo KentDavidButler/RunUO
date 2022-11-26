@@ -12,6 +12,7 @@ namespace Server.Misc
     //0 is generic
     //1 is funny
     //2 is Aggresive
+    //3 is Lore
     //5 is male
     //6 is female
     //10 is generic vendor

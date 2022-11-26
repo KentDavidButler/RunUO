@@ -50,7 +50,7 @@ namespace Server.Mobiles
 		{
 			base.OnThink();
 
-			if (Utility.Random(60) > 55)
+			if (Utility.Random(60) > 57)
 			{
 				// 50 is for Barkeep, vendor, funny , aggresive 
 				List<int> OptionalSpeechText = new List<int> { 50 };

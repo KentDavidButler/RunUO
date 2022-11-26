@@ -41,6 +41,18 @@ namespace Server.Mobiles
 			base.Deserialize( reader ); 
 
 			int version = reader.ReadInt(); 
-		} 
+		}
+
+		public override void OnThink()
+		{
+			base.OnThink();
+
+			if (Utility.Random(60) > 57)
+			{
+				// 50 is for Barkeep, vendor, funny , aggresive 
+				List<int> OptionalSpeechText = new List<int> { 50 };
+				this.Say(this.NPCRandomSpeech(this.Female, true, this.IsActiveVendor, true, optionalStatements: OptionalSpeechText));
+			}
+		}
 	} 
 }
