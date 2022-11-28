@@ -1,4 +1,5 @@
 using Server.Items;
+using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
@@ -124,10 +125,10 @@ namespace Server.Mobiles
 			AddItem( pack );
 		}
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
-		}
+		// public override void InitOutfit()
+		// {
+		// 	base.InitOutfit();
+		// }
 
 		public override bool CanTeach { get { return false; } }
 		public override bool ClickTitle { get { return false; } }

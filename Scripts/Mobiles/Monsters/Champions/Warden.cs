@@ -62,7 +62,7 @@ namespace Server.Mobiles
 		// physical damage reduced by 10 percent
 		public override void AlterMeleeDamageFrom(Mobile from, ref int damage)
 		{
-			if (damage != null){
+			if (damage > 0){
 				damage = damage - (damage/10);
 			}
 		}

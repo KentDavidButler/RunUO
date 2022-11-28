@@ -58,7 +58,7 @@ namespace Server.Mobiles
 		//reduced damage to Spells
 		public override void AlterSpellDamageFrom(Mobile from, ref int damage)
 		{
-			if (damage != null){
+			if (damage > 0){
 				damage /= 2;
 			}
 		}

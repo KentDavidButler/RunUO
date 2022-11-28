@@ -51,6 +51,8 @@ namespace Server
 					typeof( Devourer ),
 					typeof( Effusion ),
 					typeof( Warden ),
+					typeof( MindFlayer ),
+					typeof( MindFlayerShield ),
 
 				},
 				new Type[]
