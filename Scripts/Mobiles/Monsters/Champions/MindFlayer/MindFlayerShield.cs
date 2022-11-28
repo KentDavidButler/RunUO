@@ -1,4 +1,5 @@
 using Server.Items;
+using System;
 
 namespace Server.Mobiles
 {
@@ -65,6 +66,11 @@ namespace Server.Mobiles
 			base.OnThink();
 
 			Effects.SendLocationParticles( EffectItem.Create( Location, Map, EffectItem.DefaultDuration ), 0x376A, 9, 32, 5022 );
+
+			// delete Shields after 10 mins
+			if( this.CreationTime.AddMinutes(10.0) > DateTime.Now){
+				this.Delete();
+			}
 		}
 
 	}
