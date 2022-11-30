@@ -389,7 +389,7 @@ namespace Server.Mobiles
 			m_Spawned.Remove( spawn );
 		}
 
-		public void OnTick()
+		public virtual void OnTick()
 		{
 			DoTimer();
 
