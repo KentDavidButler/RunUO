@@ -159,7 +159,11 @@ namespace Server.Misc
                 {27, "No one has returned from facing the ancient wyrm." },
                 {28, "Some evils have yet to be discovered!" },
                 {29, "It is unknown what occurs when all the totems come together."},
-
+                {30, "Covetous is said to house an evil ancient power" },
+                {31, "The evil in Covetous can be release by reciting a found key" },
+                {32, "The mind of a great king has bee possessed in the depths of Covetous"},
+                {33, "Shimmering orbs have been spotted flying around Covetous" },
+                {34, "The thrown room is said to be the source of evil in Covetous" },
             };
         //5
         private static Dictionary<int, string> maleStatements = new Dictionary<int, string>()
@@ -281,6 +285,23 @@ namespace Server.Misc
                 {1, "My favorite drinking buddy. Let's get some mead."},
                 {2, "Interest ya'n a pint?"},
                 {3, "I don't feel anything anymore" },
+                {4, "*Burp*" },
+                {5, "It's normal not to remember the prior month" },
+                {6, "Mead, Mead, Mead, I love mead." },
+                {7, "99 bottles of mead on the wall, 99 bottles of mead!" },
+                {8, "To Lord British! May he rot in that castle!" },
+                {9, "It's still only a drink if it's the entire keg." },
+                {10, "HEEEYYYY, You look like someone who needs a drinking buddy!" },
+                {11, "I'll drink with you any place, anywhere!"},
+                {12, "Don't threaten me with a good time!"},
+                {13, "I'm on a liquid diet." },
+                {14, "dunks won't inherit the kingdom of God, eh? Keep it!" },
+                {15, "Drinkin' is cheaper than eatin'" },
+                {16, "After a hard day, everyone could use a drinking buddy." },
+                {17, "You only get hungover if you stop drinking." },
+                {18, "Work, drink, sleep, and repeat..." },
+                {19, "I could use a refill! " },
+                {20, "My cup is a bit empty, could I get some MORE!" },
             };
 
         // 40
