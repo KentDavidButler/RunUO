@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Globalization;
 using System;
 using Server.Items;
@@ -8,6 +10,7 @@ namespace Server.Mobiles
 	public class MindFlayer : BaseCreature
 	{
 		private DateTime m_NextBarrierTime;
+		private double m_RespawnTimeLength;
 
 		public override bool DisallowAllMoves{ get{ return true; } }
 		private bool m_ActiveBarrier;
@@ -102,9 +105,20 @@ namespace Server.Mobiles
 			base.OnThink();
 			m_ActiveBarrier = IsActiveShield;
 
+			// Shorten lenght between ShieldSpawns depending how much life is left
+			if (this.Hits < (this.HitsMax/4)){
+			// If less than 1/4 health
+				m_RespawnTimeLength = 0.6;
+			}else if (this.Hits < (this.HitsMax/2)){
+			// If less than 1/2 health
+				m_RespawnTimeLength = 1.0;
+			}else{
+				m_RespawnTimeLength = 1.5;
+			}
+
 			if ( Combatant != null  && DateTime.UtcNow > this.m_NextBarrierTime )
 			{
-				this.m_NextBarrierTime = DateTime.UtcNow.AddMinutes(1.5);
+				this.m_NextBarrierTime = DateTime.UtcNow.AddMinutes(m_RespawnTimeLength);
 				Map map = this.Map;
 				BaseCreature bc = (BaseCreature)Activator.CreateInstance(m_Creatures[0]);
 

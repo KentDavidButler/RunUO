@@ -347,6 +347,16 @@ namespace Server.Mobiles
 			}
 		}
 
+		public void BeginDeleteTimer(double timeInHours)
+		{
+			if ( !(this is BaseEscortable) && !Summoned && !Deleted && !IsStabled )
+			{
+				StopDeleteTimer();
+				m_DeleteTimer = new DeleteTimer( this, TimeSpan.FromHours( timeInHours ) );
+				m_DeleteTimer.Start();
+			}
+		}
+
 		public void StopDeleteTimer()
 		{
 			if ( m_DeleteTimer != null )
