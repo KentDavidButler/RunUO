@@ -39,7 +39,7 @@ namespace Server.Misc
 		 * firewalls) or specific IP adddresses you can do so by modifying the file SocketOptions.cs found in this directory.
 		 */
 		
-		public static readonly string Address = "40.71.94.13";
+		public static readonly string Address = null;
 		public static readonly string ServerName = "2TA For the Win" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.MinorRevision;
 
 		public static readonly bool AutoDetect = true;
@@ -71,11 +71,11 @@ namespace Server.Misc
 				IPAddress localAddress = ipep.Address;
 				int localPort = ipep.Port;
 
-				if ( IsPrivateNetwork( localAddress ) ) {
-					ipep = (IPEndPoint)s.RemoteEndPoint;
-					if ( !IsPrivateNetwork( ipep.Address ) && m_PublicAddress != null )
-						localAddress = m_PublicAddress;
-				}
+				// if ( IsPrivateNetwork( localAddress ) ) {
+				// 	ipep = (IPEndPoint)s.RemoteEndPoint;
+				// 	if ( !IsPrivateNetwork( ipep.Address ) && m_PublicAddress != null )
+				// 		localAddress = m_PublicAddress;
+				// }
 
 				e.AddServer( ServerName, new IPEndPoint( localAddress, localPort ) );
 			}
@@ -87,15 +87,14 @@ namespace Server.Misc
 
 		private static void AutoDetection()
 		{
-			if ( !HasPublicIPAddress() ) {
-				Console.Write( "ServerList: Auto-detecting public IP address..." );
-				m_PublicAddress = FindPublicAddress();
+			Console.Write( "ServerList: Auto-detecting public IP address..." );
+			Console.Write( "Did we get a public IP Address?!" );
+			m_PublicAddress = FindPublicAddress();
 
-				if ( m_PublicAddress != null )
-					Console.WriteLine( "done ({0})", m_PublicAddress.ToString() );
-				else
-					Console.WriteLine( "failed" );
-			}
+			if ( m_PublicAddress != null )
+				Console.WriteLine( "done ({0})", m_PublicAddress.ToString() );
+			else
+				Console.WriteLine( "failed" );
 		}
 
 		private static void Resolve( string addr, out IPAddress outValue )
@@ -113,38 +112,6 @@ namespace Server.Misc
 			}
 		}
 
-		private static bool HasPublicIPAddress()
-		{
-			NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
-
-			foreach ( NetworkInterface adapter in adapters ) {
-				IPInterfaceProperties properties = adapter.GetIPProperties();
-
-				foreach ( IPAddressInformation unicast in properties.UnicastAddresses ) {
-					IPAddress ip = unicast.Address;
-
-					if ( !IPAddress.IsLoopback( ip ) && ip.AddressFamily != AddressFamily.InterNetworkV6 && !IsPrivateNetwork( ip ) )
-						return true;
-				}
-			}
-
-			return false;
-
-
-			/*
-			IPHostEntry iphe = Dns.GetHostEntry( Dns.GetHostName() );
-
-			IPAddress[] ips = iphe.AddressList;
-
-			for ( int i = 0; i < ips.Length; ++i )
-			{
-				if ( ips[i].AddressFamily != AddressFamily.InterNetworkV6 && !IsPrivateNetwork( ips[i] ) )
-					return true;
-			}
-
-			return false;
-			*/
-		}
 
 		private static bool IsPrivateNetwork( IPAddress ip )
 		{
@@ -153,39 +120,53 @@ namespace Server.Misc
 			// 192.168.0.0/16
 
 			if ( ip.AddressFamily == AddressFamily.InterNetworkV6 )
+			Console.Write( "Something Somethign IPV6" );
 				return false;
 
-			if ( Utility.IPMatch( "192.168.*", ip ) )
-				return true;
-			else if ( Utility.IPMatch( "10.*", ip ) )
-				return true;
-			else if ( Utility.IPMatch( "172.16-31.*", ip ) )
-				return true;
-			else
-				return false;
+			if ( Utility.IPMatch( "192.168.*", ip ) ){
+			Console.Write( "Something Somethign 192" );
+				return true;}
+			else if ( Utility.IPMatch( "10.*", ip ) ){
+			Console.Write( "Something Somethign 10" );
+				return true;}
+			else if ( Utility.IPMatch( "169.*", ip ) ){
+			Console.Write( "Something Somethign 10" );
+				return true;}
+			else if ( Utility.IPMatch( "172.16-31.*", ip ) ){
+			Console.Write( "Something Somethign 172" );
+				return true;}
+			else{
+				Console.Write( "BDebug" );
+				return false;}
 		}
 
 		private static IPAddress FindPublicAddress()
 		{
 			try {
+				ServicePointManager.Expect100Continue = true;
+				ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 				WebRequest req = HttpWebRequest.Create( "https://api.ipify.org" );
 
 				req.Timeout = 15000;
 
+				Console.WriteLine("Do I make it here to the Request");
 				WebResponse res = req.GetResponse();
-
+				Console.WriteLine("Do I make it here to the response");
 				Stream s = res.GetResponseStream();
 
 				StreamReader sr = new StreamReader( s );
 
 				IPAddress ip = IPAddress.Parse( sr.ReadLine() );
+				Console.WriteLine(ip);
 
 				sr.Close();
 				s.Close();
 				res.Close();
 
 				return ip;
-			} catch {
+			} catch (Exception e){
+				Console.WriteLine( "Caught an Error" );
+				Console.WriteLine( e );
 				return null;
 			}
 		}
