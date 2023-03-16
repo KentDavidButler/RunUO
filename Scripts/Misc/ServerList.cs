@@ -71,12 +71,6 @@ namespace Server.Misc
 				IPAddress localAddress = ipep.Address;
 				int localPort = ipep.Port;
 
-				// if ( IsPrivateNetwork( localAddress ) ) {
-				// 	ipep = (IPEndPoint)s.RemoteEndPoint;
-				// 	if ( !IsPrivateNetwork( ipep.Address ) && m_PublicAddress != null )
-				// 		localAddress = m_PublicAddress;
-				// }
-
 				e.AddServer( ServerName, new IPEndPoint( localAddress, localPort ) );
 			}
 			catch
@@ -88,7 +82,6 @@ namespace Server.Misc
 		private static void AutoDetection()
 		{
 			Console.Write( "ServerList: Auto-detecting public IP address..." );
-			Console.Write( "Did we get a public IP Address?!" );
 			m_PublicAddress = FindPublicAddress();
 
 			if ( m_PublicAddress != null )
@@ -113,33 +106,6 @@ namespace Server.Misc
 		}
 
 
-		private static bool IsPrivateNetwork( IPAddress ip )
-		{
-			// 10.0.0.0/8
-			// 172.16.0.0/12
-			// 192.168.0.0/16
-
-			if ( ip.AddressFamily == AddressFamily.InterNetworkV6 )
-			Console.Write( "Something Somethign IPV6" );
-				return false;
-
-			if ( Utility.IPMatch( "192.168.*", ip ) ){
-			Console.Write( "Something Somethign 192" );
-				return true;}
-			else if ( Utility.IPMatch( "10.*", ip ) ){
-			Console.Write( "Something Somethign 10" );
-				return true;}
-			else if ( Utility.IPMatch( "169.*", ip ) ){
-			Console.Write( "Something Somethign 10" );
-				return true;}
-			else if ( Utility.IPMatch( "172.16-31.*", ip ) ){
-			Console.Write( "Something Somethign 172" );
-				return true;}
-			else{
-				Console.Write( "BDebug" );
-				return false;}
-		}
-
 		private static IPAddress FindPublicAddress()
 		{
 			try {
@@ -149,9 +115,7 @@ namespace Server.Misc
 
 				req.Timeout = 15000;
 
-				Console.WriteLine("Do I make it here to the Request");
 				WebResponse res = req.GetResponse();
-				Console.WriteLine("Do I make it here to the response");
 				Stream s = res.GetResponseStream();
 
 				StreamReader sr = new StreamReader( s );
