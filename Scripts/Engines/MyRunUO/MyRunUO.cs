@@ -3,7 +3,9 @@ using System.IO;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using Server;
 using Server.Misc;
+using Server.Items;
 using Server.Guilds;
 using Server.Mobiles;
 using Server.Accounting;
@@ -11,7 +13,7 @@ using Server.Commands;
 
 namespace Server.Engines.MyRunUO
 {
-    public class MyRunUO : Timer
+	public class MyRunUO : Timer
 	{
 		private static double CpuInterval = 0.1; // Processor runs every 0.1 seconds
 		private static double CpuPercent = 0.25; // Processor runs for 25% of Interval, or ~25ms. This should take around 25% cpu
@@ -22,6 +24,7 @@ namespace Server.Engines.MyRunUO
 			{
 				Timer.DelayCall( TimeSpan.FromSeconds( 10.0 ), Config.CharacterUpdateInterval, new TimerCallback( Begin ) );
 
+				CommandSystem.Register( "InitMyRunUO", AccessLevel.Administrator, new CommandEventHandler( InitMyRunUO_OnCommand ) );
 				CommandSystem.Register( "UpdateMyRunUO", AccessLevel.Administrator, new CommandEventHandler( UpdateMyRunUO_OnCommand ) );
 
 				CommandSystem.Register( "PublicChar", AccessLevel.Player, new CommandEventHandler( PublicChar_OnCommand ) );
@@ -67,6 +70,46 @@ namespace Server.Engines.MyRunUO
 					pm.SendMessage( "Only a general level of your top three skills will be shown in MyRunUO." );
 				}
 			}
+		}
+
+		[Usage( "InitMyRunUO" )]
+		[Description( "Initially creates the database schema." )]
+		public static void InitMyRunUO_OnCommand( CommandEventArgs e )
+		{
+			if ( m_Command != null && m_Command.HasCompleted )
+			{
+				TableCreation();
+				e.Mobile.SendMessage( "MyRunUO table creation process has been started." );
+			}
+			else
+			{
+				e.Mobile.SendMessage( "MyRunUO table creation is already running." );
+			}
+		}
+
+		public static void TableCreation()
+		{
+			if ( m_Command != null && !m_Command.HasCompleted )
+				return;
+
+			Console.WriteLine( "MyRunUO: Creating tables" );
+			try
+			{
+				m_Command = new DatabaseCommandQueue( "MyRunUO: Tables created in {0:F1} seconds", "MyRunUO Status Database Thread" );
+				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_characters` ( `char_id` int(10) unsigned NOT NULL, `char_name` varchar(255) NOT NULL, `char_str` smallint(3) unsigned NOT NULL, `char_dex` smallint(3) unsigned NOT NULL, `char_int` smallint(3) unsigned NOT NULL, `char_female` tinyint(1) NOT NULL, `char_counts` smallint(6) NOT NULL, `char_guild` varchar(255) DEFAULT NULL, `char_guildtitle` varchar(255) DEFAULT NULL, `char_nototitle` varchar(255) DEFAULT NULL, `char_bodyhue` smallint(5) unsigned DEFAULT NULL, `char_public` tinyint(1) NOT NULL, PRIMARY KEY (`char_id`))" );
+				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_characters_layers` ( `char_id` int(10) unsigned NOT NULL, `layer_id` tinyint(3) unsigned NOT NULL, `item_id` smallint(5) unsigned NOT NULL, `item_hue` smallint(5) unsigned NOT NULL, PRIMARY KEY (`char_id`,`layer_id`))" );
+				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_characters_skills` ( `char_id` int(10) unsigned NOT NULL, `skill_id` tinyint(3) NOT NULL, `skill_value` smallint(5) unsigned NOT NULL, PRIMARY KEY (`char_id`,`skill_id`),  KEY `skill_id` (`skill_id`))" );
+				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_guilds` ( `guild_id` smallint(5) unsigned NOT NULL, `guild_name` varchar(255) NOT NULL, `guild_abbreviation` varchar(8) DEFAULT NULL, `guild_website` varchar(255) DEFAULT NULL, `guild_charter` varchar(255) DEFAULT NULL, `guild_type` varchar(8) NOT NULL, `guild_wars` smallint(5) unsigned NOT NULL, `guild_members` smallint(5) unsigned NOT NULL, `guild_master` int(10) unsigned NOT NULL, PRIMARY KEY (`guild_id`))" );
+				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_guilds_wars` ( `guild_1` smallint(5) unsigned NOT NULL DEFAULT '0', `guild_2` smallint(5) unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`guild_1`,`guild_2`), KEY `guild1` (`guild_1`), KEY `guild2` (`guild_2`))" );
+				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_status` ( `char_id` int(10) NOT NULL, PRIMARY KEY (`char_id`))" );
+			}
+			catch ( Exception e )
+			{
+				Console.WriteLine( "MyRunUO: Error creating tables." );
+				Console.WriteLine( e );
+			}
+			if ( m_Command != null )
+				m_Command.Enqueue( null );
 		}
 
 		[Usage( "UpdateMyRunUO" )]
@@ -123,7 +166,7 @@ namespace Server.Engines.MyRunUO
 			m_List = new ArrayList();
 			m_Collecting = new List<IAccount>();
 
-			m_StartTime = DateTime.Now;
+			m_StartTime = DateTime.UtcNow;
 			Console.WriteLine( "MyRunUO: Updating character database" );
 		}
 
@@ -133,10 +176,10 @@ namespace Server.Engines.MyRunUO
 
 			try
 			{
-				shouldExit = Process( DateTime.Now + TimeSpan.FromSeconds( CpuInterval * CpuPercent ) );
+				shouldExit = Process( DateTime.UtcNow + TimeSpan.FromSeconds( CpuInterval * CpuPercent ) );
 
 				if ( shouldExit )
-					Console.WriteLine( "MyRunUO: Database statements compiled in {0:F2} seconds", (DateTime.Now - m_StartTime).TotalSeconds );
+					Console.WriteLine( "MyRunUO: Database statements compiled in {0:F2} seconds", (DateTime.UtcNow - m_StartTime).TotalSeconds );
 			}
 			catch ( Exception e )
 			{
@@ -173,7 +216,7 @@ namespace Server.Engines.MyRunUO
 				case Stage.DumpingGuilds: DumpGuilds( endTime ); break;
 			}
 
-			return m_Stage == Stage.Complete;
+			return ( m_Stage == Stage.Complete );
 		}
 
 		private static ArrayList m_MobilesToUpdate = new ArrayList();
@@ -207,7 +250,7 @@ namespace Server.Engines.MyRunUO
 
 					++m_Index;
 
-					if ( DateTime.Now >= endTime )
+					if ( DateTime.UtcNow >= endTime )
 						break;
 				}
 
@@ -350,13 +393,13 @@ namespace Server.Engines.MyRunUO
 				guildTitle = SafeString( guildTitle );
 
 			string notoTitle = SafeString( Titles.ComputeTitle( null, mob ) );
-			string female = mob.Female ? "1" : "0";
+			string female = ( mob.Female ? "1" : "0" );
 			
-			bool pubBool = mob is PlayerMobile && ((PlayerMobile)mob).PublicMyRunUO;
+			bool pubBool = ( mob is PlayerMobile ) && ( ((PlayerMobile)mob).PublicMyRunUO );
 
-			string pubString = pubBool ? "1" : "0";
+			string pubString = ( pubBool ? "1" : "0" );
 
-			string guildId = mob.Guild == null ? "NULL" : mob.Guild.Id.ToString();
+			string guildId = ( mob.Guild == null ? "NULL" : mob.Guild.Id.ToString() );
 
 			if ( Config.LoadDataInFile )
 			{
@@ -547,7 +590,7 @@ namespace Server.Engines.MyRunUO
 
 				++m_Index;
 
-				if ( DateTime.Now >= endTime )
+				if ( DateTime.UtcNow >= endTime )
 					break;
 			}
 
@@ -623,7 +666,7 @@ namespace Server.Engines.MyRunUO
 
 				++m_Index;
 
-				if ( DateTime.Now >= endTime )
+				if ( DateTime.UtcNow >= endTime )
 					break;
 			}
 

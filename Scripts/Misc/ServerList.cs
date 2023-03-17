@@ -3,13 +3,12 @@ using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using Server;
 using Server.Network;
-using System.Configuration;
-using System.Collections.Specialized;
 
 namespace Server.Misc
 {
-    public class ServerList
+	public class ServerList
 	{
 		/* 
 		 * The default setting for Address, a value of 'null', will use your local IP address. If all of your local IP addresses
@@ -38,9 +37,9 @@ namespace Server.Misc
 		 * If you would like to listen on additional ports (i.e. 22, 23, 80, for clients behind highly restrictive egress
 		 * firewalls) or specific IP adddresses you can do so by modifying the file SocketOptions.cs found in this directory.
 		 */
-		
+
 		public static readonly string Address = null;
-		public static readonly string ServerName = "2TA For the Win" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.MinorRevision;
+		public static readonly string ServerName = "RunUO TC";
 
 		public static readonly bool AutoDetect = true;
 
@@ -71,6 +70,12 @@ namespace Server.Misc
 				IPAddress localAddress = ipep.Address;
 				int localPort = ipep.Port;
 
+				if ( IsPrivateNetwork( localAddress ) ) {
+					ipep = (IPEndPoint)s.RemoteEndPoint;
+					if ( !IsPrivateNetwork( ipep.Address ) && m_PublicAddress != null )
+						localAddress = m_PublicAddress;
+				}
+
 				e.AddServer( ServerName, new IPEndPoint( localAddress, localPort ) );
 			}
 			catch
@@ -81,13 +86,15 @@ namespace Server.Misc
 
 		private static void AutoDetection()
 		{
-			Console.Write( "ServerList: Auto-detecting public IP address..." );
-			m_PublicAddress = FindPublicAddress();
+			if ( !HasPublicIPAddress() ) {
+				Console.Write( "ServerList: Auto-detecting public IP address..." );
+				m_PublicAddress = FindPublicAddress();
 
-			if ( m_PublicAddress != null )
-				Console.WriteLine( "done ({0})", m_PublicAddress.ToString() );
-			else
-				Console.WriteLine( "failed" );
+				if ( m_PublicAddress != null )
+					Console.WriteLine( "done ({0})", m_PublicAddress.ToString() );
+				else
+					Console.WriteLine( "failed" );
+			}
 		}
 
 		private static void Resolve( string addr, out IPAddress outValue )
@@ -105,6 +112,63 @@ namespace Server.Misc
 			}
 		}
 
+		private static bool HasPublicIPAddress()
+		{
+			NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
+
+			foreach ( NetworkInterface adapter in adapters ) {
+				IPInterfaceProperties properties = adapter.GetIPProperties();
+
+				foreach ( IPAddressInformation unicast in properties.UnicastAddresses ) {
+					IPAddress ip = unicast.Address;
+
+					if ( !IPAddress.IsLoopback( ip ) && ip.AddressFamily != AddressFamily.InterNetworkV6 && !IsPrivateNetwork( ip ) )
+						return true;
+				}
+			}
+
+			return false;
+
+
+			/*
+			IPHostEntry iphe = Dns.GetHostEntry( Dns.GetHostName() );
+
+			IPAddress[] ips = iphe.AddressList;
+
+			for ( int i = 0; i < ips.Length; ++i )
+			{
+				if ( ips[i].AddressFamily != AddressFamily.InterNetworkV6 && !IsPrivateNetwork( ips[i] ) )
+					return true;
+			}
+
+			return false;
+			*/
+		}
+
+		private static bool IsPrivateNetwork( IPAddress ip )
+		{
+			// 10.0.0.0/8
+			// 172.16.0.0/12
+			// 192.168.0.0/16
+			// 169.254.0.0/16
+			// 100.64.0.0/10 RFC 6598
+
+			if ( ip.AddressFamily == AddressFamily.InterNetworkV6 )
+				return false;
+
+			if ( Utility.IPMatch( "192.168.*", ip ) )
+				return true;
+			else if ( Utility.IPMatch( "10.*", ip ) )
+				return true;
+			else if ( Utility.IPMatch( "172.16-31.*", ip ) )
+				return true;
+			else if ( Utility.IPMatch( "169.254.*", ip ) )
+				return true;
+			else if ( Utility.IPMatch( "100.64-127.*", ip ) )
+				return true;
+			else
+				return false;
+		}
 
 		private static IPAddress FindPublicAddress()
 		{
@@ -116,21 +180,19 @@ namespace Server.Misc
 				req.Timeout = 15000;
 
 				WebResponse res = req.GetResponse();
+
 				Stream s = res.GetResponseStream();
 
 				StreamReader sr = new StreamReader( s );
 
 				IPAddress ip = IPAddress.Parse( sr.ReadLine() );
-				Console.WriteLine(ip);
 
 				sr.Close();
 				s.Close();
 				res.Close();
 
 				return ip;
-			} catch (Exception e){
-				Console.WriteLine( "Caught an Error" );
-				Console.WriteLine( e );
+			} catch {
 				return null;
 			}
 		}

@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Listener.cs 826 2012-02-08 03:32:56Z asayre $
+ *   $Id$
  *
  ***************************************************************************/
 
@@ -25,10 +25,11 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
+using Server;
 
 namespace Server.Network
 {
-    public class Listener : IDisposable
+	public class Listener : IDisposable
 	{
 		private Socket m_Listener;
 
@@ -84,9 +85,8 @@ namespace Server.Network
 			try
 			{
 				s.LingerState.Enabled = false;
-#if !MONO
 				s.ExclusiveAddressUse = false;
-#endif
+
 				s.Bind( ipep );
 				s.Listen( 8 );
 
@@ -267,12 +267,22 @@ namespace Server.Network
 			return array;
 		}
 
-		public void Dispose() {
-			Socket socket = Interlocked.Exchange<Socket>( ref m_Listener, null );
+		public void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				Socket socket = Interlocked.Exchange<Socket>(ref m_Listener, null);
 
-			if ( socket != null ) {
-				socket.Close();
+				if (socket != null)
+				{
+					socket.Close();
+				}
 			}
+		}
+
+		public void Dispose() {
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 	}
 }
