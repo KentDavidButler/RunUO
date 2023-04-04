@@ -61,13 +61,7 @@ namespace Server.Misc
 			true,// Mining = 45,
 			true,// Meditation = 46,
 			true,// Stealth = 47,
-			true,// RemoveTrap = 48,
-			true,// Necromancy = 49,
-			false,// Focus = 50,
-			true,// Chivalry = 51
-			true,// Bushido = 52
-			true,//Ninjitsu = 53
-			true // Spellweaving
+			true// RemoveTrap = 48,
 		};
 
 		public static void Initialize()

@@ -481,17 +481,11 @@ namespace Server.Gumps
 				} ),
 				new SkillsGumpGroup( "Magical", new SkillName[]
 				{
-					SkillName.Chivalry,
 					SkillName.EvalInt,
 					SkillName.Magery,
 					SkillName.MagicResist,
 					SkillName.Meditation,
-					SkillName.Necromancy,
 					SkillName.SpiritSpeak,
-					SkillName.Ninjitsu,
-					SkillName.Bushido,
-					SkillName.Spellweaving,
-					SkillName.Mysticism
 				} ),
 				new SkillsGumpGroup( "Miscellaneous", new SkillName[]
 				{

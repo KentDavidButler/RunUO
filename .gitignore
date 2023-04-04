@@ -33,3 +33,5 @@ app.config
 RunUO.sln
 .idea
 .vscode
+
+/Server/obj

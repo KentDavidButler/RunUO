@@ -555,7 +555,7 @@ namespace Server.Misc
 			{
 				SkillNameValue snv = skills[i];
 
-				if ( snv.Value > 0 && ( snv.Name != SkillName.Stealth || prof == 7 ) && snv.Name != SkillName.RemoveTrap && snv.Name != SkillName.Spellweaving )
+				if ( snv.Value > 0 && ( snv.Name != SkillName.Stealth || prof == 7 ) && snv.Name != SkillName.RemoveTrap )
 				{
 					Skill skill = m.Skills[snv.Name];
 

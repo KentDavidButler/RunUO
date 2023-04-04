@@ -84,16 +84,7 @@ namespace Server
 		Mining = 45,
 		Meditation = 46,
 		Stealth = 47,
-		RemoveTrap = 48,
-		Necromancy = 49,
-		Focus = 50,
-		Chivalry = 51,
-		Bushido = 52,
-		Ninjitsu = 53,
-		Spellweaving = 54,
-		Mysticism = 55,
-		Imbuing = 56,
-		Throwing = 57
+		RemoveTrap = 48
 	}
 
 	[PropertyObject]
@@ -619,7 +610,7 @@ namespace Server
 			}
 		}
 
-		private static SkillInfo[] m_Table = new SkillInfo[58]
+		private static SkillInfo[] m_Table = new SkillInfo[49]
 			{
 				new SkillInfo(  0, "Alchemy",			0.0,	5.0,	5.0,	"Alchemist",	null,	0.0,	0.5,	0.5,	1.0 ),
 				new SkillInfo(  1, "Anatomy",			0.0,	0.0,	0.0,	"Biologist",	null,	0.15,	0.15,	0.7,	1.0 ),
@@ -669,16 +660,7 @@ namespace Server
 				new SkillInfo( 45, "Mining",			20.0,	0.0,	0.0,	"Miner",	null,	2.0,	0.0,	0.0,	1.0 ),
 				new SkillInfo( 46, "Meditation",		0.0,	0.0,	0.0,	"Stoic",	null,	0.0,	0.0,	0.0,	1.0 ),
 				new SkillInfo( 47, "Stealth",			0.0,	0.0,	0.0,	"Rogue",	null,	0.0,	0.0,	0.0,	1.0 ),
-				new SkillInfo( 48, "Remove Trap",		0.0,	0.0,	0.0,	"Trap Specialist",	null,	0.0,	0.0,	0.0,	1.0 ),
-				new SkillInfo( 49, "Necromancy",		0.0,	0.0,	0.0,	"Necromancer",	null,	0.0,	0.0,	0.0,	1.0 ),
-				new SkillInfo( 50, "Focus",			0.0,	0.0,	0.0,	"Driven",	null,	0.0,	0.0,	0.0,	1.0 ),
-				new SkillInfo( 51, "Chivalry",			0.0,	0.0,	0.0,	"Paladin",	null,	0.0,	0.0,	0.0,	1.0 ),
-				new SkillInfo( 52, "Bushido",			0.0,	0.0,	0.0,	"Samurai",	null,	0.0,	0.0,	0.0,	1.0 ),
-				new SkillInfo( 53, "Ninjitsu",			0.0,	0.0,	0.0,	"Ninja",	null,	0.0,	0.0,	0.0,	1.0 ),
-				new SkillInfo( 54, "Spellweaving",		0.0,	0.0,	0.0,	"Arcanist",	null,	0.0,	0.0,	0.0,	1.0 ),
-				new SkillInfo( 55, "Mysticism",			0.0,	0.0,	0.0,	"Mystic",	null,	0.0,	0.0,	0.0,	1.0 ),
-				new SkillInfo( 56, "Imbuing",			0.0,	0.0,	0.0,	"Artificer",	null,	0.0,	0.0,	0.0,	1.0 ),
-				new SkillInfo( 57, "Throwing",			0.0,	0.0,	0.0,	"Bladeweaver",	null,	0.0,	0.0,	0.0,	1.0 ),
+				new SkillInfo( 48, "Remove Trap",		0.0,	0.0,	0.0,	"Trap Specialist",	null,	0.0,	0.0,	0.0,	1.0 )
 			};
 
 		public static SkillInfo[] Table
@@ -849,33 +831,6 @@ namespace Server
 
 		[CommandProperty( AccessLevel.Counselor )]
 		public Skill RemoveTrap{ get{ return this[SkillName.RemoveTrap]; } set{} }
-
-		[CommandProperty( AccessLevel.Counselor )]
-		public Skill Necromancy{ get{ return this[SkillName.Necromancy]; } set{} }
-
-		[CommandProperty( AccessLevel.Counselor )]
-		public Skill Focus{ get{ return this[SkillName.Focus]; } set{} }
-
-		[CommandProperty( AccessLevel.Counselor )]
-		public Skill Chivalry{ get{ return this[SkillName.Chivalry]; } set{} }
-
-		[CommandProperty( AccessLevel.Counselor )]
-		public Skill Bushido{ get{ return this[SkillName.Bushido]; } set{} }
-
-		[CommandProperty( AccessLevel.Counselor )]
-		public Skill Ninjitsu{ get{ return this[SkillName.Ninjitsu]; } set{} }
-
-		[CommandProperty( AccessLevel.Counselor )]
-		public Skill Spellweaving { get { return this[SkillName.Spellweaving]; } set { } }
-
-		[CommandProperty( AccessLevel.Counselor )]
-		public Skill Mysticism { get { return this[SkillName.Mysticism]; } set { } }
-
-		[CommandProperty( AccessLevel.Counselor )]
-		public Skill Imbuing { get { return this[SkillName.Imbuing]; } set { } }
-
-		[CommandProperty( AccessLevel.Counselor )]
-		public Skill Throwing { get { return this[SkillName.Throwing]; } set { } }
 
 		#endregion
 
