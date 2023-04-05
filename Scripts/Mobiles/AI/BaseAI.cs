@@ -330,6 +330,8 @@ namespace Server.Mobiles
 
 		public virtual void OnSpeech(SpeechEventArgs e)
 		{
+			// it might be possible to parse the  SpeechEventArgs to determine/add new keywords
+			// may be best to change this to an inhearited property so it is not on all AIs
 			if (e.Mobile.Alive && e.Mobile.InRange(m_Mobile.Location, 3) && m_Mobile.IsHumanInTown())
 			{
 				if (e.HasKeyword(0x9D) && WasNamed(e.Speech)) // *move*
