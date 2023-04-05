@@ -98,25 +98,29 @@ namespace Server.Mobiles
 				}
 			}
 
-			if ( !m_Mobile.Controlled && !m_Mobile.Summoned && m_Mobile.CanFlee )
-			{
-				double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
 
-				if ( hitPercent < 0.1 )
-				{
-					m_Mobile.DebugSay( "I am low on health!" );
-					Action = ActionType.Flee;
-				}
+			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
+			if ( hitPercent < 0.4 )
+			{
+				m_Mobile.DebugSay( "I am low on health! Backoff and recover" );
+				Action = ActionType.Backoff;
 			}
+			else if ( hitPercent < 0.1 )
+			{
+				m_Mobile.DebugSay( "I am retreating!" );
+				Action = ActionType.Flee;
+			}
+
 
 			return true;
 		}
 
+		// DoActionBackoff is a way to run and recover, which means heal, cure, or regen mana
 		public override bool DoActionBackoff()
 		{
 			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
 
-			if ( !m_Mobile.Summoned && !m_Mobile.Controlled && hitPercent < 0.1 && m_Mobile.CanFlee ) // Less than 10% health
+			if ( !m_Mobile.Summoned && !m_Mobile.Controlled && hitPercent < 0.2 && m_Mobile.CanFlee ) // Less than 20% health
 			{
 				Action = ActionType.Flee;
 			}
@@ -140,6 +144,7 @@ namespace Server.Mobiles
 			return true;
 		}
 
+		// DoActionFlee is a full retreat, run and hide, recall, keep running away. 
 		public override bool DoActionFlee()
 		{
 			AcquireFocusMob(m_Mobile.RangePerception * 2, m_Mobile.FightMode, true, false, true);
