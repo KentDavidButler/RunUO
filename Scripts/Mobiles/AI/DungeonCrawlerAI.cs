@@ -1,7 +1,14 @@
-//
-// This is a first simple AI
-//
-//
+using System;
+using System.Collections.Generic;
+using Server.Spells;
+using Server.Spells.Fifth;
+using Server.Spells.First;
+using Server.Spells.Fourth;
+using Server.Spells.Second;
+using Server.Spells.Seventh;
+using Server.Spells.Sixth;
+using Server.Spells.Third;
+using Server.Targeting;
 
 namespace Server.Mobiles
 {
@@ -19,20 +26,39 @@ namespace Server.Mobiles
             // Try to have them scan, justs outside of screen view for next opponent
             // Finally determine where to send them next, they should never move 'backwards' in the dungeon, unless
             // they hit a dead end or are flee'ing
+
+			m_Mobile.DebugSay( "I have no combatant" );
+
+			if ( AcquireFocusMob( m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true ) )
+			{
+				m_Mobile.DebugSay( "I have detected {0}, attacking", m_Mobile.FocusMob.Name );
+
+				m_Mobile.Combatant = m_Mobile.FocusMob;
+				Action = ActionType.Combat;
+			}
+			else
+			{
+				Rest();
+				base.DoActionWander();
+			}
+
+			return true;
 		}
 
 		public override bool DoActionInteract()
 		{
             // What is this used for, how is this different?
 
+			return true;
 		}
 
         public override bool DoActionCombat()
 		{
+			m_Mobile.DebugSay( "I'm in active combat" );
             // Need to determine what type of "Player that is covered" because a bard
             // would react a lot different than a dex melee, vs a pk build
-
             Mobile combatant = m_Mobile.Combatant;
+			m_Mobile.Warmode = true;
 
             // Check to see if Combatant has left, if so put guard up
 			if ( combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive )
@@ -40,17 +66,16 @@ namespace Server.Mobiles
 				m_Mobile.DebugSay( "My combatant is gone, so my guard is up" );
 
 				Action = ActionType.Guard;
-
 				return true;
 			}
 
-            // health Check
             if ( m_Mobile.CanFlee )
 			{
-				if ( m_Mobile.Hits < m_Mobile.HitsMax * 20/100 )
+				m_Mobile.DebugSay( "Checking if I should flee" );
+				double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
+				if ( hitPercent < 0.2 )
 				{
 					// We are low on health, should we flee?
-
 					bool flee = false;
 
 					if ( m_Mobile.Hits < combatant.Hits )
@@ -75,8 +100,6 @@ namespace Server.Mobiles
 					}
 				}
 			}
-
-
 
 			if ( !m_Mobile.InRange( combatant, m_Mobile.RangePerception ) )
 			{
@@ -142,15 +165,18 @@ namespace Server.Mobiles
             // Run away and heal/cure
             // Run away to a safe distance and 'recall home'
             // Run away to a safe distance and hide
+			return true;
 
 		}
 
         public override bool DoActionBackoff()
+		// Backoff will keep the NPC engauged in the fight, while allowing them to Rest or heal befor re-enguaging 
 		{
 			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
 
 			if ( !m_Mobile.Summoned && !m_Mobile.Controlled && hitPercent < 0.1 && m_Mobile.CanFlee ) // Less than 10% health
 			{
+				// A little too hurt, Run away.
 				Action = ActionType.Flee;
 			}
 			else
@@ -160,7 +186,8 @@ namespace Server.Mobiles
 					if ( WalkMobileRange(m_Mobile.FocusMob, 1, false, m_Mobile.RangePerception, m_Mobile.RangePerception * 2) )
 					{
 						m_Mobile.DebugSay( "Well, here I am safe" );
-						Action = ActionType.Wander;
+						//heal, cure, Rest
+						Rest();
 					}					
 				}
 				else
@@ -176,27 +203,53 @@ namespace Server.Mobiles
 		public override bool DoActionGuard()
 		{
 			m_Mobile.FocusMob = m_Mobile.Combatant;
+			Rest();
 			return base.DoActionGuard();
 		}
 
-		public override bool HandlesOnSpeech( Mobile from )
-		{
-			if ( from.InRange( m_Mobile, 4 ) )
-				return true;
+		// public override bool HandlesOnSpeech( Mobile from )
+		// {
+		// 	if ( from.InRange( m_Mobile, 4 ) )
+		// 		return true;
 
-			return base.HandlesOnSpeech( from );
-		}
+		// 	return base.HandlesOnSpeech( from );
+		// }
 
 		// Temporary 
-		public override void OnSpeech( SpeechEventArgs e )
-		{
-			base.OnSpeech( e );
+		// public override void OnSpeech( SpeechEventArgs e )
+		// {
+		// 	base.OnSpeech( e );
  
-			Mobile from = e.Mobile;
+		// 	Mobile from = e.Mobile;
  
-            // add any specific speech stuff here. File EventSink.cs should have all speech specific functions
-            // OnSpeech = e.Speech; // should provide access to what was said
+        //     // add any specific speech stuff here. File EventSink.cs should have all speech specific functions
+        //     // OnSpeech = e.Speech; // should provide access to what was said
 
+
+		// }
+
+		private void Rest()
+		{
+			if( m_Mobile.Poisoned )
+			{
+				m_Mobile.DebugSay( "I am going to cure myself" );
+				new CureSpell( m_Mobile, null ).Cast();
+			}
+
+			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
+			double manaPercent = (double)m_Mobile.Mana / m_Mobile.ManaMax;
+			if ( hitPercent < 0.75 && manaPercent > 0.15 && !m_Mobile.Poisoned)
+			{
+				m_Mobile.DebugSay( "I am going to heal myself" );
+				new GreaterHealSpell( m_Mobile, null ).Cast();
+
+			}
+			if ( hitPercent > 0.50 && manaPercent < 0.50 && !m_Mobile.Poisoned)
+			{
+				// Restore Mana
+				m_Mobile.DebugSay( "I am going to meditate" );
+				m_Mobile.UseSkill( SkillName.Meditation );
+			}
 
 		}
 	}

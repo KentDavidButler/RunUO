@@ -1750,6 +1750,9 @@ namespace Server.Mobiles
 				case AIType.AI_Thief:
 					m_AI = new ThiefAI(this);
 					break;
+				case AIType.AI_DungeonCrawler:
+					m_AI = new DungeonCrawlerAI(this);
+					break;
 			}
 		}
 

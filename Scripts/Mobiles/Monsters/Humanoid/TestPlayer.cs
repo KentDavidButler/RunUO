@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Server.Items;
 
 namespace Server.Mobiles
@@ -5,11 +6,12 @@ namespace Server.Mobiles
     public class TestPlayer : BaseCreature 
 	{ 
 		[Constructable] 
-		public TestPlayer() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) 
+		public TestPlayer() : base( AIType.AI_DungeonCrawler, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{ 
 			SpeechHue = Utility.RandomDyedHue(); 
 			Title = "Test Player"; 
-			Hue = Utility.RandomSkinHue(); 
+			Hue = Utility.RandomSkinHue();
+			Debug = true; 
 
  
 			this.Body = 0x190; 
