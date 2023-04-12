@@ -877,7 +877,7 @@ namespace Server.Mobiles
 				 2,  2
 			};
 
-		private bool ProcessTarget()
+		public bool ProcessTarget()
 		{
 			Target targ = m_Mobile.Target;
 

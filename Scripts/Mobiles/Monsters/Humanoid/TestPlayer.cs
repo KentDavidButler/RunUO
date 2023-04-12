@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class TestPlayer : BaseCreature 
 	{ 
 		[Constructable] 
-		public TestPlayer() : base( AIType.AI_DungeonCrawler, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		public TestPlayer() : base( AIType.AI_MagePlayer, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{ 
 			SpeechHue = Utility.RandomDyedHue(); 
 			Title = "Test Player"; 
@@ -21,7 +21,7 @@ namespace Server.Mobiles
 
 			SetStr( 99, 100 );
 			SetDex( 99, 100 );
-			SetInt( 25, 26 );
+			SetInt( 99, 100 );
 
 			SetDamage( 15, 19 );
 
@@ -32,6 +32,7 @@ namespace Server.Mobiles
 			SetSkill( SkillName.Healing, 100.0);
 			SetSkill( SkillName.Parry, 100.0);
 			SetSkill(SkillName.MagicResist, 100.0);
+			SetSkill(SkillName.Magery, 100.0);
 
 
 			Fame = 5000;
@@ -49,6 +50,8 @@ namespace Server.Mobiles
 			AddItem( new PlateGorget() );
 
 			Utility.AssignRandomHair( this );
+
+			PackItem( new BagOfReagents() );
 		}
 
 		public override void GenerateLoot()

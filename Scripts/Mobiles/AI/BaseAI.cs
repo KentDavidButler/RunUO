@@ -25,7 +25,7 @@ namespace Server.Mobiles
 		AI_Berserk,
 		AI_Predator,
 		AI_Thief,
-		AI_DungeonCrawler
+		AI_MagePlayer
 	}
 
 	public enum ActionType
