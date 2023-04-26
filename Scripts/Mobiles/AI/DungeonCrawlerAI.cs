@@ -18,6 +18,10 @@ namespace Server.Mobiles
 {
     public class MagePlayerAI : MageAI
 	{
+		private DateTime m_NextCastTime;
+		private DateTime m_RunAwayTimer;
+		private Mobile m_RunFrom;
+
 		public MagePlayerAI(BaseCreature m) : base (m)
 		{
 		}
@@ -35,32 +39,29 @@ namespace Server.Mobiles
 
 		public override bool DoActionWander()
 		{
+			// Check if it is time to recall away
+			if (m_Mobile.TotalGold > 5000 || m_Mobile.TotalWeight > 550)
+			{
+				RecallAway();
+				base.DoActionWander();
+			}
+
+			// check for combatant, if no one, check Rest(), reset combo, and continue to wander
 			m_Mobile.DebugSay( "I have no combatant" );
 			if ( AcquireFocusMob( (m_Mobile.RangePerception * 2), m_Mobile.FightMode, false, false, true ) )
 			{
 				m_Mobile.DebugSay( "I have detected {0}, attacking", m_Mobile.FocusMob.Name );
 
 				m_Mobile.Combatant = m_Mobile.FocusMob;
+				m_RunFrom = m_Mobile.Combatant;
 				Action = ActionType.Combat;
 			}
 			else
 			{
 				Rest();
+				m_MegaCombo = 0;
 				base.DoActionWander();
 			}
-
-			// Check if backpack is full
-			if (m_Mobile.TotalGold > 5000 || m_Mobile.TotalWeight > 550)
-			{
-				RecallAway();
-				base.DoActionWander();
-			}
-			return true;
-		}
-
-		public override bool DoActionInteract()
-		{
-            // What is this used for, how is this different?
 
 			return true;
 		}
@@ -72,60 +73,73 @@ namespace Server.Mobiles
             // would react a lot different than a dex melee, vs a pk build
             Mobile combatant = m_Mobile.Combatant;
 			m_Mobile.Warmode = true;
+			bool isPlayer = combatant.Player || combatant.Name == "an ettin";
+
+			int fleeNumb = Checking_Flee_or_Backoff();
+			if (fleeNumb != 0){
+				switch (fleeNumb)
+				{
+					case 1:
+						Action = ActionType.Backoff;
+						return true;
+					default:
+						Action = ActionType.Flee;
+						return true;
+				}
+			}
 
             // Check to see if Combatant has left, if so put guard up
 			if ( combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive )
 			{
 				m_Mobile.DebugSay( "My combatant is gone, so my guard is up" );
+				m_RunFrom = null;
 
 				Action = ActionType.Guard;
 				return true;
 			}
 
-			// checking if should flee or backoff
-			m_Mobile.DebugSay( "Checking if I should flee" );
-			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
-			if ( hitPercent < 0.6 && hitPercent > 0.4)
-			{
-				if ( m_Mobile.Hits < combatant.Hits )
-				{
-					// they are winning, backup and heal
-					m_Mobile.DebugSay( "They are winning, backoff" );
-					DoActionBackoff();
-				}
 
-			} 
-			else if ( hitPercent <= 0.4)
+			if (isPlayer)
 			{
-				m_Mobile.DebugSay( "I'm Low on life backing off" );
-				DoActionBackoff();
+				if (m_Mobile.Mana > 24 && m_MegaCombo != -1 && m_Mobile.Combatant != null && m_NextCastTime < DateTime.Now)
+				{
+					// MMMMMMEGA Combo!
+					m_Mobile.DebugSay( "Mega Combo!" );
+					Spell spell = null;
+					spell = DoMegaCombo( m_Mobile.Combatant );
+
+					if( spell != null )
+					{
+						spell.Cast();
+						m_NextCastTime = DateTime.Now + TimeSpan.FromSeconds( 3.0 );
+						return true;
+					}
+
+				}
 			}
-			else if (Utility.Random( 0, 100 ) < 10)
-			{
-				// Always have a 10% chance to BackOff
-				m_Mobile.DebugSay( "Hit Random Chance to backoff" );
-				DoActionBackoff();
-			}
-			
 
 			if ( !m_Mobile.InRange( combatant, m_Mobile.RangePerception ) )
 			{
 				// They are somewhat far away, can we find something else?
+				m_Mobile.DebugSay( "They are far away?! Maybe that is why this is happening" );
 
 				if ( AcquireFocusMob( m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true ) )
 				{
 					m_Mobile.Combatant = m_Mobile.FocusMob;
+					m_RunFrom = m_Mobile.Combatant;
 					m_Mobile.FocusMob = null;
 				}
 				else if ( !m_Mobile.InRange( combatant, m_Mobile.RangePerception * 3 ) )
 				{
 					m_Mobile.Combatant = null;
+					m_RunFrom = null;
 				}
 
 				combatant = m_Mobile.Combatant;
 				if ( combatant == null )
 				{
 					m_Mobile.DebugSay( "My combatant has fled, so I am on guard" );
+					m_RunFrom = null;
 					Action = ActionType.Guard;
 
 					return true;
@@ -142,6 +156,7 @@ namespace Server.Mobiles
 					m_Mobile.DebugSay( "My move is blocked, so I am going to attack {0}", m_Mobile.FocusMob.Name );
 
 				m_Mobile.Combatant = m_Mobile.FocusMob;
+				m_RunFrom = m_Mobile.Combatant;
 				Action = ActionType.Combat;
 
 				return true;
@@ -166,16 +181,26 @@ namespace Server.Mobiles
 
         public override bool DoActionFlee()
 		{
+			Mobile enemy;
+			if (m_RunFrom != null)
+			{
+				enemy = m_RunFrom;
+			}
+			else{
+				Action = ActionType.Guard;
+				return true;
+			}
+			
 			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
-			Mobile enemy = m_Mobile.FocusMob;
-
+			m_Mobile.DebugSay( "I flee from {0}", enemy.Name );
 			// Already hidden, Determine what to do. Recall away, stay hidding or continue fighting
 			// Heavily weighted to recalling away and hidding/ staying hidden.
 			if (m_Mobile.Hidden)
 			{
-				if (hitPercent > 0.25)
+				if (hitPercent > 0.25 && m_RunAwayTimer < DateTime.Now)
 				{
-					DoActionCombat();
+					Action = ActionType.Guard;
+					return true;
 				}
 
 				if (m_Mobile.Mana > 11 && hitPercent < 0.20)
@@ -183,7 +208,7 @@ namespace Server.Mobiles
 					RecallAway();
 				}
 
-				DoActionFlee();
+				Action = ActionType.Flee;
 				return true;
 			}
 
@@ -196,19 +221,19 @@ namespace Server.Mobiles
 			if (m_Mobile.Skills.Hiding.Value > 75.0)
 			{
 				m_Mobile.UseSkill( SkillName.Hiding );
-				DoActionFlee();
+				Action = ActionType.Flee;
 				return true;
 			}
 
+			if ( (int) m_Mobile.GetDistanceToSqrt( m_RunFrom ) > 25 )
+				{
+					m_Mobile.DebugSay( "Far Enough to Rest" );
+					Action = ActionType.Guard;
+					return true;
+				}
+
 			// Finally all else fails, keep running
-			Mobile combatant = m_Mobile.Combatant;
-			Direction d = combatant.GetDirectionTo(m_Mobile);
-
-			d = (Direction)((int)d + Utility.RandomMinMax(-1, +1));
-
-			m_Mobile.Direction = d;
-			m_Mobile.Move(d);
-
+			RunFrom(m_RunFrom);
 			return true;
 
 		}
@@ -216,45 +241,72 @@ namespace Server.Mobiles
         public override bool DoActionBackoff()
 		// Backoff will keep the NPC engauged in the fight, while allowing them to Rest or heal befor re-enguaging 
 		{
+			if (m_RunFrom != null)
+			{
+				Mobile combatant = m_RunFrom;
+			}
+			else{
+				Action = ActionType.Guard;
+				m_Mobile.DebugSay( "Breaking out of Backoff" );
+				return true;
+			}
+
+
 			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
+			m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+			m_Mobile.Warmode = true;
+
+			m_Mobile.DebugSay( "I backoff from {0}", m_RunFrom.Name );
 
 			// really hurt, lets run away.
 			if ( hitPercent < 0.1 )
 			{
 				// A little too hurt, Run away.
 				m_Mobile.DebugSay( "Started backing off, now fleeing!" );
-				DoActionFlee();
+				m_RunAwayTimer = DateTime.Now.Add(TimeSpan.FromSeconds(10));
+				Action = ActionType.Flee;
 				return true;
 			}
 			else
 			{
-				if (AcquireFocusMob(m_Mobile.RangePerception * 2, FightMode.Closest, true, false , true))
-				{
-					if ( WalkMobileRange(m_Mobile.FocusMob, 1, false, m_Mobile.RangePerception, m_Mobile.RangePerception * 2) )
+				// Run away timer is still going, RUN!
+				if (m_RunAwayTimer > DateTime.Now){
+					// walk away and try to rest
+					m_Mobile.DebugSay( "Timer Still going");
+					if ( (int) m_Mobile.GetDistanceToSqrt( m_RunFrom ) > 6 )
 					{
-						m_Mobile.DebugSay( "Well, here I am safe" );
-						//heal, cure, Rest
+						m_Mobile.DebugSay( "Far Enough to Rest" );
 						Rest();
-						base.DoActionBackoff();
-					}					
-				}
-				else if (m_Mobile.Combatant != null)
-				{
-					if ( WalkMobileRange(m_Mobile.Combatant, 1, true, m_Mobile.RangePerception * 1, m_Mobile.RangePerception * 1) )
-					{
-						m_Mobile.DebugSay( "I am trying to rest" );
-						Rest();
-						base.DoActionCombat();
 					}
-					base.DoActionBackoff();
+					else{
+						m_Mobile.DebugSay( "Keep Running!" );
+						RunFrom(m_RunFrom);
+						Action = ActionType.Backoff;
+						return true;
+					}
+
 				}
-				else
-				{
-					m_Mobile.DebugSay( "I have lost my focus, lets relax" );
-					Action = ActionType.Wander;
+				else{
+					int fleeNumb = Checking_Flee_or_Backoff();
+					if (fleeNumb != 0){
+						switch (fleeNumb)
+						{
+					case 1:
+						Action = ActionType.Backoff;
+						return true;
+					case 2:
+						Action = ActionType.Flee;
+						return true;
+					default:
+						Action = ActionType.Guard;
+						return true;
+						}
+					}
+
 				}
 			}
 
+			Action = ActionType.Guard;
 			return true;
 		}
 
@@ -286,45 +338,95 @@ namespace Server.Mobiles
 
 		// }
 
+		public void RunFrom( Mobile m )
+		{
+			Run( ( m_Mobile.GetDirectionTo( m ) - 4 ) & Direction.Mask );
+		}
+		public void Run( Direction d )
+		{
+			if( m_Mobile.Spell != null && m_Mobile.Spell.IsCasting || m_Mobile.Paralyzed || m_Mobile.Frozen || m_Mobile.DisallowAllMoves )
+				return;
+
+			m_Mobile.Direction = d | Direction.Running;
+
+			if( !DoMove( m_Mobile.Direction, true ) )
+				OnFailedMove();
+		}
+
+		// 0 means, we don't need to back off or flee, 1 means backoff, and 2 means flee
+		private int Checking_Flee_or_Backoff()
+		{
+			// checking if should flee or backoff
+			m_Mobile.DebugSay( "Checking if I should flee" );
+			Mobile combatant = m_Mobile.Combatant;
+			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
+			if ( hitPercent >= 0.6){
+				return 0;
+			}
+			else if ( hitPercent < 0.6 && hitPercent > 0.4)
+			{
+				// if my hit percentage is below combatant hit percent, lets back off
+				if ( hitPercent < (double)combatant.Hits / combatant.HitsMax )
+				{
+					// they are winning, backup and heal
+					m_Mobile.DebugSay( "They are winning, backoff" );
+					m_RunAwayTimer = DateTime.Now.Add(TimeSpan.FromSeconds( 5 ));
+					return 1;
+				}
+
+			} 
+			else if ( hitPercent <= 0.4)
+			{
+				m_Mobile.DebugSay( "I'm Low on life backing off" );
+				m_RunAwayTimer = DateTime.Now.Add(TimeSpan.FromSeconds( 8 ));
+				return 1;
+			}
+			else if ( hitPercent <= 0.2)
+			{
+				m_RunAwayTimer = DateTime.Now.Add(TimeSpan.FromSeconds( 11 ));
+				m_Mobile.DebugSay( "I'm REALLY low on life, fleeing" );
+				return 2;
+			}
+			return 0;
+		}
+
+		// Rest only contains abilities that allow the player to rest
+		// abilities like healing, regen mana, and curing
 		private void Rest()
 		{
 
-			// Make sure we are a safe distance away
-			if ( WalkMobileRange(m_Mobile.Combatant, 1, false, m_Mobile.RangePerception, m_Mobile.RangePerception * 2) || m_Mobile.Combatant == null )
+			m_Mobile.DebugSay( "Taking a moment to rest" );
+			if( m_Mobile.Poisoned )
 			{
-				m_Mobile.DebugSay( "Well, here I am safe" );
-				if( m_Mobile.Poisoned )
-				{
-					// note to self, determine how to unequip and re-equip
-					m_Mobile.DebugSay( "I am going to cure myself" );
-					Spell spell = new CureSpell( m_Mobile, null );
-					spell.Cast();
-					return;
-				}
-
-				double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
-				double manaPercent = (double)m_Mobile.Mana / m_Mobile.ManaMax;
-				if ( hitPercent < 0.75 && manaPercent > 0.15 && !m_Mobile.Poisoned)
-				{
-					m_Mobile.DebugSay( "I am going to heal myself" );
-					Spell spell = new GreaterHealSpell( m_Mobile, null );
-					m_Mobile.DebugSay( "Casting Greater heal " + spell );
-					spell.Cast();
-					return;
-				}
-				
-				if ( hitPercent > 0.50 && manaPercent < 0.50 && !m_Mobile.Poisoned)
-				{
-					// Restore Mana
-					m_Mobile.DebugSay( "I am going to meditate" );
-					m_Mobile.UseSkill( SkillName.Meditation );
-					return;
-				}
+				// note to self, determine how to unequip and re-equip
+				m_Mobile.DebugSay( "I am going to cure myself" );
+				Spell spell = new CureSpell( m_Mobile, null );
+				// todo: set cast timer
+				spell.Cast();
+				return;
 			}
-			else
+
+			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
+			double manaPercent = (double)m_Mobile.Mana / m_Mobile.ManaMax;
+			if ( hitPercent < 0.75 && manaPercent > 0.15 && !m_Mobile.Poisoned)
 			{
-				Rest();
-			}				
+				m_Mobile.DebugSay( "I am going to heal myself" );
+				Spell spell = new GreaterHealSpell( m_Mobile, null );
+				m_Mobile.DebugSay( "Casting Greater heal " + spell );
+				// todo: set cast timer
+				spell.Cast();
+				return;
+			}
+			
+			if ( hitPercent > 0.50 && manaPercent < 0.50 && !m_Mobile.Poisoned)
+			{
+				// Restore Mana
+				m_Mobile.DebugSay( "I am going to meditate" );
+				m_Mobile.UseSkill( SkillName.Meditation );
+				m_Mobile.Paralyze(TimeSpan.FromSeconds( 3 ));
+				return;
+			}
+			
 		}
 
 
@@ -350,6 +452,40 @@ namespace Server.Mobiles
 			}
 
 		}
+
+		protected int m_MegaCombo = -1;
+		public virtual Spell DoMegaCombo( Mobile c )
+		{
+			Spell spell = null;
+
+			if( m_MegaCombo == 0 )
+			{
+				spell = new MagicArrowSpell( m_Mobile, null );
+				m_MegaCombo = 1; // Move to next spell
+			}
+			else if( m_MegaCombo == 1 )
+			{
+				spell = new ExplosionSpell( m_Mobile, null );
+				m_MegaCombo = 2; // Move to next spell
+			}
+			else if( m_MegaCombo == 2 )
+			{
+				if( !c.Poisoned )
+					spell = new EnergyBoltSpell( m_Mobile, null );
+
+				m_MegaCombo = 3; // Move to next spell
+			}
+			else if( m_MegaCombo == 3 )
+			{
+				if( !c.Poisoned )
+					spell = new PoisonSpell( m_Mobile, null );
+
+				m_MegaCombo = -1;
+			}
+
+			return spell;
+		}
+
 
 	}
 }

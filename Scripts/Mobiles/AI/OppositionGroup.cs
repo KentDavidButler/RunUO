@@ -53,6 +53,7 @@ namespace Server
 					typeof( Warden ),
 					typeof( MindFlayer ),
 					typeof( MindFlayerShield ),
+					typeof( Ettin ),
 
 				},
 				new Type[]

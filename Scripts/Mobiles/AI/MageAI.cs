@@ -474,7 +474,7 @@ namespace Server.Mobiles
 			return spell;
 		}
 
-		private TimeSpan GetDelay( Spell spell )
+		private  TimeSpan GetDelay( Spell spell )
 		{
 			if( SmartAI || spell is DispelSpell )
 			{
