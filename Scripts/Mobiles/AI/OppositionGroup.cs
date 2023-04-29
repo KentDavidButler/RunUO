@@ -48,12 +48,6 @@ namespace Server
 			{
 				new Type[]
 				{
-					typeof( Devourer ),
-					typeof( Effusion ),
-					typeof( Warden ),
-					typeof( MindFlayer ),
-					typeof( MindFlayerShield ),
-					typeof( Ettin ),
 
 				},
 				new Type[]

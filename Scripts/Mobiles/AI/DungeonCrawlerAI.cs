@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Internal;
 using System.Runtime.CompilerServices;
@@ -21,6 +22,7 @@ namespace Server.Mobiles
 		private DateTime m_NextCastTime;
 		private DateTime m_RunAwayTimer;
 		private Mobile m_RunFrom;
+		private Item m_OneHand, m_TwoHand;
 
 		public MagePlayerAI(BaseCreature m) : base (m)
 		{
@@ -53,12 +55,15 @@ namespace Server.Mobiles
 				m_Mobile.DebugSay( "I have detected {0}, attacking", m_Mobile.FocusMob.Name );
 
 				m_Mobile.Combatant = m_Mobile.FocusMob;
+				m_RunFrom = null;
 				m_RunFrom = m_Mobile.Combatant;
 				Action = ActionType.Combat;
 			}
 			else
 			{
-				Rest();
+				Spell spell = Rest();
+				if( spell != null )
+					spell.Cast();
 				m_MegaCombo = 0;
 				base.DoActionWander();
 			}
@@ -69,11 +74,13 @@ namespace Server.Mobiles
         public override bool DoActionCombat()
 		{
 			m_Mobile.DebugSay( "I'm in active combat" );
-            // Need to determine what type of "Player that is covered" because a bard
-            // would react a lot different than a dex melee, vs a pk build
-            Mobile combatant = m_Mobile.Combatant;
+            Mobile combatant = getCombatant();
+			if (combatant == null){
+				Action = ActionType.Guard;
+				return true;
+			}
 			m_Mobile.Warmode = true;
-			bool isPlayer = combatant.Player || combatant.Name == "an ettin";
+			Spell spell;
 
 			int fleeNumb = Checking_Flee_or_Backoff();
 			if (fleeNumb != 0){
@@ -82,11 +89,32 @@ namespace Server.Mobiles
 					case 1:
 						Action = ActionType.Backoff;
 						return true;
+					break;
+					case 3:
+						m_Mobile.DebugSay( "Casting Greater Heal" );
+						spell = greaterHeal();
+						if( spell != null ){
+							spell.Cast();}
+						return true;
+					break;
+					case 4:
+						m_Mobile.DebugSay( "Casting Cure" );
+						spell = cure();
+						if( spell != null )
+							spell.Cast();
+						return true;
+					break;
 					default:
 						Action = ActionType.Flee;
 						return true;
+					break;
 				}
 			}
+			if (m_NextCastTime < DateTime.Now)
+			{
+				equip();
+			}
+
 
             // Check to see if Combatant has left, if so put guard up
 			if ( combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive )
@@ -98,14 +126,13 @@ namespace Server.Mobiles
 				return true;
 			}
 
-
-			if (isPlayer)
+			// Do the mega combo is hits over 100 and the combatant exists, is alive and is not deleted
+			if ( (combatant != null || !combatant.Deleted || combatant.Alive ) && combatant.Hits > 100 )
 			{
 				if (m_Mobile.Mana > 24 && m_MegaCombo != -1 && m_Mobile.Combatant != null && m_NextCastTime < DateTime.Now)
 				{
 					// MMMMMMEGA Combo!
 					m_Mobile.DebugSay( "Mega Combo!" );
-					Spell spell = null;
 					spell = DoMegaCombo( m_Mobile.Combatant );
 
 					if( spell != null )
@@ -126,6 +153,7 @@ namespace Server.Mobiles
 				if ( AcquireFocusMob( m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true ) )
 				{
 					m_Mobile.Combatant = m_Mobile.FocusMob;
+					m_RunFrom = null;
 					m_RunFrom = m_Mobile.Combatant;
 					m_Mobile.FocusMob = null;
 				}
@@ -156,6 +184,7 @@ namespace Server.Mobiles
 					m_Mobile.DebugSay( "My move is blocked, so I am going to attack {0}", m_Mobile.FocusMob.Name );
 
 				m_Mobile.Combatant = m_Mobile.FocusMob;
+				m_RunFrom = null;
 				m_RunFrom = m_Mobile.Combatant;
 				Action = ActionType.Combat;
 
@@ -212,7 +241,7 @@ namespace Server.Mobiles
 				return true;
 			}
 
-			if (hitPercent > 0.15 && m_Mobile.Mana > 11)
+			if (hitPercent < 0.15 && m_Mobile.Mana > 11)
 			{
 				// recall away, all is lost
 				RecallAway();
@@ -225,10 +254,17 @@ namespace Server.Mobiles
 				return true;
 			}
 
-			if ( (int) m_Mobile.GetDistanceToSqrt( m_RunFrom ) > 25 )
+			Spell spell;
+			if ( (int) m_Mobile.GetDistanceToSqrt( m_RunFrom ) > 5 )
 				{
-					m_Mobile.DebugSay( "Far Enough to Rest" );
-					Action = ActionType.Guard;
+					if (m_Mobile.Poisoned){
+						spell = cure();
+						
+					}else{
+						spell = greaterHeal();
+					}
+					if( spell != null ){
+							spell.Cast();}
 					return true;
 				}
 
@@ -269,14 +305,18 @@ namespace Server.Mobiles
 			}
 			else
 			{
+				Spell spell;
 				// Run away timer is still going, RUN!
-				if (m_RunAwayTimer > DateTime.Now){
+				if (m_RunAwayTimer > DateTime.Now || ( (int) m_Mobile.GetDistanceToSqrt( m_RunFrom ) > 3 )){
 					// walk away and try to rest
 					m_Mobile.DebugSay( "Timer Still going");
-					if ( (int) m_Mobile.GetDistanceToSqrt( m_RunFrom ) > 6 )
+					if ( (int) m_Mobile.GetDistanceToSqrt( m_RunFrom ) > 3 )
 					{
 						m_Mobile.DebugSay( "Far Enough to Rest" );
-						Rest();
+						spell = Rest();
+						if( spell != null )
+							spell.Cast();
+						return true;
 					}
 					else{
 						m_Mobile.DebugSay( "Keep Running!" );
@@ -285,21 +325,37 @@ namespace Server.Mobiles
 						return true;
 					}
 
-				}
-				else{
+				} else{
+					
 					int fleeNumb = Checking_Flee_or_Backoff();
 					if (fleeNumb != 0){
 						switch (fleeNumb)
 						{
-					case 1:
-						Action = ActionType.Backoff;
-						return true;
-					case 2:
-						Action = ActionType.Flee;
-						return true;
-					default:
-						Action = ActionType.Guard;
-						return true;
+						case 1:
+							Action = ActionType.Backoff;
+							return true;
+						break;
+						case 2:
+							Action = ActionType.Flee;
+							return true;
+						case 3:
+							m_Mobile.DebugSay( "Casting Cure" );
+							spell = greaterHeal();
+							if( spell != null )
+								spell.Cast();
+							return true;
+						break;
+						case 4:
+							m_Mobile.DebugSay( "Casting Cure" );
+							spell = cure();
+							if( spell != null )
+								spell.Cast();
+							return true;
+						break;
+						default:
+							Action = ActionType.Guard;
+							return true;
+						break;
 						}
 					}
 
@@ -312,6 +368,11 @@ namespace Server.Mobiles
 
 		public override bool DoActionGuard()
 		{
+			if (m_NextCastTime < DateTime.Now)
+			{
+				equip();
+			}
+
 			m_Mobile.FocusMob = m_Mobile.Combatant;
 			Rest();
 			return base.DoActionGuard();
@@ -354,14 +415,36 @@ namespace Server.Mobiles
 		}
 
 		// 0 means, we don't need to back off or flee, 1 means backoff, and 2 means flee
+		// 3 means we need to top off the health bar, 4 poisoned
 		private int Checking_Flee_or_Backoff()
 		{
+			if (checkIfDeadOrDeleted()){
+				// if dead or deleted return 0 so nothing changes
+				return 0;
+			}
 			// checking if should flee or backoff
 			m_Mobile.DebugSay( "Checking if I should flee" );
-			Mobile combatant = m_Mobile.Combatant;
-			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
-			if ( hitPercent >= 0.6){
+            Mobile combatant = getCombatant();
+			if (combatant == null){
 				return 0;
+			}
+
+			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
+			if( m_Mobile.Poisoned ){
+				if ( hitPercent >= 0.8){
+					m_Mobile.DebugSay( "I am Poisoned, I should cure" );
+					return 4;
+				}else{
+					m_Mobile.DebugSay( "I am Poisoned, I should backoff" );
+					return 2;
+				}
+				
+			}
+			else if ( hitPercent >= 0.8){
+				return 0;
+			}
+			else if ( hitPercent < 0.8 && hitPercent >= 0.6){
+				return 3;
 			}
 			else if ( hitPercent < 0.6 && hitPercent > 0.4)
 			{
@@ -375,7 +458,7 @@ namespace Server.Mobiles
 				}
 
 			} 
-			else if ( hitPercent <= 0.4)
+			else if ( hitPercent <= 0.4 && hitPercent > 0.2)
 			{
 				m_Mobile.DebugSay( "I'm Low on life backing off" );
 				m_RunAwayTimer = DateTime.Now.Add(TimeSpan.FromSeconds( 8 ));
@@ -392,30 +475,20 @@ namespace Server.Mobiles
 
 		// Rest only contains abilities that allow the player to rest
 		// abilities like healing, regen mana, and curing
-		private void Rest()
+		private Spell Rest()
 		{
 
 			m_Mobile.DebugSay( "Taking a moment to rest" );
 			if( m_Mobile.Poisoned )
 			{
-				// note to self, determine how to unequip and re-equip
-				m_Mobile.DebugSay( "I am going to cure myself" );
-				Spell spell = new CureSpell( m_Mobile, null );
-				// todo: set cast timer
-				spell.Cast();
-				return;
+				return cure();
 			}
 
 			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
 			double manaPercent = (double)m_Mobile.Mana / m_Mobile.ManaMax;
 			if ( hitPercent < 0.75 && manaPercent > 0.15 && !m_Mobile.Poisoned)
 			{
-				m_Mobile.DebugSay( "I am going to heal myself" );
-				Spell spell = new GreaterHealSpell( m_Mobile, null );
-				m_Mobile.DebugSay( "Casting Greater heal " + spell );
-				// todo: set cast timer
-				spell.Cast();
-				return;
+				return greaterHeal();
 			}
 			
 			if ( hitPercent > 0.50 && manaPercent < 0.50 && !m_Mobile.Poisoned)
@@ -423,19 +496,49 @@ namespace Server.Mobiles
 				// Restore Mana
 				m_Mobile.DebugSay( "I am going to meditate" );
 				m_Mobile.UseSkill( SkillName.Meditation );
-				m_Mobile.Paralyze(TimeSpan.FromSeconds( 3 ));
-				return;
+				m_Mobile.Paralyze(TimeSpan.FromSeconds( 1 ));
+				return null;
 			}
-			
+
+			return null;
+		}
+
+		private Spell greaterHeal(){
+			if (m_Mobile.Mana > 10 && m_NextCastTime < DateTime.Now){
+				m_Mobile.DebugSay( "I am going to heal myself" );
+				setEquipmentHands();
+				Spell spell = new GreaterHealSpell( m_Mobile, null );
+				m_Mobile.DebugSay( "Casting Greater heal " + spell );
+				m_NextCastTime = DateTime.Now + TimeSpan.FromSeconds( 3.0 );
+				return spell;
+			}
+			return null;
+		}
+
+		private Spell cure(){
+			m_Mobile.DebugSay( "Can I cast cure right now?" );
+			if (m_Mobile.Mana > 10 && m_NextCastTime < DateTime.Now){
+				m_Mobile.DebugSay( "I am going to cure myself" );
+				setEquipmentHands();
+				Spell spell = new CureSpell( m_Mobile, null );
+				m_NextCastTime = DateTime.Now + TimeSpan.FromSeconds( 3.0 );
+				return spell;
+			} 
+			return null;
 		}
 
 
 		private void RecallAway()
 		{
+			if (checkIfDeadOrDeleted()){
+				return;
+			}
+
 			if( m_Mobile.Poisoned )
 			{
 				// note to self, determine how to unequip and re-equip
 				m_Mobile.DebugSay( "I am going to cure myself" );
+				setEquipmentHands();
 				Spell spell = new CureSpell( m_Mobile, null );
 				spell.Cast();
 				return;
@@ -456,6 +559,10 @@ namespace Server.Mobiles
 		protected int m_MegaCombo = -1;
 		public virtual Spell DoMegaCombo( Mobile c )
 		{
+			if (m_Mobile.Body.IsHuman){
+				m_OneHand = m_Mobile.FindItemOnLayer( Layer.OneHanded );
+				m_TwoHand = m_Mobile.FindItemOnLayer( Layer.TwoHanded );
+			}
 			Spell spell = null;
 
 			if( m_MegaCombo == 0 )
@@ -486,6 +593,71 @@ namespace Server.Mobiles
 			return spell;
 		}
 
+		public Mobile getCombatant() {
+			if (m_Mobile.Combatant != null){
+				return m_Mobile.Combatant;
+			}else if (m_RunFrom != null && m_RunFrom.Alive)
+			{
+				return m_RunFrom;
+			}else if (m_Mobile.FocusMob != null && m_Mobile.FocusMob.Alive)
+			{
+				return m_Mobile.FocusMob;
+			}
+			return null;
+
+		}
+		public void setEquipmentHands(){
+			if (m_Mobile.Body.IsHuman){
+				if (m_OneHand != null || m_TwoHand != null){
+					return;
+				}
+				m_Mobile.DebugSay( "Setting Hands");
+				m_OneHand = m_Mobile.FindItemOnLayer( Layer.OneHanded );
+				m_TwoHand = m_Mobile.FindItemOnLayer( Layer.TwoHanded );
+			}
+		}
+
+		private void equip()
+		{
+			if( m_Mobile.FindItemOnLayer( Layer.OneHanded ) != null || 
+				m_Mobile.FindItemOnLayer( Layer.TwoHanded ) != null ){
+					m_Mobile.DebugSay( "Not Equiping, something is already in my hand");
+					return;
+				}
+
+			if (m_Mobile != null && m_Mobile.Body.IsHuman ){
+			// check to see if items are in backpack
+				m_Mobile.DebugSay( "Equiping");
+				if (m_OneHand != null)
+				{
+					Item one_hand = m_Mobile.Backpack.FindItemByType(m_OneHand.GetType());
+					if (one_hand != null)
+					{
+						m_Mobile.EquipItem(m_OneHand);
+					}else{
+						m_Mobile.DebugSay( "Can't Find my weapon in my bag" );
+						m_OneHand= null;
+					}
+				}
+				if (m_TwoHand != null)
+				{
+					Item two_hand = m_Mobile.Backpack.FindItemByType(m_TwoHand.GetType());
+					if (two_hand != null)
+					{
+						m_Mobile.EquipItem(m_TwoHand);
+					}else{
+						m_Mobile.DebugSay( "Can't Find my weapon in my bag" );
+						m_TwoHand= null;
+					}
+				}
+			}		
+
+		}
+
+		private bool checkIfDeadOrDeleted()
+		{
+			return ( this.m_Mobile == null || this.m_Mobile.Deleted );
+		}
 
 	}
 }
