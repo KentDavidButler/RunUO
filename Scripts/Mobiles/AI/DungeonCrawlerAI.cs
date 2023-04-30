@@ -15,11 +15,20 @@ using Server.Spells.Sixth;
 using Server.Spells.Third;
 using Server.Targeting;
 
+// todo: Use m_Mobile.Aggressors to understand when this mobile is overwhelmed and needs to backoff
+// either because one monster is too strong for it, or it is getting swarmed
+// foreach (var item in m_Mobile.Aggressor) 
+
+// todo: Know when a monster hits too hard and shouldn't get close.
+
+// todo: when wandering, locate nearby bodies and loot
+
 namespace Server.Mobiles
 {
     public class MagePlayerAI : MageAI
 	{
 		private DateTime m_NextCastTime;
+		private DateTime m_NextMegaCombo;
 		private DateTime m_RunAwayTimer;
 		private Mobile m_RunFrom;
 		private Item m_OneHand, m_TwoHand;
@@ -58,6 +67,7 @@ namespace Server.Mobiles
 				m_RunFrom = null;
 				m_RunFrom = m_Mobile.Combatant;
 				Action = ActionType.Combat;
+				return true;
 			}
 			else
 			{
@@ -66,6 +76,18 @@ namespace Server.Mobiles
 					spell.Cast();
 				m_MegaCombo = 0;
 				base.DoActionWander();
+				return true;
+			}
+
+			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
+			double manaPercent = (double)m_Mobile.Mana / m_Mobile.ManaMax;
+			if ( hitPercent > 0.75 && manaPercent < 0.50 && !m_Mobile.Poisoned && m_Mobile.Skills.Meditation.Value > 60.0)
+			{
+				// Restore Mana
+				m_Mobile.DebugSay( "I am going to meditate" );
+				m_Mobile.UseSkill( SkillName.Meditation );
+				m_Mobile.Freeze(TimeSpan.FromSeconds( 1 ));
+				return true;
 			}
 
 			return true;
@@ -144,6 +166,10 @@ namespace Server.Mobiles
 
 				}
 			}
+			// rest Mega Combo
+			if (m_NextMegaCombo < DateTime.Now && m_MegaCombo == -1){
+				m_MegaCombo = 0;
+			}
 
 			if ( !m_Mobile.InRange( combatant, m_Mobile.RangePerception ) )
 			{
@@ -219,6 +245,7 @@ namespace Server.Mobiles
 				Action = ActionType.Guard;
 				return true;
 			}
+
 			
 			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
 			m_Mobile.DebugSay( "I flee from {0}", enemy.Name );
@@ -256,17 +283,28 @@ namespace Server.Mobiles
 
 			Spell spell;
 			if ( (int) m_Mobile.GetDistanceToSqrt( m_RunFrom ) > 5 )
-				{
-					if (m_Mobile.Poisoned){
-						spell = cure();
-						
-					}else{
-						spell = greaterHeal();
-					}
-					if( spell != null ){
-							spell.Cast();}
-					return true;
+			{
+				if (m_Mobile.Poisoned){
+					spell = cure();
+					
+				}else{
+					spell = greaterHeal();
 				}
+				if( spell != null){
+					spell.Cast();
+				}else{
+					spell = null;
+				}
+				Action = ActionType.Flee;
+				return true;
+			}
+
+			if (hitPercent > 0.75){
+				// I'm not longer in danger of dying, lets fight
+				Action = ActionType.Combat;
+				return true;
+			}
+
 
 			// Finally all else fails, keep running
 			RunFrom(m_RunFrom);
@@ -339,17 +377,23 @@ namespace Server.Mobiles
 							Action = ActionType.Flee;
 							return true;
 						case 3:
-							m_Mobile.DebugSay( "Casting Cure" );
+							m_Mobile.DebugSay( "Casting GreaterHeal" );
 							spell = greaterHeal();
-							if( spell != null )
+							if( spell != null && m_NextCastTime < DateTime.Now){
 								spell.Cast();
+							}else{
+								spell = null;
+							}
 							return true;
 						break;
 						case 4:
 							m_Mobile.DebugSay( "Casting Cure" );
 							spell = cure();
-							if( spell != null )
+							if( spell != null && m_NextCastTime < DateTime.Now){
 								spell.Cast();
+							}else{
+								spell = null;
+							}
 							return true;
 						break;
 						default:
@@ -479,26 +523,18 @@ namespace Server.Mobiles
 		{
 
 			m_Mobile.DebugSay( "Taking a moment to rest" );
-			if( m_Mobile.Poisoned )
+			if( m_Mobile.Poisoned && m_NextCastTime < DateTime.Now)
 			{
 				return cure();
 			}
 
 			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
 			double manaPercent = (double)m_Mobile.Mana / m_Mobile.ManaMax;
-			if ( hitPercent < 0.75 && manaPercent > 0.15 && !m_Mobile.Poisoned)
+			if ( hitPercent < 0.75 && manaPercent > 0.15 && !m_Mobile.Poisoned && m_NextCastTime < DateTime.Now)
 			{
 				return greaterHeal();
 			}
 			
-			if ( hitPercent > 0.50 && manaPercent < 0.50 && !m_Mobile.Poisoned)
-			{
-				// Restore Mana
-				m_Mobile.DebugSay( "I am going to meditate" );
-				m_Mobile.UseSkill( SkillName.Meditation );
-				m_Mobile.Paralyze(TimeSpan.FromSeconds( 1 ));
-				return null;
-			}
 
 			return null;
 		}
@@ -588,6 +624,7 @@ namespace Server.Mobiles
 					spell = new PoisonSpell( m_Mobile, null );
 
 				m_MegaCombo = -1;
+				m_NextMegaCombo = DateTime.Now + TimeSpan.FromSeconds( 10.0 );
 			}
 
 			return spell;

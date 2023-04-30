@@ -54,6 +54,7 @@ namespace Server.Mobiles
 			PackItem( new BagOfReagents() );
 		}
 
+		public override bool ReacquireOnMovement{ get{ return true; } }
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.FilthyRich );
