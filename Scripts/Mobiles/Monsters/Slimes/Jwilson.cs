@@ -11,7 +11,9 @@ namespace Server.Mobiles
 			this.Name = "a jwilson";
 			this.VirtualArmor = 8;
 
-			this.InitStats(Utility.Random(22,13),Utility.Random(16,6),Utility.Random(16,5));
+			SetStr( 22,13 );
+			SetDex( 16,6 );
+			SetInt( 16,5 );
 
 			this.Skills[SkillName.Wrestling].Base = Utility.Random(24,17);
 			this.Skills[SkillName.Tactics].Base = Utility.Random(18,14);

@@ -11,7 +11,7 @@ namespace Server.Mobiles
 			SpeechHue = Utility.RandomDyedHue(); 
 			Title = "Test Player"; 
 			Hue = Utility.RandomSkinHue();
-			Team = 20;
+			Team = Utility.Random( 9999 );
 
  
 			this.Body = 0x190; 

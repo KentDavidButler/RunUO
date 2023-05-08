@@ -30,6 +30,7 @@ namespace Server.Mobiles
 		private DateTime m_NextCastTime;
 		private DateTime m_NextMegaCombo;
 		private DateTime m_RunAwayTimer;
+		private DateTime m_NextPoisonTimer;
 		private Mobile m_RunFrom;
 		private Item m_OneHand, m_TwoHand;
 
@@ -149,7 +150,7 @@ namespace Server.Mobiles
 			}
 
 			// Do the mega combo is hits over 100 and the combatant exists, is alive and is not deleted
-			if ( (combatant != null || !combatant.Deleted || combatant.Alive ) && combatant.Hits > 100 )
+			if ( (combatant != null || !combatant.Deleted || combatant.Alive ) && combatant.Hits > 80 )
 			{
 				if (m_Mobile.Mana > 24 && m_MegaCombo != -1 && m_Mobile.Combatant != null && m_NextCastTime < DateTime.Now)
 				{
@@ -165,7 +166,16 @@ namespace Server.Mobiles
 					}
 
 				}
+			} else if ( !combatant.Poisoned && m_NextPoisonTimer < DateTime.Now && m_NextCastTime < DateTime.Now)
+			{
+				m_NextCastTime = DateTime.Now + TimeSpan.FromSeconds( 3.0 );
+				m_NextPoisonTimer =  DateTime.Now + TimeSpan.FromSeconds( 10.0 );
+
+				spell = new PoisonSpell( m_Mobile, null );
+				spell.Cast();
+				return true;
 			}
+
 			// rest Mega Combo
 			if (m_NextMegaCombo < DateTime.Now && m_MegaCombo == -1){
 				m_MegaCombo = 0;
@@ -268,7 +278,7 @@ namespace Server.Mobiles
 				return true;
 			}
 
-			if (hitPercent < 0.15 && m_Mobile.Mana > 11)
+			if (!checkIfDeadOrDeleted() && hitPercent < 0.15 && m_Mobile.Mana > 11)
 			{
 				// recall away, all is lost
 				RecallAway();
@@ -282,7 +292,7 @@ namespace Server.Mobiles
 			}
 
 			Spell spell;
-			if ( (int) m_Mobile.GetDistanceToSqrt( m_RunFrom ) > 5 )
+			if ( (int) m_Mobile.GetDistanceToSqrt( m_RunFrom ) > 5 || m_Mobile.Mana > 15)
 			{
 				if (m_Mobile.Poisoned){
 					spell = cure();
@@ -297,7 +307,7 @@ namespace Server.Mobiles
 				}
 				Action = ActionType.Flee;
 				return true;
-			}
+			}else { equip();}
 
 			if (hitPercent > 0.75){
 				// I'm not longer in danger of dying, lets fight
@@ -574,8 +584,7 @@ namespace Server.Mobiles
 			{
 				// note to self, determine how to unequip and re-equip
 				m_Mobile.DebugSay( "I am going to cure myself" );
-				setEquipmentHands();
-				Spell spell = new CureSpell( m_Mobile, null );
+				Spell spell = cure();
 				spell.Cast();
 				return;
 			}

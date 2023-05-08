@@ -8,7 +8,7 @@ namespace Server.Mobiles
         public DeathZealot() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
         {
             Body = 0x190;
-            Name = NameList.RandomName( "male" + " a Deathbringer" );
+            Name = NameList.RandomName( "male" ) + " Deathbringer";
             Title = ", a Knight of Death";
             Hue = 0;
 
