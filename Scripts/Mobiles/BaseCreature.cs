@@ -175,6 +175,14 @@ namespace Server.Mobiles
 
 		public virtual InhumanSpeech SpeechType{ get{ return null; } }
 
+
+		// public int DificultyLevel { 
+		// 	get{ 
+				
+
+		// 	 } 
+			
+		// 	}
 		/* Do not serialize this till the code is finalized */
 
 		private bool m_SeeksHome;
