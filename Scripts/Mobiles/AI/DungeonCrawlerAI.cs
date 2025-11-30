@@ -60,15 +60,7 @@ namespace Server.Mobiles
 
             // check for combatant, if no one, check Rest(), reset combo, and continue to wander
             m_Mobile.DebugSay("I have no combatant");
-            if (
-                AcquireFocusMob(
-                    (m_Mobile.RangePerception * 2),
-                    m_Mobile.FightMode,
-                    false,
-                    false,
-                    true
-                )
-            )
+            if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, false))
             {
                 m_Mobile.DebugSay("I have detected {0}, attacking", m_Mobile.FocusMob.Name);
 
@@ -88,6 +80,7 @@ namespace Server.Mobiles
                 return true;
             }
 
+            // ToDo: Why did I comment this out?
             double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
             double manaPercent = (double)m_Mobile.Mana / m_Mobile.ManaMax;
             if (
@@ -109,10 +102,6 @@ namespace Server.Mobiles
 
         public override bool DoActionCombat()
         {
-            foreach (var agressor in m_Mobile.Aggressors)
-            {
-                m_Mobile.DebugSay(agressor.Attacker.Name);
-            }
             m_Mobile.DebugSay("I'm in active combat");
             Mobile combatant = getCombatant();
             if (combatant == null)
@@ -683,7 +672,14 @@ namespace Server.Mobiles
                 if (m_Mobile.Body.Type == BodyType.Human && !m_Mobile.Mounted)
                     m_Mobile.Animate(239, 24, 1, true, false, 0);
                 Task.Delay(1500).ContinueWith(t => m_Mobile.PlaySound(0x1FC));
-                Task.Delay(1510).ContinueWith(t => m_Mobile.Delete());
+                if (checkIfDeadOrDeleted())
+                {
+                    return;
+                }
+                else
+                {
+                    Task.Delay(1510).ContinueWith(t => m_Mobile.Delete());
+                }
             }
         }
 

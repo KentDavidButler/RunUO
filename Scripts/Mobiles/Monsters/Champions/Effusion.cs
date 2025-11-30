@@ -79,9 +79,6 @@ namespace Server.Mobiles
 			int version = reader.ReadInt();
 		}
 
-		public override OppositionGroup OppositionGroup
-		{
-			get { return OppositionGroup.TestGroup; }
-		}
+
 	}
 }

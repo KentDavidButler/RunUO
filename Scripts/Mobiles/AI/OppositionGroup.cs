@@ -5,139 +5,153 @@ using Server.Mobiles;
 namespace Server
 {
     public class OppositionGroup
-	{
-		private Type[][] m_Types;
+    {
+        private Type[][] m_Types;
 
-		public OppositionGroup( Type[][] types )
-		{
-			m_Types = types;
-		}
+        public OppositionGroup(Type[][] types)
+        {
+            m_Types = types;
+        }
 
-		public bool IsEnemy( object from, object target )
-		{
-			int fromGroup = IndexOf( from );
-			int targGroup = IndexOf( target );
+        public bool IsEnemy(object from, object target)
+        {
+            int fromGroup = IndexOf(from);
+            int targGroup = IndexOf(target);
 
-			return fromGroup != -1 && targGroup != -1 && fromGroup != targGroup;
-		}
+            return fromGroup != -1 && targGroup != -1 && fromGroup != targGroup;
+        }
 
-		public int IndexOf( object obj )
-		{
-			if ( obj == null )
-				return -1;
+        public int IndexOf(object obj)
+        {
+            if (obj == null)
+                return -1;
 
-			Type type = obj.GetType();
+            Type type = obj.GetType();
 
-			for ( int i = 0; i < m_Types.Length; ++i )
-			{
-				Type[] group = m_Types[i];
+            for (int i = 0; i < m_Types.Length; ++i)
+            {
+                Type[] group = m_Types[i];
 
-				bool contains = false;
+                bool contains = false;
 
-				for ( int j = 0; !contains && j < group.Length; ++j )
-					contains = group[j].IsAssignableFrom( type );
+                for (int j = 0; !contains && j < group.Length; ++j)
+                    contains = group[j].IsAssignableFrom(type);
 
-				if ( contains )
-					return i;
-			}
+                if (contains)
+                    return i;
+            }
 
-			return -1;
-		}
+            return -1;
+        }
 
-		private static OppositionGroup m_TestGroup = new OppositionGroup( new Type[][]
-			{
-				new Type[]
-				{
+        private static OppositionGroup m_TestGroup = new OppositionGroup(
+            new Type[][] { new Type[] { }, new Type[] { } }
+        );
 
-				},
-				new Type[]
-				{
-					typeof( TestPlayer ),
-				}
-			} );
+        public static OppositionGroup TestGroup
+        {
+            get { return m_TestGroup; }
+        }
 
-		public static OppositionGroup TestGroup
-		{
-			get{ return m_TestGroup; }
-		}
-
-		private static OppositionGroup m_TerathansAndOphidians = new OppositionGroup( new Type[][]
-			{
-				new Type[]
-				{
-					typeof( TerathanAvenger ),
-					typeof( TerathanDrone ),
-					typeof( TerathanMatriarch ),
-					typeof( TerathanWarrior )
-				},
-				new Type[]
-				{
-					typeof( OphidianArchmage ),
-					typeof( OphidianKnight ),
-					typeof( OphidianMage ),
-					typeof( OphidianMatriarch ),
-					typeof( OphidianWarrior )
-				}
-			} );
-
-		public static OppositionGroup TerathansAndOphidians
-		{
-			get{ return m_TerathansAndOphidians; }
-		}
-
-		private static OppositionGroup m_SavagesAndOrcs = new OppositionGroup( new Type[][]
-			{
-				new Type[]
-				{
-					typeof( Orc ),
-					typeof( OrcCaptain ),
-					typeof( OrcishLord ),
-					typeof( OrcishMage ),
-					typeof( OrcishBrute )
-				},
-				new Type[]
-				{
-					typeof( Ratman ),
-					typeof( RatmanArcher ),
-					typeof( RatmanMage ),
-					typeof( RatmanThief)
-				}
-			} );
-
-		public static OppositionGroup SavagesAndOrcs
-		{
-			get{ return m_SavagesAndOrcs; }
-		}
-		
-		private static OppositionGroup m_FeyAndUndead = new OppositionGroup( new Type[][]
-			{
-				new Type[]
-				{
-					typeof( Wisp )
+        private static OppositionGroup m_TestPlayer = new OppositionGroup(
+            new Type[][]
+            {
+                new Type[]
+                {
+                    typeof(Ratman),
+                    typeof(RatmanArcher),
+                    typeof(RatmanMage),
+                    typeof(RatmanThief)
                 },
-				new Type[]
-				{
-					typeof( LichLord ),
-					typeof( AncientLich ),
-					typeof( Shade ),
-					typeof( Spectre ),
-					typeof( Wraith ),
-					typeof( BoneKnight ),
-					typeof( Ghoul ),
-					typeof( Mummy ),
-					typeof( SkeletalKnight ),
-					typeof( Skeleton ),
-					typeof( Zombie ),
-					typeof( RottingCorpse ),
-					typeof( Lich ),
-					typeof( ShadowWisp ),
-					typeof( DarkWisp )
-				}
-			} );
+                new Type[] { typeof(TestPlayer), }
+            }
+        );
 
-		public static OppositionGroup FeyAndUndead
-		{
-			get{ return m_FeyAndUndead; }
-		}
-	}
+        public static OppositionGroup TestPlayer
+        {
+            get { return m_TestPlayer; }
+        }
+
+        private static OppositionGroup m_TerathansAndOphidians = new OppositionGroup(
+            new Type[][]
+            {
+                new Type[]
+                {
+                    typeof(TerathanAvenger),
+                    typeof(TerathanDrone),
+                    typeof(TerathanMatriarch),
+                    typeof(TerathanWarrior)
+                },
+                new Type[]
+                {
+                    typeof(OphidianArchmage),
+                    typeof(OphidianKnight),
+                    typeof(OphidianMage),
+                    typeof(OphidianMatriarch),
+                    typeof(OphidianWarrior)
+                }
+            }
+        );
+
+        public static OppositionGroup TerathansAndOphidians
+        {
+            get { return m_TerathansAndOphidians; }
+        }
+
+        private static OppositionGroup m_SavagesAndOrcs = new OppositionGroup(
+            new Type[][]
+            {
+                new Type[]
+                {
+                    typeof(Orc),
+                    typeof(OrcCaptain),
+                    typeof(OrcishLord),
+                    typeof(OrcishMage),
+                    typeof(OrcishBrute)
+                },
+                new Type[]
+                {
+                    typeof(Ratman),
+                    typeof(RatmanArcher),
+                    typeof(RatmanMage),
+                    typeof(RatmanThief)
+                }
+            }
+        );
+
+        public static OppositionGroup SavagesAndOrcs
+        {
+            get { return m_SavagesAndOrcs; }
+        }
+
+        private static OppositionGroup m_FeyAndUndead = new OppositionGroup(
+            new Type[][]
+            {
+                new Type[] { typeof(Wisp) },
+                new Type[]
+                {
+                    typeof(LichLord),
+                    typeof(AncientLich),
+                    typeof(Shade),
+                    typeof(Spectre),
+                    typeof(Wraith),
+                    typeof(BoneKnight),
+                    typeof(Ghoul),
+                    typeof(Mummy),
+                    typeof(SkeletalKnight),
+                    typeof(Skeleton),
+                    typeof(Zombie),
+                    typeof(RottingCorpse),
+                    typeof(Lich),
+                    typeof(ShadowWisp),
+                    typeof(DarkWisp)
+                }
+            }
+        );
+
+        public static OppositionGroup FeyAndUndead
+        {
+            get { return m_FeyAndUndead; }
+        }
+    }
 }

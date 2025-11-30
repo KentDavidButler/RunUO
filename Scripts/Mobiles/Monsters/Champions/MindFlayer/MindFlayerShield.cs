@@ -45,10 +45,6 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.TestGroup; }
-		}
 
 		public override void Serialize( GenericWriter writer )
 		{

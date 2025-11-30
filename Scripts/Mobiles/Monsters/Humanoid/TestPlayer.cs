@@ -6,8 +6,9 @@ namespace Server.Mobiles
     public class TestPlayer : BaseCreature
     {
         [Constructable]
-        public TestPlayer() : base(AIType.AI_MagePlayer, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public TestPlayer() : base(AIType.AI_MagePlayer, FightMode.Weakest, 10, 1, 0.2, 0.4)
         {
+            Debug = true;
             SpeechHue = Utility.RandomDyedHue();
             Title = "Test Player";
             Hue = Utility.RandomSkinHue();
@@ -51,9 +52,18 @@ namespace Server.Mobiles
             PackItem(new BagOfReagents());
         }
 
-		public override bool Unprovokable{ get{ return true; } }
-		public override bool AreaPeaceImmune{ get{ return true; } }
-		public override bool CanRummageCorpses{ get{ return true; } }
+        public override bool Unprovokable
+        {
+            get { return true; }
+        }
+        public override bool AreaPeaceImmune
+        {
+            get { return true; }
+        }
+        public override bool CanRummageCorpses
+        {
+            get { return true; }
+        }
 
         public override bool ReacquireOnMovement
         {
@@ -64,6 +74,11 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.FilthyRich);
             AddLoot(LootPack.Meager);
+        }
+
+        public override OppositionGroup OppositionGroup
+        {
+            get { return OppositionGroup.TestPlayer; }
         }
 
         public TestPlayer(Serial serial) : base(serial) { }
@@ -80,11 +95,6 @@ namespace Server.Mobiles
             base.Deserialize(reader);
 
             int version = reader.ReadInt();
-        }
-
-        public override OppositionGroup OppositionGroup
-        {
-            get { return OppositionGroup.TestGroup; }
         }
     }
 }

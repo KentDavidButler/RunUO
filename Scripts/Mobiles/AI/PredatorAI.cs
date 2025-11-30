@@ -16,8 +16,8 @@ namespace Server.Mobiles
 		{
 			if ( m_Mobile.Combatant != null )
 			{
-				m_Mobile.DebugSay( "I am hurt or being attacked, I kill him" );						
-				Action = ActionType.Combat;
+                m_Mobile.DebugSay("I am hurt or being attacked, I kill him");
+                Action = ActionType.Combat;
 			}
 			else if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, true, false, true))
 			{
